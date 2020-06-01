@@ -848,7 +848,7 @@
             loading.close();
             if (data && data.code === 0) {
                 console.log(data);
-                row.profit = 10000;
+                // row.profit = 10000;
                 console.log
             } else {
                 this.$message.error(data.msg)
