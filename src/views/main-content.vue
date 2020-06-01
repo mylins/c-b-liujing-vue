@@ -1,10 +1,51 @@
 <template>
   <main class="site-content" :class="{ 'site-content--tabs': $route.meta.isTab }">
     <!-- 主入口标签页 s -->
+
+    <!-- <a-tabs
+      v-if="$route.meta.isTab"
+      :active-key="mainTabsActiveName"
+      class="tab-layout-tabs"
+      style="height:52px"
+      :hide-add="true"
+      @tabClick="selectedTabHandle"
+      @edit="removeTabHandle">
+      <a-dropdown>
+        <i class="el-icon-arrow-down el-icon--right"></i>
+        <a-menu slot="overlay">
+          <a-menu-item @click.native="tabsCloseCurrentHandle">
+            <a href="javascript:;">关闭当前标签页</a>
+          </a-menu-item>
+          <a-menu-item @click.native="tabsCloseOtherHandle">
+            <a href="javascript:;">关闭其它标签页</a>
+          </a-menu-item>
+          <a-menu-item @click.native="tabsCloseAllHandle">
+            <a href="javascript:;">关闭全部标签页</a>
+          </a-menu-item>
+          <a-menu-item @click.native="refresh()">
+            <a href="javascript:;">刷新当前标签页</a>
+          </a-menu-item>
+        </a-menu>
+      </a-dropdown>
+      <a-tab-pane :tab="item.title" :key="item.name" v-for="item in mainTabs">
+        <a-card :body-style="siteContentViewHeight">
+          <iframe
+            v-if="item.type === 'iframe'"
+            :src="item.iframeUrl"
+            width="100%" height="100%" frameborder="0" scrolling="yes">
+          </iframe>
+          <keep-alive v-else>
+            <router-view v-if="item.name === mainTabsActiveName" />
+          </keep-alive>
+        </a-card>
+      </a-tab-pane>
+    </a-tabs> -->
+
     <el-tabs
       v-if="$route.meta.isTab"
       v-model="mainTabsActiveName"
       :closable="true"
+      type="card"
       @tab-click="selectedTabHandle"
       @tab-remove="removeTabHandle">
       <el-dropdown class="site-tabs__tools" :show-timeout="0">

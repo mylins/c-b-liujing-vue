@@ -1,0 +1,26 @@
+.subDivForm{
+    position:fixed;
+    bottom:14px;right:30px;background:#fff
+}
+.conDivForm{
+    padding-bottom:54px;
+}
+.blockDivForm{
+    padding: 20px 0;
+    border-bottom: 4px solid #eee;
+}
+.blockDivForm:last-child{
+    border-bottom: 0;
+}
+.blockDivForm h3{
+    margin-bottom: 16px;
+}
+.blockDivForm h3 , .blockDivForm h3 i{
+    color: #409eff;
+}
+.blockDivForm .el-input__inner{
+    width: 220px;
+}
+.blockDivForm .join input{
+    width:576px!important;
+}

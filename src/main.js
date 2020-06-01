@@ -7,12 +7,15 @@ import '@/element-ui'                         // api: https://github.com/ElemeFE
 import '@/icons'                              // api: http://www.iconfont.cn/
 import '@/element-ui-theme'
 import '@/assets/scss/index.scss'
+import Antd from 'ant-design-vue';
+import 'ant-design-vue/dist/antd.css';
 import httpRequest from '@/utils/httpRequest' // api: https://github.com/axios/axios
 import { isAuth } from '@/utils'
 import cloneDeep from 'lodash/cloneDeep'
 
 Vue.use(VueCookie)
 Vue.config.productionTip = false
+Vue.use(Antd);
 
 // 非生产环境, 适配mockjs模拟数据                 // api: https://github.com/nuysoft/Mock
 if (process.env.NODE_ENV !== 'production') {
@@ -31,6 +34,9 @@ new Vue({
   el: '#app',
   router,
   store,
+  mounted(){
+    this.$store.dispatch('getComList')
+  },
   template: '<App/>',
   components: { App }
 })

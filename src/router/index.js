@@ -36,7 +36,10 @@ const mainRoutes = {
     { path: '/home', component: _import('common/home'), name: 'home', meta: { title: '首页' } },
     { path: '/theme', component: _import('common/theme'), name: 'theme', meta: { title: '主题' } },
     { path: '/demo-echarts', component: _import('demo/echarts'), name: 'demo-echarts', meta: { title: 'demo-echarts', isTab: true } },
-    { path: '/demo-ueditor', component: _import('demo/ueditor'), name: 'demo-ueditor', meta: { title: 'demo-ueditor', isTab: true } }
+    { path: '/demo-ueditor', component: _import('demo/ueditor'), name: 'demo-ueditor', meta: { title: 'demo-ueditor', isTab: true } },
+    { path: '/xiaof', component: _import('modules/sys/xiaof'), name: 'xiaof', meta: { title: '消费记录', isTab: true } },
+    { path: '/deptAddUpdate', component: _import('modules/sys/dept-add-or-update'), name: 'deptAddUpdate', meta: { title: '公司表单', isTab: true } },
+    { path: '/userAddUpdate', component: _import('modules/sys/user-add-or-update'), name: 'userAddUpdate', meta: { title: '用户表单', isTab: true } }
   ],
   beforeEnter (to, from, next) {
     let token = Vue.cookie.get('token')

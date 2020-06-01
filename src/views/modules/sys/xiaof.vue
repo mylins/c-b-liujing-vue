@@ -6,13 +6,13 @@
             <el-col :span="6">
                 <el-row>
                     <el-col :span="6">
-                        <label class="labelSS">用户姓名：</label>
+                        <label class="labelSS">订单ID：</label>
                     </el-col>
                     <el-col :span="18">
                         <el-input
                             size="medium"
-                            placeholder="请输入用户姓名"
-                            v-model="dataForm.displayName"
+                            placeholder="请输入"
+                            v-model="dataForm.orderId"
                             clearable>
                         </el-input>
                     </el-col>
@@ -21,31 +21,24 @@
             <el-col :span="6">
                 <el-row>
                     <el-col :span="6">
-                        <label class="labelSS">账户名称：</label>
+                        <label class="labelSS">消费类型：</label>
                     </el-col>
                     <el-col :span="18">
-                      <el-input
-                            size="medium"
-                            placeholder="请输入账户名称"
-                            v-model="dataForm.username"
-                            clearable>
-                        </el-input>
-                        
-                    </el-col>
-                </el-row>
-            </el-col>
-            <el-col :span="6">
-                <el-row>
-                    <el-col :span="6">
-                        <label class="labelSS">公司名称：</label>
-                    </el-col>
-                    <el-col :span="18">
-                      <el-select v-model="dataForm.deptId" filterable clearable placeholder="请选择">
+                      <el-select v-model="dataForm.type" filterable clearable placeholder="请选择">
                           <el-option
-                            v-for="item in $store.state.dept.comList"
-                            :key="item.deptId"
-                            :label="item.name"
-                            :value="item.deptId">
+                            key="1"
+                            label="全部"
+                            value="1">
+                          </el-option>
+                          <el-option
+                            key="2"
+                            label="服务费"
+                            value="2">
+                          </el-option>
+                          <el-option
+                            key="3"
+                            label="物流费"
+                            value="3">
                           </el-option>
                         </el-select>
                         
@@ -69,6 +62,23 @@
                     </el-col>
                 </el-row>
             </el-col>
+            <el-col :span="6">
+                <el-row>
+                    <el-col :span="6">
+                        <label class="labelSS">员工名称：</label>
+                    </el-col>
+                    <el-col :span="18">
+                        <el-select v-model="dataForm.userId" clearable placeholder="请选择">
+                          <el-option
+                            v-for="item in userList"
+                            :key="item.deptId"
+                            :label="item.name"
+                            :value="item.deptId">
+                          </el-option>
+                        </el-select>
+                    </el-col>
+                </el-row>
+            </el-col>
             <el-col :span="24">
               <span style="float: right;overflow: hidden;">
                 <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList()">查询</el-button>
@@ -79,17 +89,8 @@
         </el-row>
       </div>
     <!-- 操作 -->
-      <div class="divM">
-        <!-- <el-button v-if="isAuth('sys:user:save')" type="primary" icon="el-icon-plus" size="small" @click="addOrUpdateHandle()">新增</el-button> -->
-        <open-tab type="primary" icon="el-icon-plus" v-if="isAuth('sys:user:save')" dec='新增' urlName='userAddUpdate' :opt='{"userId":null}'></open-tab>
-        <el-button v-if="isAuth('sys:user:reset')" type="primary" icon="el-icon-delete" size="small" @click="resetPassword()">重置密码</el-button>
-        
-      </div>
-    <!-- 统计 -->
-      <div class="statics divM">
-          <div class="left">
-              <i class="el-icon-info" style="color:#409EFF"></i>&nbsp;&nbsp;已选择&nbsp;<a style="font-weight: 600">{{ dataListSelections.length }}</a>&nbsp;项&nbsp;&nbsp;
-          </div>
+      <div class="divM" style="margin-bottom:10px">
+        <el-button v-if="isAuth('sys:dept:export')" type="primary" icon="el-icon-upload2" size="small" @click="outVisible = true">导出Excel</el-button>
       </div>
     <el-table
       :data="dataList"
@@ -97,67 +98,63 @@
       v-loading="dataListLoading"
       @selection-change="selectionChangeHandle"
       style="width: 100%;">
-      <el-table-column
-					type="selection"
+            <el-table-column
+					prop="companyRechargeId"
           header-align="center"
           align="center"
-					width="55">
-			</el-table-column>
-			<el-table-column
-					prop="displayName"
-          header-align="center"
-          align="center"
-					label="姓名"
-					width="120">
-			</el-table-column>
-			<el-table-column
-					prop="username"
-          header-align="center"
-          align="center"
-					label="账户"
-					width="120">
+					label="编号">
 			</el-table-column>
 			<el-table-column
 					prop="deptName"
           header-align="center"
           align="center"
-					label="所属公司">
+					label="公司"
+					width="120">
 			</el-table-column>
 			<el-table-column
-					prop="email"
+					prop="userName"
           header-align="center"
           align="center"
-					label="邮箱"
+					label="操作人"
+					width="120">
+			</el-table-column>
+			
+			<el-table-column
+					prop="type"
+          header-align="center"
+          align="center"
+					label="类型"
 					width="">
 			</el-table-column>
-			<el-table-column
-					prop="mobile"
+            <el-table-column
+					prop="orderId"
           header-align="center"
           align="center"
-					label="手机号"
+					label="订单ID"
+					width="120">
+			</el-table-column>
+			
+			<el-table-column
+					prop="money"
+          header-align="center"
+          align="center"
+					label="金额"
 					width="">
 			</el-table-column>
-			<el-table-column
-					prop=""
+            <el-table-column
+					prop="abroadWaybill"
           header-align="center"
           align="center"
-					label="状态">
-				<template slot-scope="scope">
-					<el-tag v-if="scope.row.status == 1" size="small">正常</el-tag>
-					<el-tag v-if="scope.row.status == 0" size="small" type="danger">禁用</el-tag>
-				</template>
+					label="运单号"
+					width="120">
 			</el-table-column>
+			
 			<el-table-column
-					fixed="right"
+					prop="createTime"
           header-align="center"
           align="center"
-          width="150"
-					label="操作">
-				<template slot-scope="scope">
-					<!-- <el-button v-if="isAuth('sys:user:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.userId)">修改</el-button> -->
-          <open-tab type="text" icon="" v-if="isAuth('sys:user:update')" dec='修改' urlName='userAddUpdate' :opt='{"userId":scope.row.userId}'></open-tab>
-          <el-button v-if="isAuth('sys:user:delete')" type="text" size="small" @click="deleteHandle(scope.row.userId)">删除</el-button>
-				</template>
+					label="创建时间"
+					width="">
 			</el-table-column>
     </el-table>
     <el-pagination
@@ -170,21 +167,50 @@
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
-    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+    <!-- <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update> -->
+    <!-- 导出时间 -->
+    <el-dialog
+      title="充值"
+      :visible.sync="outVisible"
+      width="20%">
+      <div>
+        <div>
+          <label style="display:inline-block;margin:10px 0 10px 0;font-weight:600">开始时间</label>
+          <el-date-picker
+            v-model="startDate"
+            value-format="yyyy-MM-dd"
+            type="date"
+            placeholder="选择日期">
+          </el-date-picker>
+        </div>
+        <div>
+          <label style="display:inline-block;margin:20px 0 10px 0;font-weight:600">结束时间</label>
+          <el-date-picker
+            v-model="endDate"
+            value-format="yyyy-MM-dd"
+            type="date"
+            placeholder="选择日期">
+          </el-date-picker>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="outVisible = false">取 消</el-button>
+        <el-button type="primary" @click="outExcel">导 出</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-  import AddOrUpdate from './user-add-or-update'
-  import OpenTab from '../../common/open'
   export default {
     data () {
       return {
         dataForm: {
-          username: '',
-          displayName:'',
+          type: null,
+          orderId:'',
           deptId:null,
-          groupId:null
+          groupId:null,
+          userId:null
         },
         dataList: [],
         pageIndex: 1,
@@ -193,29 +219,35 @@
         dataListLoading: false,
         dataListSelections: [],
         addOrUpdateVisible: false,
-        groupList:[]
+        groupList:[],
+        userList:[],
+        outVisible:false,
+        startDate:null,
+        endDate:null
       }
     },
     components: {
-      AddOrUpdate,OpenTab
     },
     activated () {
-      this.getDataList()
+      this.getDataList();
+      console.log(this.$route.params.deptId)
+      this.dataForm.deptId = this.$route.params.deptId
     },
     methods: {
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/sys/user/list'),
+          url: this.$http.adornUrl('/sys/companyconsume/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
             'limit': this.pageSize,
-            'username': this.dataForm.username,
-            'displayName':this.dataForm.displayName,
-            'deptId':this.dataForm.deptId,
-            'groupId':this.dataForm.groupId
+            'orderId': this.dataForm.orderId,
+            'deptId':this.deptId,
+            'groupId':this.dataForm.groupId,
+            'userId':this.dataForm.userId,
+            'type':this.dataForm.type
           })
         }).then(({data}) => {
           if (data && data.code === 0) {
@@ -229,6 +261,10 @@
           this.dataListLoading = false
         })
       },
+    //   导出
+    outExcel(){
+
+    },
       // 重置
       clean(){
         this.dataForm = {

@@ -6,11 +6,11 @@
         <a class="site-navbar__brand-mini" href="javascript:;">人人</a>
       </h1>
     </div>
-    <div class="site-navbar__body clearfix">
+    <div class="site-navbar__body clearfix" style="">
       <el-menu
         class="site-navbar__menu"
         mode="horizontal">
-        <el-menu-item class="site-navbar__switch" index="0" @click="sidebarFold = !sidebarFold">
+        <el-menu-item class="site-navbar__switch" index="0" @click="sidebarFold = !sidebarFold" style="">
           <icon-svg name="zhedie"></icon-svg>
         </el-menu-item>
       </el-menu>

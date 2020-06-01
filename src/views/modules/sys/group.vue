@@ -80,9 +80,7 @@
       </div>
     <!-- 操作 -->
       <div class="divM">
-        <!-- <el-button v-if="isAuth('sys:user:save')" type="primary" icon="el-icon-plus" size="small" @click="addOrUpdateHandle()">新增</el-button> -->
-        <open-tab type="primary" icon="el-icon-plus" v-if="isAuth('sys:user:save')" dec='新增' urlName='userAddUpdate' :opt='{"userId":null}'></open-tab>
-        <el-button v-if="isAuth('sys:user:reset')" type="primary" icon="el-icon-delete" size="small" @click="resetPassword()">重置密码</el-button>
+        <el-button v-if="isAuth('sys:user:save')" type="primary" icon="el-icon-plus" size="small" @click="addOrUpdateHandle()">新增</el-button>
         
       </div>
     <!-- 统计 -->
@@ -103,49 +101,40 @@
           align="center"
 					width="55">
 			</el-table-column>
-			<el-table-column
-					prop="displayName"
+            <el-table-column
+					prop="groupId"
           header-align="center"
           align="center"
-					label="姓名"
+					label="ID"
+                    width="80">
+			</el-table-column>
+			<el-table-column
+					prop="name"
+          header-align="center"
+          align="center"
+					label="小组名称"
 					width="120">
 			</el-table-column>
 			<el-table-column
-					prop="username"
+					prop="deptId"
           header-align="center"
           align="center"
-					label="账户"
+					label="所属公司"
 					width="120">
 			</el-table-column>
 			<el-table-column
-					prop="deptName"
+					prop="createUser"
           header-align="center"
           align="center"
-					label="所属公司">
-			</el-table-column>
-			<el-table-column
-					prop="email"
-          header-align="center"
-          align="center"
-					label="邮箱"
+					label="创建人"
 					width="">
 			</el-table-column>
 			<el-table-column
-					prop="mobile"
+					prop="createTime"
           header-align="center"
           align="center"
-					label="手机号"
+					label="创建时间"
 					width="">
-			</el-table-column>
-			<el-table-column
-					prop=""
-          header-align="center"
-          align="center"
-					label="状态">
-				<template slot-scope="scope">
-					<el-tag v-if="scope.row.status == 1" size="small">正常</el-tag>
-					<el-tag v-if="scope.row.status == 0" size="small" type="danger">禁用</el-tag>
-				</template>
 			</el-table-column>
 			<el-table-column
 					fixed="right"
@@ -154,9 +143,8 @@
           width="150"
 					label="操作">
 				<template slot-scope="scope">
-					<!-- <el-button v-if="isAuth('sys:user:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.userId)">修改</el-button> -->
-          <open-tab type="text" icon="" v-if="isAuth('sys:user:update')" dec='修改' urlName='userAddUpdate' :opt='{"userId":scope.row.userId}'></open-tab>
-          <el-button v-if="isAuth('sys:user:delete')" type="text" size="small" @click="deleteHandle(scope.row.userId)">删除</el-button>
+					<el-button v-if="isAuth('sys:user:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.groupId)">修改</el-button>
+          <el-button v-if="isAuth('sys:user:delete')" type="text" size="small" @click="deleteHandle(scope.row.groupId)">删除</el-button>
 				</template>
 			</el-table-column>
     </el-table>
@@ -175,8 +163,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './user-add-or-update'
-  import OpenTab from '../../common/open'
+  import AddOrUpdate from './group-add-or-update'
   export default {
     data () {
       return {
@@ -197,7 +184,7 @@
       }
     },
     components: {
-      AddOrUpdate,OpenTab
+      AddOrUpdate
     },
     activated () {
       this.getDataList()
@@ -207,7 +194,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/sys/user/list'),
+          url: this.$http.adornUrl('/sys/sysgroup/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -301,7 +288,7 @@
               background: 'rgba(0, 0, 0, 0.7)'
             });
           this.$http({
-            url: this.$http.adornUrl('/sys/user/delete'),
+            url: this.$http.adornUrl('/sys/sysgroup/delete'),
             method: 'post',
             data: this.$http.adornData(userIds, false)
           }).then(({data}) => {
