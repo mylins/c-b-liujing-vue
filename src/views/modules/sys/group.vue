@@ -3,7 +3,7 @@
     <!-- 搜索 -->
       <div>
         <el-row :gutter="20">
-            <el-col :span="6">
+            <!-- <el-col :span="6">
                 <el-row>
                     <el-col :span="6">
                         <label class="labelSS">用户姓名：</label>
@@ -17,8 +17,8 @@
                         </el-input>
                     </el-col>
                 </el-row>
-            </el-col>
-            <el-col :span="6">
+            </el-col> -->
+            <!-- <el-col :span="6">
                 <el-row>
                     <el-col :span="6">
                         <label class="labelSS">账户名称：</label>
@@ -33,7 +33,7 @@
                         
                     </el-col>
                 </el-row>
-            </el-col>
+            </el-col> -->
             <el-col :span="6">
                 <el-row>
                     <el-col :span="6">
@@ -69,8 +69,8 @@
                     </el-col>
                 </el-row>
             </el-col>
-            <el-col :span="24">
-              <span style="float: right;overflow: hidden;">
+            <el-col :span="6">
+              <span style="">
                 <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList()">查询</el-button>
                 <el-button type="" icon="el-icon-refresh" size="medium" @click="clean()">重置</el-button>
               </span>
@@ -168,8 +168,6 @@
     data () {
       return {
         dataForm: {
-          username: '',
-          displayName:'',
           deptId:null,
           groupId:null
         },
@@ -199,8 +197,6 @@
           params: this.$http.adornParams({
             'page': this.pageIndex,
             'limit': this.pageSize,
-            'username': this.dataForm.username,
-            'displayName':this.dataForm.displayName,
             'deptId':this.dataForm.deptId,
             'groupId':this.dataForm.groupId
           })

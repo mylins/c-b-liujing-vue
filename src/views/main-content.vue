@@ -110,7 +110,7 @@
       siteContentViewHeight () {
         var height = this.documentClientHeight - 50 - 30 - 2
         if (this.$route.meta.isTab) {
-          height -= 40
+          height -= 50
           return isURL(this.$route.meta.iframeUrl) ? { height: height + 'px' } : { minHeight: height + 'px' }
         }
         return { minHeight: height + 'px' }

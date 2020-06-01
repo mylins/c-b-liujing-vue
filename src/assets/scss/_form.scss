@@ -1,6 +1,7 @@
 .subDivForm{
     position:fixed;
-    bottom:14px;right:30px;background:#fff
+    bottom:14px;right:30px;background:#fff;
+    z-index: 2;
 }
 .conDivForm{
     padding-bottom:54px;
@@ -23,4 +24,18 @@
 }
 .blockDivForm .join input{
     width:576px!important;
+}
+.intrDiv{
+    display: flex;
+    margin-bottom: 16px;
+}
+.intrDiv label{
+    width: 100px;
+}
+.intrDiv label>span{
+    display: inline-block;
+    margin-bottom: 8px;
+}
+.intrDiv>div{
+    flex: 1;
 }

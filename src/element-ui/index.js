@@ -76,7 +76,8 @@ import {
   MessageBox,
   Message,
   Notification,
-  PageHeader
+  PageHeader,
+  Image
 } from 'element-ui'
 
 Vue.use(Pagination)
@@ -143,6 +144,7 @@ Vue.use(Aside)
 Vue.use(Main)
 Vue.use(Footer)
 Vue.use(PageHeader)
+Vue.use(Image)
 
 Vue.use(Loading.directive)
 

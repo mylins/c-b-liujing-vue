@@ -20,6 +20,12 @@
       },
       opt:{
         type:Object
+      },
+      product:{
+        type:Boolean
+      },
+      productId:{
+        type:Number
       }
     },
     computed: {
@@ -32,11 +38,6 @@
         set (val) { this.$store.commit('common/updateMainTabsActiveName', val) }
       },
     },
-    // created () {
-    //   this.menuList = JSON.parse(sessionStorage.getItem('menuList') || '[]')
-    //   this.dynamicMenuRoutes = JSON.parse(sessionStorage.getItem('dynamicMenuRoutes') || '[]')
-    //   this.routeHandle(this.$route)
-    // },
     methods: {
       // tabs, 删除tab
       removeTabHandle (tabName) {
@@ -56,7 +57,22 @@
       },
       // 返回
       goBack(){
-        this.removeTabHandle(this.mainTabsActiveName)
+        if(this.product){
+          this.$http({
+              url: this.$http.adornUrl('/product/product/cancelOriginal'),
+              method: 'get',
+              params: this.$http.adornParams({
+                productId:this.productId
+              })
+            }).then(({data}) => {
+              if (data && data.code === 0) {
+                this.removeTabHandle(this.mainTabsActiveName)
+              }
+            })
+        }else{
+          this.removeTabHandle(this.mainTabsActiveName)
+        }
+        
       },
     }
   }
