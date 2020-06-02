@@ -640,8 +640,138 @@
             </el-tab-pane>
           </el-tabs>
         </div>
+        <div class="blockDivForm">
+            <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;规格变体</h3>
+            <el-button type="primary" plain v-if="dataForm.variantsParameterList.length < 2" @click="addVisible = true;addObj.type=null;addObj.value=''">添加变体参数</el-button>
+
+            <div class="tag-group" v-for="(item,index) in dataForm.variantsParameterList" :key="index">
+                <span class="tag-group__title">{{item.name}}</span>
+                <el-tag
+                    v-for="m in item.type.split(',')"
+                    :key="m"
+                    effect="plain">
+                    {{ m }}
+                </el-tag>
+                <el-button type="text" icon="el-icon-edit" @click="editV(index)"></el-button>
+                <el-button type="text" icon="el-icon-delete" @click="del(index)"></el-button>
+            </div>
+            <el-table
+                class="freTable"
+                :data="dataForm.variantsInfoList"
+                style="width: 90%;margin-left:5%;margin-top:16px">
+                <el-table-column
+                    prop=""
+                    label="国家"
+                    width="180">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.countryCode == 'US'" style="font-size:14px;color:#409EFF">美国</span>
+                        <span v-if="scope.row.countryCode == 'CA'" style="font-size:14px;color:#409EFF">加拿大</span>
+                        <span v-if="scope.row.countryCode == 'MX'" style="font-size:14px;color:#409EFF">墨西哥</span>
+                        <span v-if="scope.row.countryCode == 'GB'" style="font-size:14px;color:#409EFF">英国</span>
+                        <span v-if="scope.row.countryCode == 'FR'" style="font-size:14px;color:#409EFF">法国</span>
+                        <span v-if="scope.row.countryCode == 'DE'" style="font-size:14px;color:#409EFF">德国</span>
+                        <span v-if="scope.row.countryCode == 'IT'" style="font-size:14px;color:#409EFF">意大利</span>
+                        <span v-if="scope.row.countryCode == 'ES'" style="font-size:14px;color:#409EFF">西班牙</span>
+                        <span v-if="scope.row.countryCode == 'JP'" style="font-size:14px;color:#409EFF">日本</span>
+                        <span v-if="scope.row.countryCode == 'AU'" style="font-size:14px;color:#409EFF">澳大利亚</span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                    prop="freight"
+                    label="运费(¥)"
+                    width="180">
+                </el-table-column>
+                <el-table-column
+                    prop="price"
+                    label="售价(¥)">
+                </el-table-column>
+                <el-table-column
+                    prop="foreignCurrency"
+                    label="外币"
+                    width="180">
+                </el-table-column>
+                <el-table-column
+                    prop="optimization"
+                    label="优化">
+                </el-table-column>
+                <el-table-column
+                    prop=""
+                    label="最终售价"
+                    width="180">
+                    <template slot-scope="scope">
+                        <el-input placeholder="请输入内容" size="small" v-model="scope.row.finalPrice" clearable @change="refreshProfitRate(scope.row)"></el-input>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                    prop="price"
+                    label="利润(¥)">
+                    <template slot-scope="scope">
+                        <span style="color:#409EFF">{{scope.row.profit}} ({{scope.row.profitRate}})</span>
+                    </template>
+                </el-table-column>
+                
+            </el-table>
+
+        </div>
         
       </el-form>
+      <!-- 新增变体弹框 -->
+      <el-dialog
+        title="新增变体参数"
+        :visible.sync="addVisible"
+        width="600px">
+        <div>
+            <div class="addSeclec">
+                <label style="display:inline-block;margin:10px 0 10px 0;font-weight:600">变体名称</label>
+                <br>
+                <el-select v-model="addObj.type" placeholder="请选择" @change="addObj.value = ''">
+                    <el-option
+                    label="颜色（color）"
+                    value="颜色（color）">
+                    </el-option>
+                    <el-option
+                    label="尺寸（sizeNam）"
+                    value="尺寸（sizeNam）">
+                    </el-option>
+                </el-select>
+            </div>
+            <div style="margin-bottom:10px">
+                <label style="display:inline-block;margin:20px 0 10px 0;font-weight:600">变体值:(多个值用逗号隔开如:red,white,black)</label>
+                <el-input
+                    type="textarea"
+                    placeholder="请输入内容"
+                    v-model="addObj.value"
+                    clearable>
+                </el-input>
+            </div>
+            <div class="tag-group">
+                <span class="tag-group__title">推荐</span>
+                <template v-if='addObj.type == "颜色（color）"'>
+                    <el-tag
+                        v-for="(item,index) in recommend"
+                        @click="pushValue(index)"
+                        :effect="(addObj.value.split(',').indexOf(recommendE[index]) == -1) ? '' : 'dark'"
+                        :key="item">
+                        {{ item }}
+                    </el-tag>
+                </template>
+                <template v-if='addObj.type == "尺寸（sizeNam）"'>
+                    <el-tag
+                        v-for="(item,index) in recommend1"
+                        @click="pushValue(index)"
+                        :effect="(addObj.value.split(',').indexOf(recommend1E[index]) == -1) ? '' : 'dark'"
+                        :key="item">
+                        {{ item }}
+                    </el-tag>
+                </template>
+                
+            </div>
+        </div>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="addVisible = false">取 消</el-button>
+            <el-button type="primary" @click="add">确 定</el-button>
+        </span>
+    </el-dialog>
 
     </div>
   </div>
@@ -661,9 +791,14 @@
       }
       return {
         visible: false,
+        addVisible:false,
         roleList: [],
         productId:null,
         discountList:[1,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1],
+        recommend:['米色','黑色','蓝色','青铜','棕色','明确','铜','奶油','金','绿色','灰色','金属','多色','橙子','粉','紫色','红','银','白色','黄色','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T'],
+        recommendE:['Beige','Black','Blue','Bronze','Brown','Clear','Copper','Cream','Gold','Green','Grey','Metallic','Multi-colored','Orange','Pink','Purple','Red','Silver','White','Yellow','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T'],
+        recommend1:['均码','XS','S','M','L','XL','XXL','XXXL','XXXXL','XXXXXL'],
+        recommend1E:['OneSize','XS','S','M','L','XL','XXL','XXXL','XXXXL','XXXXXL'],
         freightLoading:false,
         dataForm: {
           productId: null,
@@ -677,8 +812,13 @@
               purchasePrice:0,
               domesticFreight:0
           },
-          info:{}
+          info:{},
+          variantsInfoList:[],
+          variantsParameterList:[],
+          viFlag:0,
+          vpFlag:0
         },
+        addObj:{type:null,value:''},
         dataRule: {
           purchasePrice: [
             { required: true, message: '采购价格不能为空', trigger: 'blur' },
@@ -829,35 +969,117 @@
               }
           })
       },
-    //   售价改变
-    refreshProfitRate(row){
-        const loading = this.$loading({
-            lock: true,
-            text: 'Loading',
-            spinner: 'el-icon-loading',
-            background: 'rgba(0, 0, 0, 0.7)'
-            });
-        this.$http({
-            url: this.$http.adornUrl('/product/productfreightcost/refreshProfitRate'),
-            method: 'post',
-            data: this.$http.adornData({
-                property:this.dataForm.property,
-                freightCost:row
+      //   售价改变
+      refreshProfitRate(row){
+            const loading = this.$loading({
+                lock: true,
+                text: 'Loading',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+                });
+            this.$http({
+                url: this.$http.adornUrl('/product/productfreightcost/refreshProfitRate'),
+                method: 'post',
+                data: this.$http.adornData({
+                    property:this.dataForm.property,
+                    freightCost:row
+                })
+            }).then(({data}) => {
+                loading.close();
+                if (data && data.code === 0) {
+                    console.log(data);
+                    // row.profit = 10000;
+                    console.log
+                } else {
+                    this.$message.error(data.msg)
+                }
             })
-        }).then(({data}) => {
-            loading.close();
-            if (data && data.code === 0) {
-                console.log(data);
-                // row.profit = 10000;
-                console.log
-            } else {
-                this.$message.error(data.msg)
-            }
-        })
-    },
+      },
       deptChange(opt){
-        this.dataForm.deptName = (this.$store.state.dept.comList.find(item => item.deptId == opt)).name;
-        console.log(this.dataForm);
+            this.dataForm.deptName = (this.$store.state.dept.comList.find(item => item.deptId == opt)).name;
+            console.log(this.dataForm);
+      },
+    //   添加变体参数
+      add(){
+          console.log(this.addObj.value);
+          if(this.dataForm.variantsParameterList.length == 0){
+              this.dataForm.variantsParameterList.push({
+                  name:this.addObj.type,
+                  type:this.addObj.value
+              })
+          }else if(this.dataForm.variantsParameterList.length == 1){
+              if(this.dataForm.variantsParameterList[0].name == this.addObj.type){
+                  this.dataForm.variantsParameterList.splice(0,1);
+                  this.dataForm.variantsParameterList.push({
+                    name:this.addObj.type,
+                    type:this.addObj.value
+                  })
+                //   this.dataForm.variantsParameterList.type = this.addObj.value
+              }else{
+                  this.dataForm.variantsParameterList.push({
+                        name:this.addObj.type,
+                        type:this.addObj.value
+                    })
+              }
+          }else{
+              var that = this;
+              this.dataForm.variantsParameterList.forEach(function(item,index){
+                  if(item.name == that.addObj.type){
+                    that.dataForm.variantsParameterList.splice(index,1);
+                    that.dataForm.variantsParameterList.push({
+                        name:that.addObj.type,
+                        type:that.addObj.value
+                    })
+                    // item.type = that.addObj.value
+                  }
+              })
+          }
+          this.addVisible = false;
+          this.dataForm.vpFlag = 1;
+      },
+    //   修改变体参数
+      editV(index){
+          this.addVisible = true;
+          this.addObj.type = this.dataForm.variantsParameterList[index].name;
+          this.addObj.value = this.dataForm.variantsParameterList[index].type;
+      },
+    //   删除变体
+      del(index){
+        this.$confirm('确定删除该变体属性?', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+        }).then(() => {
+            this.dataForm.variantsParameterList.splice(index,1);
+        })
+        
+      },
+    //   点击推荐添加参数值
+      pushValue(index){
+          var arr = [];
+          console.log(this.addObj.value);
+          if(this.addObj.value != ''){
+              arr = this.addObj.value.split(',');
+          }
+          if(this.addObj.type == '颜色（color）'){
+            if(arr.indexOf(this.recommendE[index]) == -1){
+                arr.push(this.recommendE[index]);
+            }else{
+                console.log(arr.indexOf(this.recommendE[index]));
+                arr.splice(arr.indexOf(this.recommendE[index]),1)
+            }
+          }else{
+            if(arr.indexOf(this.recommend1E[index]) == -1){
+                arr.push(this.recommend1E[index]);
+            }else{
+                console.log(arr.indexOf(this.recommend1E[index]));
+                arr.splice(arr.indexOf(this.recommend1E[index]),1)
+            }
+          }
+          
+          
+          this.addObj.value = arr.join(',');
+          
       }
     }
   }

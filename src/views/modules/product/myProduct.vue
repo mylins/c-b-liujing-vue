@@ -1,18 +1,9 @@
 <template>
   <div class="">
       <!-- 搜索 -->
-      <div>
+      <div class="sous">
         <el-row :gutter="20">
-            <el-col :span="12">
-                <el-row>
-                    <el-col :span="6">
-                        <label class="labelSS">产品分类：</label>
-                    </el-col>
-                    <el-col :span="18">
-                        <!-- <el-cascader v-model="nowProTypeId" :options="options" :props="props" clearable @visible-change="visibleChange"></el-cascader> -->
-                    </el-col>
-                </el-row>
-            </el-col>
+            
             <el-col :span="6">
                 <el-row>
                     <el-col :span="6">
@@ -43,7 +34,6 @@
                     </el-col>
                 </el-row>
             </el-col>
-            <br><br>
             <el-col :span="6">
                 <el-row>
                     <el-col :span="6">
@@ -74,8 +64,20 @@
                     </el-col>
                 </el-row>
             </el-col>
+            <div style="height:10px;float:left;width:100%"></div>
+            <el-col :span="12">
+                <el-row>
+                    <el-col :span="3">
+                        <label class="labelSS">产品分类：</label>
+                    </el-col>
+                    <el-col :span="21">
+                        <el-cascader v-model="nowProTypeId" :options="options" :props="props" clearable @visible-change="visibleChange"></el-cascader>
+                    </el-col>
+                </el-row>
+            </el-col>
+            
             <el-col :span="6">
-                <el-button type="primary" icon="el-icon-search" size="medium">查询</el-button>
+                <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList">查询</el-button>
                 <el-button type="" icon="el-icon-refresh" size="medium">重置</el-button>
             </el-col>
         </el-row>
@@ -217,6 +219,7 @@
 
 <script>
   import OpenTab from '../../common/open'
+  import { getQuerycategory } from '@/api/product'
   export default {
     components: {
         OpenTab
@@ -230,39 +233,60 @@
                 sku:''
             },
             dataListLoading:true,
-            nowProTypeId:null,
+            nowProTypeId:[],
             options:[],
             props:{
                 lazy:true,
                 lazyLoad: function(node, resolve) {
-                    console.log(node);
+                    
                     if(node.value){
-                        this.$http({
-                        url: this.$http.adornUrl('/product/category/querycategorybyparentid'),
-                        method: 'get',
-                        params: this.$http.adornParams({
-                            'categoryId':node.value
-                        })
-                    }).then(({data}) => {
-                        if (data && data.code === 0) {
-                            const level = node.level;
-                            // const children = node.children;
-                            const nodes = [];
-                            if(r.categoryList.length != 0){
-                                r.categoryList.forEach(function (item) {
-                                    nodes.push({
-                                        value:item.categoryId,
-                                        label:item.categoryName+'('+item.count+')',
-                                        leaf: level >= 2
+                        getQuerycategory({'categoryId':node.value}).then((data) => {
+                            console.log(data)
+                            console.log(data == 0)
+                            if (data.data && data.data.code == 0) {
+                                const level = node.level;
+                                // const children = node.children;
+                                const nodes = [];
+                                if(data.data.categoryList.length != 0){
+                                    data.data.categoryList.forEach(function (item) {
+                                        nodes.push({
+                                            value:item.categoryId,
+                                            label:item.categoryName+'('+item.count+')',
+                                            leaf: level >= 2
+                                        })
                                     })
-                                })
-                                resolve(nodes);
+                                    resolve(nodes);
+                                }
+                            } else {
+                                alert(data.msg);
                             }
-                        } else {
-                            alert(r.msg);
-                        }
-                    })
-                }
+                        })
+                        // this.$http({
+                        //     url: this.$http.adornUrl('/product/productcategory/querycategorybyparentid'),
+                        //     method: 'get',
+                        //     params: this.$http.adornParams({
+                        //         'categoryId':node.value
+                        //     })
+                        // }).then(({data}) => {
+                        //     if (data && data.code === 0) {
+                        //         const level = node.level;
+                        //         // const children = node.children;
+                        //         const nodes = [];
+                        //         if(r.categoryList.length != 0){
+                        //             r.categoryList.forEach(function (item) {
+                        //                 nodes.push({
+                        //                     value:item.categoryId,
+                        //                     label:item.categoryName+'('+item.count+')',
+                        //                     leaf: level >= 2
+                        //                 })
+                        //             })
+                        //             resolve(nodes);
+                        //         }
+                        //     } else {
+                        //         alert(r.msg);
+                        //     }
+                        // })
+                    }
                 }
             },
             dataList:[
@@ -292,6 +316,7 @@
       activated(){
           this.getMyStatusList();
           this.getDataList();
+        //   this.visibleChange();
       },
       methods:{
         auditClick(num){
@@ -341,6 +366,7 @@
         },
         // 获取数据列表
         getDataList () {
+            // console.log(this.nowProTypeId);
             this.dataListLoading = true
             this.$http({
                 url: this.$http.adornUrl('/product/product/mylist'),
@@ -348,7 +374,7 @@
                 params: this.$http.adornParams({
                     'page': this.pageIndex,
                     'limit': this.pageSize,
-                    // 'category': this.nowProTypeId[this.nowProTypeId.length-1],
+                    'category': this.nowProTypeId[this.nowProTypeId.length-1],
                     'title': this.q.title,
                     'sku': this.q.sku,
                     'startDate':this.q.startDate,
@@ -477,6 +503,31 @@
                     }
                 })
             }).catch(() => {})
+        },
+        // 产品分类下拉列表(一级)
+        visibleChange(bol){
+            if(bol){
+                this.$http({
+                    url: this.$http.adornUrl('/product/productcategory/querycategoryone'),
+                    method: 'post',
+                    data: this.$http.adornData()
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                        console.log(data);
+                        var that = this;
+                        data.categoryOneList.forEach(function(item){
+                            that.options.push({
+                                value:item.categoryId,
+                                label:item.categoryName+'('+item.count+')',
+                            })
+                        })
+                    
+                    } else {
+                        this.$message.error(data.msg)
+                    }
+                })
+            }
+            
         }
       }
   }
