@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-h :id="dataForm.userId"></page-h>
+    <page-h ref="back" :id="dataForm.userId"></page-h>
     <div class="subDivForm">
       <span slot="footer" class="dialog-footer">
         <!-- <el-button @click="visible = false">取消</el-button> -->
@@ -230,6 +230,16 @@
     activated(){
       this.init(this.$route.params.userId)
     },
+    computed: {
+      mainTabs: {
+        get () { return this.$store.state.common.mainTabs },
+        set (val) { this.$store.commit('common/updateMainTabs', val) }
+      },
+      mainTabsActiveName: {
+        get () { return this.$store.state.common.mainTabsActiveName },
+        set (val) { this.$store.commit('common/updateMainTabsActiveName', val) }
+      }
+    },
     methods: {
       init (id) {
         this.dataForm.userId = id || 0
@@ -311,10 +321,9 @@
                       duration: 1000,
                       onClose: () => {
                         // this.visible = false
+                        this.$refs.back.removeTabHandle(this.mainTabsActiveName);
                         loading.close();
-                        this.$nextTick(() => {
-                          this.$refs['dataForm'].resetFields();
-                        })
+                        
                       }
                     })
                     
@@ -336,9 +345,9 @@
                       type: 'success',
                       duration: 1000,
                       onClose: () => {
-                        this.visible = false
+                        this.$refs.back.removeTabHandle(this.mainTabsActiveName);
                         loading.close();
-                        this.$emit('refreshDataList')
+                        
                       }
                     })
                     

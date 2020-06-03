@@ -8,7 +8,7 @@
     cursor: pointer;
 }
 .tag-group{
-    margin-bottom: 10px;
+    // margin-bottom: 10px;
 }
 .textIN textarea{
     width: 500px;
@@ -35,4 +35,12 @@
 }
 .sous .el-select , .sous .el-date-editor{
     width: 100%;
+}
+
+.el-button--text>span{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
 }

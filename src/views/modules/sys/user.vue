@@ -305,6 +305,7 @@
             method: 'post',
             data: this.$http.adornData(userIds, false)
           }).then(({data}) => {
+            loading.close()
             if (data && data.code === 0) {
               this.$message({
                 message: '操作成功',
@@ -312,7 +313,7 @@
                 duration: 1500,
                 onClose: () => {
                   this.getDataList()
-                  loading.close()
+                  
                 }
               })
             } else {
@@ -342,6 +343,7 @@
             method: 'post',
             data: this.$http.adornData(userIds, false)
           }).then(({data}) => {
+            loading.close();
             if (data && data.code === 0) {
               this.$message({
                 message: '操作成功',
@@ -349,7 +351,7 @@
                 duration: 1000,
                 onClose: () => {
                   this.getDataList()
-                  loading.close();
+                  
                 }
               })
             } else {

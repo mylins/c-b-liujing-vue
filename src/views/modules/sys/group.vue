@@ -272,7 +272,7 @@
         var userIds = id ? [id] : this.dataListSelections.map(item => {
           return item.userId
         })
-        this.$confirm(`确定对[id=${userIds.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
+        this.$confirm(`确定对id进行[删除}]操作?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -288,6 +288,7 @@
             method: 'post',
             data: this.$http.adornData(userIds, false)
           }).then(({data}) => {
+            loading.close()
             if (data && data.code === 0) {
               this.$message({
                 message: '操作成功',
@@ -295,7 +296,7 @@
                 duration: 1500,
                 onClose: () => {
                   this.getDataList()
-                  loading.close()
+                  
                 }
               })
             } else {
@@ -325,6 +326,7 @@
             method: 'post',
             data: this.$http.adornData(userIds, false)
           }).then(({data}) => {
+            loading.close();
             if (data && data.code === 0) {
               this.$message({
                 message: '操作成功',
@@ -332,7 +334,7 @@
                 duration: 1000,
                 onClose: () => {
                   this.getDataList()
-                  loading.close();
+                  
                 }
               })
             } else {

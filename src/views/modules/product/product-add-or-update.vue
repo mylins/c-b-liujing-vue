@@ -29,7 +29,7 @@
           </el-form-item>
           <br>
           <el-form-item label="产品分类" prop="categoryId">
-              <!-- <span>{{dataForm.categoryName}}</span> -->
+              <span style="color:#409EFF">{{dataForm.categoryName}}</span>
             <el-cascader ref="aaa" v-model="dataForm.categoryId" :options="options" :props="props" clearable @change="productCategorChange" @visible-change="visibleChange"></el-cascader>
           </el-form-item>
           <br>
@@ -1334,6 +1334,11 @@
                 }
             })
             
+          }else{
+              this.$message({
+                    message: '是否正确填写带 * 的内容',
+                    type: 'warning'
+                });
           }
         })
       },

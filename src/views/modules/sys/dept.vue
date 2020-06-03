@@ -75,18 +75,19 @@
         width="50">
       </el-table-column>
       <el-table-column
+        prop="name"
+        header-align="center"
+        align=""
+        label="公司名称">
+      </el-table-column>
+      <el-table-column
         prop="deptId"
         header-align="center"
         align="center"
         width=""
         label="编号">
       </el-table-column>
-      <el-table-column
-        prop="name"
-        header-align="center"
-        align="center"
-        label="公司名称">
-      </el-table-column>
+      
       <el-table-column
         prop="parentName"
         header-align="center"
@@ -168,7 +169,7 @@
         <el-table
           :data="rechargeList"
           v-loading="rechargeListLoading"
-          height="500"
+          height="400"
           style="width: 100%">
           <el-table-column
             prop="userName"
@@ -327,6 +328,7 @@
           if (data.code == 0) {
             this.comList = data.deptList;
             console.log(this.dataList);
+            this.$store.dispatch('getComList')
             // this.totalPage = data.page.totalCount
           } else {
             this.$notify.error({
@@ -449,7 +451,8 @@
       // 导出
       outExcel(){
         // console.log(this.cookie.get('token'));
-        window.location.href = this.$http.adornUrl('/sys/recharge/export?deptId='+this.deptId+'&startDate='+this.startDate+'&endDate='+this.endDate+'&token='+this.$cookie.get("token"))
+        window.location.href = this.$http.adornUrl('/sys/companyrecharge/export?deptId='+this.deptId+'&startDate='+this.startDate+'&endDate='+this.endDate+'&token='+this.$cookie.get("token"))
+        this.outVisible = false;
         // this.$http({
         //   url: this.$http.adornUrl('/sys/companyrecharge/export'),
         //   method: 'get',

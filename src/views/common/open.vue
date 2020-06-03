@@ -1,5 +1,5 @@
 <template>
-  <el-button v-if="!product" :type="type" size="small" :icon="icon" @click="$router.push({ name: urlName,params: opt })">{{dec}}</el-button>
+  <el-button v-if="!product" :type="type" :size="size" :icon="icon" @click="$router.push({ name: urlName,params: opt })">{{dec}}</el-button>
   <el-button v-else :type="type" size="small" :icon="icon" @click="toProduct">{{dec}}</el-button>
 </template>
 
@@ -24,6 +24,10 @@
       },
       product:{
         type:Boolean
+      },
+      size:{
+        type:String,
+        default:'small'
       }
     },
     data () {

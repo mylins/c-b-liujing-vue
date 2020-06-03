@@ -161,18 +161,11 @@
                 label="标题"
                 width="">
                 <template slot-scope="scope">
-                    <open-tab type="text" icon="" :dec='scope.row.productTitle' urlName='productLook' :opt='{"productId":scope.row.productId}'></open-tab>
+                    <!-- <open-tab type="text" icon="" :dec='scope.row.productTitle' urlName='productLook' :opt='{"productId":scope.row.productId}'></open-tab> -->
+                    <open-tab size="medium" type="text" icon="" :dec='scope.row.productTitle' urlName='productLook' :opt='{"productId":scope.row.productId}'></open-tab>
+                    <div v-if="scope.row.productSku"><span style="color:#999">SKU：</span>{{scope.row.productSku}}</div>
+                    <div v-if="scope.row.categoryName"><span style="color:#999">分类：</span>{{scope.row.categoryName}}</div>
                 </template>
-                </el-table-column>
-                <el-table-column
-                prop="productSku"
-                label="SKU"
-                width="120">
-                </el-table-column>
-                <el-table-column
-                prop="categoryName"
-                label="分类"
-                width="300">
                 </el-table-column>
                 <el-table-column
                 prop="createTime"

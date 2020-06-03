@@ -75,11 +75,11 @@
         <div class="blockDivForm">
           <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;金额信息</h3>
           <el-form-item label="平台佣金点数" prop="companyPoints">
-            <el-button v-if="this.dataForm.deptId" type="text">{{dataForm.balance}}</el-button>
+            <el-button v-if="this.dataForm.companyPoints" type="text">{{dataForm.balance}}</el-button>
             <el-input v-else v-model="dataForm.companyPoints" placeholder="平台佣金点数"></el-input>
           </el-form-item>
           <el-form-item label="最低物流限额" prop="limitMoney">
-            <el-button v-if="this.dataForm.deptId" type="text">{{dataForm.balance}}</el-button>
+            <el-button v-if="this.dataForm.limitMoney" type="text">{{dataForm.balance}}</el-button>
             <el-input v-else v-model="dataForm.limitMoney" placeholder="最低物流限额"></el-input>
           </el-form-item>
           <el-form-item v-if="this.dataForm.deptId" label="余额" prop="">
@@ -123,7 +123,7 @@
         visible: false,
         roleList: [],
         deptList:[],
-        comList:[],
+        // comList:[],
         comTopList:[],
         dataForm: {
             accountCount: null,
@@ -194,7 +194,8 @@
       PageH
     },
     activated(){
-      this.init(this.$route.params.deptId)
+      this.init(this.$route.params.deptId);
+      this.comList = this.$store.state.dept.comList
     },
     computed: {
       mainTabs: {
