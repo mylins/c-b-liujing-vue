@@ -277,6 +277,7 @@
       dataFormSubmit () {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
+            
             const loading = this.$loading({
               lock: true,
               text: 'Loading',

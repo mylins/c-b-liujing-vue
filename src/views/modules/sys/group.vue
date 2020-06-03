@@ -61,9 +61,9 @@
                         <el-select v-model="dataForm.groupId" clearable placeholder="请选择" @focus='getGroupList'>
                           <el-option
                             v-for="item in groupList"
-                            :key="item.deptId"
+                            :key="item.groupId"
                             :label="item.name"
-                            :value="item.deptId">
+                            :value="item.groupId">
                           </el-option>
                         </el-select>
                     </el-col>

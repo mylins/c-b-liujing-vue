@@ -168,6 +168,7 @@
         <el-table
           :data="rechargeList"
           v-loading="rechargeListLoading"
+          height="500"
           style="width: 100%">
           <el-table-column
             prop="userName"
@@ -287,7 +288,7 @@
     },
     activated () {
       this.getDataList();
-      this.getComList();
+      // this.getComList();
     },
     methods: {
       // 获取数据列表
@@ -447,17 +448,22 @@
       },
       // 导出
       outExcel(){
-        console.log(this.cookie.get('token'));
-        window.location.href = this.$http({
-          url: this.$http.adornUrl('/sys/companyrecharge/export'),
-          method: 'get',
-          params: this.$http.adornParams({
-            'deptId': this.deptId,
-            'startDate': this.startDate,
-            'endDate': this.endDate
-          })
-        })
+        // console.log(this.cookie.get('token'));
+        window.location.href = this.$http.adornUrl('/sys/recharge/export?deptId='+this.deptId+'&startDate='+this.startDate+'&endDate='+this.endDate+'&token='+this.$cookie.get("token"))
+        // this.$http({
+        //   url: this.$http.adornUrl('/sys/companyrecharge/export'),
+        //   method: 'get',
+        //   params: this.$http.adornParams({
+        //     'deptId': this.deptId,
+        //     'startDate': this.startDate,
+        //     'endDate': this.endDate
+        //   }),
+        //   responseType: 'arraybuffer',
+        //   xsrfHeaderName: 'Authorization'
+        // })
         // '../../sys/recharge/export?deptId='+this.deptId+'&startDate='+this.startDate+'&endDate='+this.endDate
+        // var token = this.$cookie.get('token');
+        
       },
       
       // 删除

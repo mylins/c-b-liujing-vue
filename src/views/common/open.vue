@@ -1,5 +1,6 @@
 <template>
-  <el-button :type="type" size="small" :icon="icon" @click="$router.push({ name: urlName,params: opt })">{{dec}}</el-button>
+  <el-button v-if="!product" :type="type" size="small" :icon="icon" @click="$router.push({ name: urlName,params: opt })">{{dec}}</el-button>
+  <el-button v-else :type="type" size="small" :icon="icon" @click="toProduct">{{dec}}</el-button>
 </template>
 
 <script>
@@ -20,6 +21,9 @@
       },
       opt:{
         type:Object
+      },
+      product:{
+        type:Boolean
       }
     },
     data () {
@@ -86,6 +90,26 @@
           this.menuActiveName = tab.menuId + ''
           this.mainTabsActiveName = tab.name
         }
+      },
+      toProduct(){
+        const loading = this.$loading({
+          lock: true,
+          text: 'Loading',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+        this.$http({
+          url: this.$http.adornUrl('/product/product/getproductid'),
+          method: 'get',
+          params: this.$http.adornParams()
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            console.log(data);
+            this.$router.push({ name: this.urlName,params: {productId:null,obj:data.product} })
+            // this.dataForm = data.product;
+            loading.close();
+          }
+        })
       }
     }
   }

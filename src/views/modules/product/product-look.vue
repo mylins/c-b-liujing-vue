@@ -1,12 +1,6 @@
 <template>
   <div>
-    <page-h ref="back" :product="productId? false:true" :productId="dataForm.productId" :id="productId"></page-h>
-    <div class="subDivForm">
-      <span slot="footer" class="dialog-footer">
-        <!-- <el-button @click="visible = false">取消</el-button> -->
-        <el-button type="primary" @click="dataFormSubmit()">提交</el-button>
-      </span>
-    </div>
+    <!-- <page-h ref="back" :product="productId? false:true" :productId="dataForm.productId" :id="productId"></page-h> -->
     <div class="conDivForm">
       <el-form :inline="true" :model="dataForm" :rules="dataRule" ref="dataForm" label-width="120px">
         <div class="blockDivForm">
@@ -15,117 +9,72 @@
             <!-- <el-input :disabled="true" v-model="dataForm.productId" placeholder="产品编号"></el-input> -->
             <el-button type="text">{{dataForm.productId}}</el-button>
           </el-form-item>
-          <el-form-item v-if="!productId" label="审核状态" prop="">
+          <el-form-item label="审核状态" prop="">
             <el-button type="text">{{dataForm.auditStatus == '002' ? '待审核' : ''}}</el-button>
           </el-form-item>
-          <el-form-item v-if="!productId" label="产品类型" prop="">
+          <el-form-item label="产品类型" prop="">
             <el-button type="text">{{dataForm.productType == '002' ? '原创' : ''}}</el-button>
           </el-form-item>
           <el-form-item label="内部SKU" prop="productSku">
-            <el-button type="text">{{dataForm.productSku}}</el-button> &nbsp;&nbsp;
-            <div style="display:inline-block">
-                <el-input v-model="dataForm.correction" placeholder="SKU修正,建议两位英文字母"></el-input>
-            </div>
+            <el-button type="text">{{dataForm.productSku}}</el-button>
           </el-form-item>
-          <br>
-          <el-form-item label="产品分类" prop="categoryId">
-              <!-- <span>{{dataForm.categoryName}}</span> -->
-            <el-cascader ref="aaa" v-model="dataForm.categoryId" :options="options" :props="props" clearable @change="productCategorChange" @visible-change="visibleChange"></el-cascader>
-          </el-form-item>
-          <br>
-          <el-form-item v-if="productId" label="审核状态" prop="">
-            <el-radio-group v-model="dataForm.auditStatus">
-                <el-radio label="001">通过</el-radio>
-                <el-radio label="002">待审核</el-radio>
-                <el-radio label="003">失效</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <br>
-          <el-form-item v-if="productId" label="产品类型" prop="">
-            <el-radio-group v-model="dataForm.productType">
-                <el-radio label="001">重点</el-radio>
-                <el-radio label="002">原创</el-radio>
-                <el-radio label="003">海外</el-radio>
-                <el-radio label="004">抓取</el-radio>
-                <el-radio label="005">其他</el-radio>
-                
-            </el-radio-group>
+          <el-form-item label="产品分类" prop="">
+              <el-button type="text">{{dataForm.categoryName}}</el-button>
           </el-form-item>
         </div>
 
         <div class="blockDivForm">
             <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;产品相册</h3>
             <div style="margin-left:50px">
-                <el-checkbox-group v-model="selectImageList" @change="checkGroup">
-                    <draggable 
-                        v-model="dataForm.imageList"
-                        tag="ul"
-                        v-bind="dragOptions"
-                        @start="isDragging = true"
-                        @end="isDragging = false"
-                        @moved='moveImg'>
-                        <transition-group type="transition" name="flip-list" class="imgUl">
-                            <li class="imgLi" v-for="item in dataForm.imageList" :key="item.imageId">
-                                <span class="selec">
-                                    <el-checkbox :label="item.imageId"></el-checkbox>
-                                </span>
-                                <!-- <img :src="'http://'+item.imageUrl" alt=""> -->
-                                <el-image
-                                style="width: 142px; height: 142px"
-                                :src="'http://'+item.imageUrl"></el-image>
-                            </li>
-                        </transition-group>
-                    </draggable>
-                </el-checkbox-group>
-                <div style="height:10px"></div>
-                <el-button type="primary" size="small" plain @click="uploadImageVisible = true">上传图片</el-button>
-                <el-button type="primary" size="small" plain @click="saveImageList">保存相册</el-button>
-                <el-button type="primary" size="small" plain @click="delImageList">图片删除</el-button>
-                <div style="color:#F56C6C;margin-top:6px;font-size:13px">图片位置修改后，请点击 '保存相册' 按钮使其生效</div>
+                <ul class="imgUl">
+                    <li class="imgLi" v-for="item in dataForm.imageList" :key="item.imageId">
+                        <el-image
+                            style="width: 142px; height: 142px"
+                            :src="'http://'+item.imageUrl"></el-image>
+                    </li>
+                </ul>
             </div>
-            
         </div>
 
         <div class="blockDivForm">
           <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;产品信息</h3>
           <el-form-item label="厂商名称" prop="">
-            <el-input v-model="dataForm.info.producerName" placeholder="厂商名称"></el-input>
+              <el-button type="text" :disabled="dataForm.info.producerName ? false : true">{{dataForm.info.producerName ? dataForm.info.producerName : '无'}}</el-button>
           </el-form-item>
           <el-form-item label="品牌名称" prop="">
-            <el-input v-model="dataForm.info.brandName" placeholder="品牌名称"></el-input>
+              <el-button type="text" :disabled="dataForm.info.brandName ? false : true">{{dataForm.info.brandName ? dataForm.info.brandName : '无'}}</el-button>
           </el-form-item>
           <el-form-item label="厂商编号" prop="">
-            <el-input v-model="dataForm.info.manufacturerNumber" placeholder="厂商编号"></el-input>
+              <el-button type="text" :disabled="dataForm.info.manufacturerNumber ? false : true">{{dataForm.info.manufacturerNumber ? dataForm.info.manufacturerNumber : '无'}}</el-button>
           </el-form-item>
           <el-form-item label="产品库存" prop="stock">
-            <el-input v-model="dataForm.stock" placeholder="产品库存"></el-input>
+              <el-button type="text" :disabled="dataForm.info.stock ? false : true">{{dataForm.info.stock ? dataForm.info.stock : '无'}}</el-button>
           </el-form-item>
           <el-form-item label="产品来源" prop="productSku">
-            <el-input v-model="dataForm.info.productSource" placeholder="产品来源"></el-input>
+              <el-button type="text" :disabled="dataForm.info.productSource ? false : true">{{dataForm.info.productSource ? dataForm.info.productSource : '无'}}</el-button>
           </el-form-item>
-          <br>
           <el-form-item label="来源地址" prop="productTitle">
-            <el-input class="textIN" type="textarea" :rows="2" v-model="dataForm.info.sellerLink" placeholder="来源地址"></el-input>
+              <el-button type="text" :disabled="dataForm.info.sellerLink ? false : true">{{dataForm.info.sellerLink ? dataForm.info.sellerLink : '无'}}</el-button>
           </el-form-item>
           <el-form-item label="附加备注" prop="stock">
-            <el-input class="textIN" type="textarea" :rows="2" v-model="dataForm.info.productRemark" placeholder="附加备注"></el-input>
+              <el-button type="text" :disabled="dataForm.info.productRemark ? false : true">{{dataForm.info.productRemark ? dataForm.info.productRemark : '无'}}</el-button>
           </el-form-item>
         </div>
         <div class="blockDivForm">
           <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;成本运费</h3>
           <el-form-item label="采购价格(¥)" prop="property.purchasePrice" :rules="dataRule.purchasePrice">
-            <el-input v-model="dataForm.property.purchasePrice" placeholder="采购价格(¥)"></el-input>
+              <el-button type="text" :disabled="dataForm.property.purchasePrice ? false : true">{{dataForm.property.purchasePrice ? dataForm.property.purchasePrice : '无'}}</el-button>
           </el-form-item>
           <el-form-item label="国内运费(¥)" prop="property.domesticFreight" :rules="dataRule.domesticFreight">
-            <el-input v-model="dataForm.property.domesticFreight" placeholder="国内运费(¥)"></el-input>
+              <el-button type="text" :disabled="dataForm.property.domesticFreight ? false : true">{{dataForm.property.domesticFreight ? dataForm.property.domesticFreight : '无'}}</el-button>
           </el-form-item>
           <el-form-item label="包装毛重(kg)" prop="property.productWeight" :rules="dataRule.productWeight">
-            <el-input v-model="dataForm.property.productWeight" placeholder="包装毛重(kg)" @change="getcostFreight('property.productWeight')"></el-input>
+              <el-button type="text" :disabled="dataForm.property.productWeight ? false : true">{{dataForm.property.productWeight ? dataForm.property.productWeight : '无'}}</el-button>
           </el-form-item>
           <el-form-item label="包装尺寸" prop="" required>
               <el-col :span="6">
                   <el-form-item prop="property.productLength" :rules="dataRule.productLength">
-                    <el-input v-model="dataForm.property.productLength" placeholder="长" @change="getcostFreight('property.productLength')"></el-input>
+                      <el-button type="text" :disabled="dataForm.property.productLength ? false : true">{{dataForm.property.productLength ? dataForm.property.productLength : '无'}}</el-button>
                   </el-form-item>
               </el-col>
               <el-col :span="3">
@@ -133,7 +82,7 @@
               </el-col>
               <el-col :span="6">
                   <el-form-item prop="property.productWide" :rules="dataRule.productWide">
-                    <el-input v-model="dataForm.property.productWide" placeholder="宽" @change="getcostFreight('property.productWide')"></el-input>
+                      <el-button type="text" :disabled="dataForm.property.productWide ? false : true">{{dataForm.property.productWide ? dataForm.property.productWide : '无'}}</el-button>
                   </el-form-item>
               </el-col>
               <el-col :span="3">
@@ -141,21 +90,14 @@
               </el-col>
               <el-col :span="6">
                   <el-form-item prop="property.productHeight" :rules="dataRule.productHeight">
-                    <el-input v-model="dataForm.property.productHeight" placeholder="高" @change="getcostFreight('property.productHeight')"></el-input>
+                      <el-button type="text" :disabled="dataForm.property.productHeight ? false : true">{{dataForm.property.productHeight ? dataForm.property.productHeight : '无'}}</el-button>
                   </el-form-item>
               </el-col>
             
           </el-form-item>
           <br>
-          <el-form-item label="产品打折" prop="property.discount">
-            <el-select v-model="dataForm.property.discount" placeholder="请选择" @change="getcostFreight('property.discount')">
-                <el-option
-                v-for="item in discountList"
-                :key="item"
-                :label="item"
-                :value="item">
-                </el-option>
-            </el-select>
+          <el-form-item label="产品打折" prop="productTitle">
+              <el-button type="text" :disabled="dataForm.property.discount ? false : true">{{dataForm.property.discount ? dataForm.property.discount : '无'}}</el-button>
           </el-form-item>
           <el-table
             class="freTable"
@@ -198,12 +140,9 @@
                 label="优化">
             </el-table-column>
             <el-table-column
-                prop=""
+                prop="finalPrice"
                 label="最终售价"
                 width="180">
-                <template slot-scope="scope">
-                    <el-input placeholder="请输入内容" size="small" v-model="scope.row.finalPrice" clearable @change="refreshProfitRate(scope.row)"></el-input>
-                </template>
             </el-table-column>
             <el-table-column
                 prop="price"
@@ -217,99 +156,16 @@
         </div>
         <div class="blockDivForm">
           <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;产品介绍</h3>
-          <!-- <el-table
-            class="freTable"
-            :data="dataForm.introductionList"
-            v-loading="freightLoading"
-            style="width: 100%">
-            <el-table-column
-                prop=""
-                label="国家"
-                width="180">
-                <template slot-scope="scope">
-                    <span v-if="scope.row.countryCode == 'ZH'" style="font-size:14px;color:#409EFF">中文</span>
-                    <span v-if="scope.row.countryCode == 'GB'" style="font-size:14px;color:#409EFF">英语</span>
-                    <span v-if="scope.row.countryCode == 'FR'" style="font-size:14px;color:#409EFF">法语</span>
-                    <span v-if="scope.row.countryCode == 'IT'" style="font-size:14px;color:#409EFF">意大利语</span>
-                    <span v-if="scope.row.countryCode == 'ES'" style="font-size:14px;color:#409EFF">西班牙语</span>
-                    <span v-if="scope.row.countryCode == 'JP'" style="font-size:14px;color:#409EFF">日语</span>
-                    <span v-if="scope.row.countryCode == 'DE'" style="font-size:14px;color:#409EFF">德语</span>
-                </template>
-            </el-table-column>
-            <el-table-column
-                prop=""
-                label="产品标题"
-                width="">
-                <template slot-scope="scope">
-                    <el-input
-                    type="textarea"
-                    placeholder="请输入内容"
-                    v-model="scope.row.productTitle"
-                    maxlength="30"
-                    show-word-limit></el-input>
-                    <div style="height:8px"></div>
-                    <el-button v-if="scope.row.countryCode == 'ZH'" type="primary" size="small" plain>一键翻译</el-button>
-                    <el-button v-if="scope.row.countryCode == 'GB'" type="primary" size="small" plain>一键翻译</el-button>
-                </template>
-            </el-table-column>
-            <el-table-column
-                prop=""
-                label="关键字">
-                <template slot-scope="scope">
-                    <el-input
-                    type="textarea"
-                    placeholder="请输入内容"
-                    v-model="scope.row.keyWord"
-                    maxlength="30"
-                    show-word-limit></el-input>
-                    <div style="height:8px"></div>
-                    <el-button v-if="scope.row.countryCode == 'ZH'" type="primary" size="small" plain>一键翻译</el-button>
-                    <el-button v-if="scope.row.countryCode == 'GB'" type="primary" size="small" plain>一键翻译</el-button>
-                </template>
-            </el-table-column>
-            <el-table-column
-                prop=""
-                label="重点说明"
-                width="180">
-                <template slot-scope="scope">
-                    <el-input
-                    type="textarea"
-                    placeholder="请输入内容"
-                    v-model="scope.row.keyPoints"
-                    maxlength="30"
-                    show-word-limit></el-input>
-                    <div style="height:8px"></div>
-                    <el-button v-if="scope.row.countryCode == 'ZH'" type="primary" size="small" plain>一键翻译</el-button>
-                    <el-button v-if="scope.row.countryCode == 'GB'" type="primary" size="small" plain>一键翻译</el-button>
-                </template>
-            </el-table-column>
-            <el-table-column
-                prop=""
-                label="产品描述">
-                <template slot-scope="scope">
-                    <el-input
-                    type="textarea"
-                    placeholder="请输入内容"
-                    v-model="scope.row.optimization"
-                    maxlength="30"
-                    show-word-limit></el-input>
-                    <div style="height:8px"></div>
-                    <el-button v-if="scope.row.countryCode == 'ZH'" type="primary" size="small" plain>一键翻译</el-button>
-                    <el-button v-if="scope.row.countryCode == 'GB'" type="primary" size="small" plain>一键翻译</el-button>
-                    <el-button type="primary" size="small" plain>加粗</el-button>
-                </template>
-            </el-table-column>
-          </el-table> -->
-
+          
           <el-tabs type="border-card">
             <el-tab-pane label="中文">
                 <div class="intrDiv">
                     <label>
                         <span>产品标题</span>  <br>
-                        <el-button type="primary" size="mini" plain @click="fanyi(dataForm.introductionList[0].productTitle,0)">一键翻译</el-button>
                     </label>
                     <div>
                         <el-input
+                        :disabled="true"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[0].productTitle"
@@ -319,10 +175,10 @@
                 <div class="intrDiv">
                     <label>
                         <span>关键字</span>  <br>
-                        <el-button type="primary" size="mini" plain @click="fanyi(dataForm.introductionList[0].keyWord,1)">一键翻译</el-button>
                     </label>
                     <div>
                         <el-input
+                        :disabled="true"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[0].keyWord"
@@ -332,10 +188,10 @@
                 <div class="intrDiv">
                     <label>
                         <span>重点说明</span>  <br>
-                        <el-button type="primary" size="mini" plain @click="fanyi(dataForm.introductionList[0].keyPoints,2)">一键翻译</el-button>
                     </label>
                     <div>
                         <el-input
+                        :disabled="true"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[0].keyPoints"
@@ -345,10 +201,10 @@
                 <div class="intrDiv">
                     <label>
                         <span>产品描述</span>  <br>
-                        <el-button type="primary" size="mini" plain @click="fanyi(dataForm.introductionList[0].productDescription,3)">一键翻译</el-button>
                     </label>
                     <div>
                         <el-input
+                        :disabled="true"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[0].productDescription"
@@ -360,10 +216,10 @@
                 <div class="intrDiv">
                     <label>
                         <span>产品标题</span>  <br>
-                        <el-button type="primary" size="mini" plain @click="fanyi(dataForm.introductionList[1].productTitle,0)">一键翻译</el-button>
                     </label>
                     <div>
                         <el-input
+                        :disabled="true"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[1].productTitle"
@@ -374,11 +230,11 @@
                 <div class="intrDiv">
                     <label>
                         <span>关键字</span>  <br>
-                        <el-button type="primary" size="mini" plain @click="fanyi(dataForm.introductionList[1].keyWord,1)">一键翻译</el-button>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
+                        :disabled="true"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[1].keyWord"
                         maxlength="250"
@@ -388,10 +244,10 @@
                 <div class="intrDiv">
                     <label>
                         <span>重点说明</span>  <br>
-                        <el-button type="primary" size="mini" plain @click="fanyi(dataForm.introductionList[1].keyPoints,2)">一键翻译</el-button>
                     </label>
                     <div>
                         <el-input
+                        :disabled="true"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[1].keyPoints"
@@ -402,11 +258,11 @@
                 <div class="intrDiv">
                     <label>
                         <span>产品描述</span>  <br>
-                        <el-button type="primary" size="mini" plain @click="fanyi(dataForm.introductionList[1].productDescription,3)">一键翻译</el-button>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
+                        :disabled="true"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[1].productDescription"
                         maxlength="2000"
@@ -422,6 +278,7 @@
                     <div>
                         <el-input
                         type="textarea"
+                        :disabled="true"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[2].productTitle"
                         maxlength="200"
@@ -434,6 +291,7 @@
                     </label>
                     <div>
                         <el-input
+                        :disabled="true"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[2].keyWord"
@@ -447,6 +305,7 @@
                     </label>
                     <div>
                         <el-input
+                        :disabled="true"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[2].keyPoints"
@@ -460,6 +319,7 @@
                     </label>
                     <div>
                         <el-input
+                        :disabled="true"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[2].productDescription"
@@ -475,6 +335,7 @@
                     </label>
                     <div>
                         <el-input
+                        :disabled="true"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[3].productTitle"
@@ -488,6 +349,7 @@
                     </label>
                     <div>
                         <el-input
+                        :disabled="true"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[3].keyWord"
@@ -501,6 +363,7 @@
                     </label>
                     <div>
                         <el-input
+                        :disabled="true"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[3].keyPoints"
@@ -514,6 +377,7 @@
                     </label>
                     <div>
                         <el-input
+                        :disabled="true"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[3].productDescription"
@@ -529,6 +393,7 @@
                     </label>
                     <div>
                         <el-input
+                        :disabled="true"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[4].productTitle"
@@ -542,6 +407,7 @@
                     </label>
                     <div>
                         <el-input
+                        :disabled="true"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[4].keyWord"
@@ -555,6 +421,7 @@
                     </label>
                     <div>
                         <el-input
+                        :disabled="true"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[4].keyPoints"
@@ -568,6 +435,7 @@
                     </label>
                     <div>
                         <el-input
+                        :disabled="true"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[4].productDescription"
@@ -583,6 +451,7 @@
                     </label>
                     <div>
                         <el-input
+                        :disabled="true"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[5].productTitle"
@@ -596,6 +465,7 @@
                     </label>
                     <div>
                         <el-input
+                        :disabled="true"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[5].keyWord"
@@ -609,6 +479,7 @@
                     </label>
                     <div>
                         <el-input
+                        :disabled="true"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[5].keyPoints"
@@ -622,6 +493,7 @@
                     </label>
                     <div>
                         <el-input
+                        :disabled="true"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[5].productDescription"
@@ -637,6 +509,7 @@
                     </label>
                     <div>
                         <el-input
+                        :disabled="true"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[6].productTitle"
@@ -650,6 +523,7 @@
                     </label>
                     <div>
                         <el-input
+                        :disabled="true"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[6].keyWord"
@@ -663,6 +537,7 @@
                     </label>
                     <div>
                         <el-input
+                        :disabled="true"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[6].keyPoints"
@@ -676,6 +551,7 @@
                     </label>
                     <div>
                         <el-input
+                        :disabled="true"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[6].productDescription"
@@ -689,7 +565,6 @@
         <div class="blockDivForm">
             <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;规格变体</h3>
             <div style="margin-left:5%">
-                <el-button type="primary" plain v-if="dataForm.variantsParameterList.length < 2" @click="addVisible = true;addObj.type=null;addObj.value=''">添加变体参数</el-button>
 
                 <div class="tag-group" v-for="(item,index) in dataForm.variantsParameterList" :key="index">
                     <span class="tag-group__title">{{item.paramsType}}</span>
@@ -699,13 +574,6 @@
                         effect="plain">
                         {{ m }}
                     </el-tag>
-                    <el-button type="text" icon="el-icon-edit" @click="editV(index)"></el-button>
-                    <el-button type="text" icon="el-icon-delete" @click="del(index)"></el-button>
-                </div>
-                <div>
-                    <el-button type="primary" size="small" plain v-if="dataForm.variantsInfoList.length != 0" @click="addVMoney">变体加价</el-button>
-                    <el-button type="primary" size="small" plain v-if="dataForm.variantsInfoList.length != 0" @click="addItemVVisible = true">添加单条变体</el-button>
-                    <el-button type="primary" size="small" plain v-if="dataForm.variantsInfoList.length != 0" @click="stockVisible = true">修改库存</el-button>
                 </div>
             </div>
             
@@ -723,38 +591,26 @@
                     width="180">
                 </el-table-column>
                 <el-table-column
-                    prop=""
+                    prop="variantSku"
                     label="SKU修正"
                     width="160">
-                    <template slot-scope="scope">
-                        <el-input placeholder="请输入内容" size="small" v-model="scope.row.variantSku" clearable></el-input>
-                    </template>
                 </el-table-column>
                 <el-table-column
-                    prop=""
+                    prop="variantAddPrice"
                     label="加价（¥）"
                     width="100">
-                    <template slot-scope="scope">
-                        <el-input placeholder="请输入内容" size="small" v-model="scope.row.variantAddPrice" clearable></el-input>
-                    </template>
                 </el-table-column>
                 <el-table-column
-                    prop=""
+                    prop="variantStock"
                     label="库存"
                     width="100">
-                    <template slot-scope="scope">
-                        <el-input placeholder="请输入内容" size="small" v-model="scope.row.variantStock" clearable></el-input>
-                    </template>
                 </el-table-column>
                 <el-table-column
-                    prop=""
+                    prop="eanCode"
                     label="UPC／EAN"
-                    width="100">
-                    <template slot-scope="scope">
-                        <el-input placeholder="请输入内容" size="small" v-model="scope.row.eanCode" clearable></el-input>
-                    </template>
+                    width="120">
                 </el-table-column>
-                <el-table-column
+                <!-- <el-table-column
                     prop=""
                     label="操作"
                     width="180">
@@ -763,14 +619,14 @@
                         <el-button type="text" icon="" @click="addImgVClick(scope.$index)">一键添加</el-button>
                         <el-button type="text" icon="el-icon-delete" @click="delVList(scope.$index)"></el-button>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
                 <el-table-column
                     prop=""
                     label="变体图片">
                     <template slot-scope="scope">
                         <div class="biantiDiv" v-if="scope.row.imageUrl != ''">
                             <div v-for="(item,index) in scope.row.imageUrl.split(',')" :key="index">
-                                <span class="close"><el-button type="text" icon="el-icon-error" @click="delImageVB(scope.$index,index)"></el-button></span>
+                                <!-- <span class="close"><el-button type="text" icon="el-icon-error" @click="delImageVB(scope.$index,index)"></el-button></span> -->
                                 <el-image
                                     style="width: 50px; height: 50px"
                                     :src="'http://'+item"></el-image>
@@ -1205,9 +1061,6 @@
             productHeight: [
                 { required: true, message: '高不能为空', trigger: 'blur' },
                 { validator: number, trigger: 'blur' }
-            ],
-            discount: [
-                { required: true, message: '不能为空', trigger: 'blur' },
             ],
           categoryId:[
             {required: true, message: '分类不能为空', trigger: 'change' }

@@ -57,8 +57,14 @@
       },
       // 返回
       goBack(){
-        if(this.product){
-          this.$http({
+        this.$confirm('确定取消当前填写信息?', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+        }).then(() => {
+          console.log(this.product);
+          if(this.product){
+            this.$http({
               url: this.$http.adornUrl('/product/product/cancelOriginal'),
               method: 'get',
               params: this.$http.adornParams({
@@ -69,9 +75,12 @@
                 this.removeTabHandle(this.mainTabsActiveName)
               }
             })
-        }else{
-          this.removeTabHandle(this.mainTabsActiveName)
-        }
+            
+          }else{
+            this.removeTabHandle(this.mainTabsActiveName)
+          }
+        })
+        
         
       },
     }

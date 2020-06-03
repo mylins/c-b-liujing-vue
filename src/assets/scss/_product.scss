@@ -30,3 +30,9 @@
 .freTable th{
     background: #f5f7fa;
 }
+.sous>.el-row>.el-col{
+    margin-bottom: 10px;
+}
+.sous .el-select , .sous .el-date-editor{
+    width: 100%;
+}

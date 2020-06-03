@@ -107,7 +107,7 @@
             this.dataForm.userList = [];
             let that = this;
             this.userListS.forEach(function(m){
-              that.dataForm.userList.push(that.userList.find(item => item.groupId == m))
+              that.dataForm.userList.push(that.userList.find(item => item.userId == m))
             })
             const loading = this.$loading({
               lock: true,

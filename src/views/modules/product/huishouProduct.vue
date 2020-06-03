@@ -5,7 +5,7 @@
             <!-- 搜索 -->
         <div class="sous">
             <el-row :gutter="20">
-                
+
                 <el-col :span="6">
                     <el-row>
                         <el-col :span="6">
@@ -22,10 +22,10 @@
                 </el-col>
                 <el-col :span="6">
                     <el-row>
-                        <el-col :span="7">
-                            <label class="labelSS">SKU／编码：</label>
+                        <el-col :span="6">
+                            <label class="labelSS">SKU/编码：</label>
                         </el-col>
-                        <el-col :span="17">
+                        <el-col :span="18">
                             <el-input
                                 size="medium"
                                 placeholder="请输入内容"
@@ -64,7 +64,6 @@
                         </el-col>
                     </el-row>
                 </el-col>
-                <div style="height:10px;float:left;width:100%"></div>
                 <el-col :span="12">
                     <el-row>
                         <el-col :span="3">
@@ -120,19 +119,7 @@
         </div>
         <!-- 操作 -->
         <div class="divM">
-            <!-- <el-button type="primary" icon="el-icon-plus" size="small" @click="toProduct">原创产品</el-button> -->
-            <open-tab :product="true" type="primary" icon="el-icon-plus" dec='原创产品' urlName='productAddUpdate' :opt='{"productId":null}'></open-tab>
-            <el-button type="primary" icon="el-icon-delete" size="small" @click="del">删除</el-button>
-            <el-button type="primary" icon="el-icon-edit" size="small" @click="piliang">批量修改</el-button>
-            <el-button type="primary" size="small" @click="changeStats('001','SHELVE_STATE')">上架</el-button>
-            <el-button type="primary" size="small" @click="changeStats('002','SHELVE_STATE')">下架</el-button>
-            <el-button type="primary" size="small" @click="changeStats('001','AUDIT_STATE')">审核通过</el-button>
-            <el-button type="primary" size="small" @click="changeStats('002','AUDIT_STATE')">待审核</el-button>
-            
-            <div style="float:right;">
-                <el-button type="primary" icon="el-icon-download" size="small">插件下载</el-button>
-                <el-button type="text">采集手册</el-button>
-            </div>
+            <el-button type="primary" icon="el-icon-refresh-right" size="small" @click="huifu">一键恢复</el-button>
         </div>
         <!-- 统计 -->
         <div class="statics divM">
@@ -140,8 +127,6 @@
                 <i class="el-icon-info" style="color:#409EFF"></i>&nbsp;&nbsp;已选择&nbsp;<a style="font-weight: 600">{{ selectedRowKeys.length }}</a>&nbsp;项&nbsp;&nbsp;
             </div>
             <div class="right">
-                <!-- 含变体产品数&nbsp;<a style="font-weight: 600">{{ selectedRowKeys.length }}</a>&nbsp;项&nbsp;&nbsp;&nbsp;
-                变体总数&nbsp;<a style="font-weight: 600">{{ selectedRowKeys.length }}</a>&nbsp;项&nbsp;&nbsp;&nbsp; -->
             </div>
         </div>
         <!-- 列表 -->
@@ -176,7 +161,7 @@
                 label="标题"
                 width="">
                 <template slot-scope="scope">
-                    <open-tab type="text" icon="" :dec='scope.row.productTitle' urlName='productAddUpdate' :opt='{"productId":scope.row.productId}'></open-tab>
+                    <open-tab type="text" icon="" :dec='scope.row.productTitle' urlName='productLook' :opt='{"productId":scope.row.productId}'></open-tab>
                 </template>
                 </el-table-column>
                 <el-table-column
@@ -194,15 +179,6 @@
                 label="时间"
                 width="100">
                 </el-table-column>
-                <el-table-column
-                fixed="right"
-                label="操作"
-                width="100">
-                <template slot-scope="scope">
-                    <open-tab type="text" icon="el-icon-edit" dec='' urlName='productAddUpdate' :opt='{"productId":scope.row.productId}'></open-tab>
-                    <!-- <el-button type="text" icon="el-icon-edit" @click=""></el-button> -->
-                </template>
-                </el-table-column>
             </el-table>
             <el-pagination
             @size-change="sizeChangeHandle"
@@ -215,33 +191,32 @@
             </el-pagination>
         </div>
       </div>
-      <!-- 批量修改 -->
-      <product-piliang v-if="piliangVisible" :ids="ids" ref="addOrUpdate" @refreshDataList="getDataList"></product-piliang>
       
   </div>
 </template>
 
 <script>
   import OpenTab from '../../common/open'
-  import ProductPiliang from './product-piliang'
   import { getQuerycategory } from '@/api/product'
-  
   export default {
     components: {
-        OpenTab,
-        ProductPiliang
+        OpenTab
     },
       data(){
           return{
-              ids:[],
             showList:true,
             productD:{},
             q:{
                 startDate:'',
                 endDate:'',
                 title:'',
-                sku:''
+                sku:'',
+                deptId:null,
+                userId:null,
+                groupId:null
             },
+            groupList:[],
+            userList:[],
             dataListLoading:true,
             nowProTypeId:[],
             options:[],
@@ -271,36 +246,10 @@
                                 alert(data.msg);
                             }
                         })
-                        // this.$http({
-                        //     url: this.$http.adornUrl('/product/productcategory/querycategorybyparentid'),
-                        //     method: 'get',
-                        //     params: this.$http.adornParams({
-                        //         'categoryId':node.value
-                        //     })
-                        // }).then(({data}) => {
-                        //     if (data && data.code === 0) {
-                        //         const level = node.level;
-                        //         // const children = node.children;
-                        //         const nodes = [];
-                        //         if(r.categoryList.length != 0){
-                        //             r.categoryList.forEach(function (item) {
-                        //                 nodes.push({
-                        //                     value:item.categoryId,
-                        //                     label:item.categoryName+'('+item.count+')',
-                        //                     leaf: level >= 2
-                        //                 })
-                        //             })
-                        //             resolve(nodes);
-                        //         }
-                        //     } else {
-                        //         alert(r.msg);
-                        //     }
-                        // })
                     }
                 }
             },
             dataList:[],
-            piliangVisible:false,
             selectedRowKeys:[],
             audit:[],
             productType: [],
@@ -337,7 +286,9 @@
             this.$http({
                 url: this.$http.adornUrl('/sys/sysdict/mystatuslist'),
                 method: 'get',
-                params: this.$http.adornParams()
+                params: this.$http.adornParams({
+                    'del':'1'
+                })
             }).then(({data}) => {
                 if (data && data.code === 0) {
                     console.log(data);
@@ -370,7 +321,7 @@
             // console.log(this.nowProTypeId);
             this.dataListLoading = true
             this.$http({
-                url: this.$http.adornUrl('/product/product/mylist'),
+                url: this.$http.adornUrl('/product/product/recyclelist'),
                 method: 'get',
                 params: this.$http.adornParams({
                     'page': this.pageIndex,
@@ -422,7 +373,7 @@
             this.dataListSelections = val
         },
         // 删除
-        del(){
+        huifu(){
             console.log(this.dataListSelections);
             var productIds = this.dataListSelections.map(item => {
                 return item.productId
@@ -435,7 +386,7 @@
                 });
                 return 
             }
-            this.$confirm('确定对选项进行删除操作?', {
+            this.$confirm('确定对选项进行恢复操作?', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
@@ -447,7 +398,7 @@
                     background: 'rgba(0, 0, 0, 0.7)'
                     });
                 this.$http({
-                    url: this.$http.adornUrl('/product/product/falsedeletion'),
+                    url: this.$http.adornUrl('/product/product/restore'),
                     method: 'post',
                     data: this.$http.adornData(productIds, false)
                 }).then(({data}) => {
@@ -467,22 +418,6 @@
                     }
                 })
             }).catch(() => {})
-        },
-        // 批量修改弹框
-        piliang(){
-            
-            if(this.dataListSelections.length == 0){
-                this.$message({
-                    message: '请选择一条数据',
-                    type: 'warning'
-                });
-            }else{
-                this.piliangVisible = true;
-                this.ids = this.dataListSelections.map(item => {
-                    return item.productId
-                })
-            }
-            
         },
         changeStats(code,type){
             var productIds = this.dataListSelections.map(item => {
@@ -556,29 +491,6 @@
             }
             
         },
-        // 原创第一步
-        toProduct(){
-            const loading = this.$loading({
-                lock: true,
-                text: 'Loading',
-                spinner: 'el-icon-loading',
-                background: 'rgba(0, 0, 0, 0.7)'
-            });
-            this.$http({
-                url: this.$http.adornUrl('/product/product/getproductid'),
-                method: 'get',
-                params: this.$http.adornParams()
-            }).then(({data}) => {
-                if (data && data.code === 0) {
-                    console.log(data);
-                    this.productD = data.product;
-                    this.showList = false;
-
-                    // this.dataForm = data.product;
-                    loading.close();
-                }
-            })
-        }
       }
   }
 </script>

@@ -54,9 +54,9 @@
                         <el-select v-model="dataForm.groupId" clearable placeholder="请选择" @focus='getGroupList'>
                           <el-option
                             v-for="item in groupList"
-                            :key="item.deptId"
+                            :key="item.groupId"
                             :label="item.name"
-                            :value="item.deptId">
+                            :value="item.groupId">
                           </el-option>
                         </el-select>
                     </el-col>
@@ -68,12 +68,12 @@
                         <label class="labelSS">员工名称：</label>
                     </el-col>
                     <el-col :span="18">
-                        <el-select v-model="dataForm.userId" clearable placeholder="请选择">
+                        <el-select v-model="dataForm.userId" clearable placeholder="请选择" @focus='getuserList'>
                           <el-option
                             v-for="item in userList"
-                            :key="item.deptId"
-                            :label="item.name"
-                            :value="item.deptId">
+                            :key="item.userId"
+                            :label="item.displayName"
+                            :value="item.userId">
                           </el-option>
                         </el-select>
                     </el-col>
@@ -208,9 +208,9 @@
         dataForm: {
           type: null,
           orderId:'',
-          deptId:null,
-          groupId:null,
-          userId:null
+          deptId:'',
+          groupId:'',
+          userId:''
         },
         dataList: [],
         pageIndex: 1,
@@ -229,9 +229,10 @@
     components: {
     },
     activated () {
-      this.getDataList();
+      
       console.log(this.$route.params.deptId)
       this.dataForm.deptId = this.$route.params.deptId
+      this.getDataList();
     },
     methods: {
       // 获取数据列表
@@ -244,7 +245,7 @@
             'page': this.pageIndex,
             'limit': this.pageSize,
             'orderId': this.dataForm.orderId,
-            'deptId':this.deptId,
+            'deptId':this.dataForm.deptId,
             'groupId':this.dataForm.groupId,
             'userId':this.dataForm.userId,
             'type':this.dataForm.type
@@ -298,6 +299,30 @@
         }
         
       },
+      // 获取人员下拉
+        getuserList(){
+            if(this.dataForm.deptId){
+                this.$http({
+                url: this.$http.adornUrl('/sys/user/getUserList'),
+                method: 'get',
+                params: this.$http.adornParams({
+                    'deptId':this.dataForm.deptId,
+                    'groupId':this.dataForm.groupId
+                })
+            }).then(({data}) => {
+                if (data && data.code === 0) {
+                    this.userList = data.userList
+                } else {
+                    this.userList = []
+                }
+            })
+            }else{
+                this.$message({
+                    message: '请先选择公司',
+                    type: 'warning'
+                });
+            }
+        },
       // 每页数
       sizeChangeHandle (val) {
         this.pageSize = val

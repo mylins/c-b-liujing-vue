@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-h :id="dataForm.deptId"></page-h>
+    <page-h ref="back" :id="dataForm.deptId"></page-h>
     <div class="subDivForm">
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="dataFormSubmit()">提交</el-button>
@@ -17,10 +17,10 @@
             </el-radio-group>
           </el-form-item>
           <br>
-          <el-form-item label="公司名称" prop="requiredF">
+          <el-form-item label="公司名称" prop="name">
             <el-input v-model="dataForm.name" placeholder="公司名称"></el-input>
           </el-form-item>
-          <el-form-item label="上级公司" prop="parentId">
+          <el-form-item label="上级公司" prop="parentId" @change="getDeptName">
             <el-select v-model="dataForm.parentId" clearable placeholder="请选择" @focus="getComTopList">
               <el-option
                 v-for="item in comTopList"
@@ -31,22 +31,22 @@
             </el-select>
             
           </el-form-item>
-          <el-form-item label="公司账户数" prop="requiredF">
+          <el-form-item label="公司账户数" prop="accountCount">
             <el-input v-model="dataForm.accountCount" placeholder="公司账户数"></el-input>
           </el-form-item>
-          <el-form-item label="公司SKU信息" prop="requiredF">
+          <el-form-item label="公司SKU信息" prop="companySku">
             <el-input v-model="dataForm.companySku" placeholder="公司SKU信息"></el-input>
           </el-form-item>
-          <el-form-item label="公司地址" prop="requiredF">
+          <el-form-item label="公司地址" prop="companyAddress">
             <el-input v-model="dataForm.companyAddress" placeholder="公司地址"></el-input>
           </el-form-item>
-          <el-form-item label="公司负责人" prop="requiredF">
+          <el-form-item label="公司负责人" prop="companyPerson">
             <el-input v-model="dataForm.companyPerson" placeholder="公司负责人"></el-input>
           </el-form-item>
-          <el-form-item label="电话" prop="requiredF">
+          <el-form-item label="电话" prop="companyTel">
             <el-input v-model="dataForm.companyTel" placeholder="电话"></el-input>
           </el-form-item>
-          <el-form-item label="QQ" prop="requiredF">
+          <el-form-item label="QQ" prop="companyQq">
             <el-input v-model="dataForm.companyQq" placeholder="QQ"></el-input>
           </el-form-item>
           <el-form-item label="是否获取订单" size="mini" prop="status">
@@ -55,7 +55,7 @@
               <el-radio :label="1">使用</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="共享公司" prop="mobile" class="join">
+          <el-form-item label="共享公司" prop="" class="join">
             <el-select
               v-model="deptList"
               multiple
@@ -74,17 +74,19 @@
         
         <div class="blockDivForm">
           <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;金额信息</h3>
-          <el-form-item label="平台佣金点数" prop="requiredF">
-            <el-input v-model="dataForm.companyPoints" placeholder="平台佣金点数"></el-input>
+          <el-form-item label="平台佣金点数" prop="companyPoints">
+            <el-button v-if="this.dataForm.deptId" type="text">{{dataForm.balance}}</el-button>
+            <el-input v-else v-model="dataForm.companyPoints" placeholder="平台佣金点数"></el-input>
           </el-form-item>
-          <el-form-item label="最低物流限额" prop="requiredF">
-            <el-input v-model="dataForm.limitMoney" placeholder="最低物流限额"></el-input>
+          <el-form-item label="最低物流限额" prop="limitMoney">
+            <el-button v-if="this.dataForm.deptId" type="text">{{dataForm.balance}}</el-button>
+            <el-input v-else v-model="dataForm.limitMoney" placeholder="最低物流限额"></el-input>
           </el-form-item>
-          <el-form-item label="余额" prop="requiredF">
-            <el-input v-model="dataForm.balance" placeholder="余额"></el-input>
+          <el-form-item v-if="this.dataForm.deptId" label="余额" prop="">
+            <el-button type="text">{{dataForm.balance}}</el-button>
           </el-form-item>
-          <el-form-item label="10天内物流消费" prop="requiredF">
-            <el-input v-model="dataForm.consum" placeholder="10天内物流消费（含服务费）"></el-input>
+          <el-form-item v-if="this.dataForm.deptId" label="10天内物流消费" prop="">
+            <el-button type="text">{{dataForm.consum}}</el-button>
           </el-form-item>
         </div>
         
@@ -100,7 +102,24 @@
   export default {
     // props:['comList','dataList'],
     data () {
+      var nameR = (rule, value, callback) => {
+        this.$http({
+          url: this.$http.adornUrl('/sys/dept/check'),
+          method: 'get',
+          params: this.$http.adornParams({
+            'name':value
+          })
+        }).then(({data}) => {
+          if (data.code == 0) {
+            callback()
+          } else {
+            callback(new Error('该名称已被使用'))
+          }
+        })
+        
+      }
       return {
+        isName:null,
         visible: false,
         roleList: [],
         deptList:[],
@@ -131,16 +150,41 @@
         },
         comTopList:[],
         dataRule: {
-          // name: [
-          //   { required: true, message: '公司名称不能为空', trigger: 'blur' }
-          // ],
+          name: [
+            { required: true, message: '公司名称不能为空', trigger: 'blur' },
+            { validator: nameR, trigger: 'blur' }
+          ],
           parentId: [
             { required: true, message: '请选择', trigger: 'change' }
           ],
-          // deptType: [
-          //   { required: true, message: '请选择类型', trigger: 'blur' }
-          // ],
-          requiredF: [
+          companyTel: [
+            { required: true, message: '电话不能为空', trigger: 'blur' }
+          ],
+          accountCount:[
+            { required: true, message: '账户数不能为空', trigger: 'blur' }
+          ],
+          companySku: [
+            { required: true, message: 'SKU信息不能为空', trigger: 'blur' }
+          ],
+          companyAddress: [
+            { required: true, message: '公司地址不能为空', trigger: 'blur' }
+          ],
+          companyPerson:[
+            { required: true, message: '负责人不能为空', trigger: 'blur' }
+          ],
+          companyQq: [
+            { required: true, message: 'QQ不能为空', trigger: 'blur' }
+          ],
+          companyPoints:[
+            { required: true, message: '平台佣金点数不能为空', trigger: 'blur' }
+          ],
+          limitMoney:[
+            { required: true, message: '最低物流限额不能为空', trigger: 'blur' }
+          ],
+          balance: [
+            { required: true, message: '余额不能为空', trigger: 'blur' }
+          ],
+          consum:[
             { required: true, message: '内容不能为空', trigger: 'blur' }
           ]
         }
@@ -151,6 +195,16 @@
     },
     activated(){
       this.init(this.$route.params.deptId)
+    },
+    computed: {
+      mainTabs: {
+        get () { return this.$store.state.common.mainTabs },
+        set (val) { this.$store.commit('common/updateMainTabs', val) }
+      },
+      mainTabsActiveName: {
+        get () { return this.$store.state.common.mainTabsActiveName },
+        set (val) { this.$store.commit('common/updateMainTabsActiveName', val) }
+      }
     },
     methods: {
       init (id) {
@@ -206,6 +260,9 @@
               this.dataForm.flag = 1;
           }
       },
+      getDeptName(id){
+        this.dataForm.parentName = this.comTopList.find((item) => item.deptId == id);
+      },
       
       // 表单提交
       dataFormSubmit () {
@@ -218,6 +275,7 @@
               background: 'rgba(0, 0, 0, 0.7)'
             });
             var that = this;
+            this.dataForm.accountCount = parseInt(this.dataForm.accountCount);
             this.dataForm.dataShareList = [];
               this.deptList.forEach(function (t) {
                   that.comList.forEach(function (i) {
@@ -242,10 +300,10 @@
                   duration: 1000,
                   onClose: () => {
                     loading.close();
-                    // this.$emit('refreshDataList');
-                    this.$nextTick(() => {
-                      this.$refs['dataForm'].resetFields();
-                    })
+                    this.$refs.back.removeTabHandle(this.mainTabsActiveName);
+                    // this.$nextTick(() => {
+                    //   this.$refs['dataForm'].resetFields();
+                    // })
 
                   }
                 })
@@ -254,6 +312,24 @@
                 loading.close();
               }
             })
+          }
+        })
+      },
+      // 检查公司重名
+      checkName(name){
+        this.$http({
+          url: this.$http.adornUrl('/sys/dept/check'),
+          method: 'get',
+          params: this.$http.adornParams({
+            'name':name
+          })
+        }).then(({data}) => {
+          if (data.code == 0) {
+            console.log(data);
+            this.isName = true
+            // this.totalPage = data.page.totalCount
+          } else {
+            this.isName = false
           }
         })
       },
