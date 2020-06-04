@@ -2,10 +2,121 @@
   <div class="">
       <!-- 列表页 -->
       <div>
-        <!-- 搜索 -->
+          <!-- 操作 -->
+        <div class="divM" style="border-bottom:2px solid #f0f0f0;padding-bottom:16px;margin-bottom:20px">
+            <el-row :gutter="20">
+                <el-col :span="6">
+                    <el-row>
+                        <el-col :span="9">
+                            <label class="labelSS">选择认领到的公司:</label>
+                        </el-col>
+                        <el-col :span="15">
+                            <el-select v-model="q.deptId" filterable clearable placeholder="请选择">
+                                <el-option
+                                    v-for="item in $store.state.dept.comList"
+                                    :key="'D'+item.deptId"
+                                    :label="item.name"
+                                    :value="item.deptId">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+                    </el-row>
+                </el-col>
+                <el-col :span="6">
+                    <el-row>
+                        <el-col :span="9">
+                            <label class="labelSS">选择认领到的小组:</label>
+                        </el-col>
+                        <el-col :span="15">
+                            <el-select v-model="q.groupId" clearable placeholder="请选择" @focus='getGroupList'>
+                                <el-option
+                                    v-for="item in groupList"
+                                    :key="'G'+item.groupId"
+                                    :label="item.name"
+                                    :value="item.groupId">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+                    </el-row>
+                </el-col>
+                <el-col :span="6">
+                    <el-row>
+                        <el-col :span="9">
+                            <label class="labelSS">选择认领到的员工:</label>
+                        </el-col>
+                        <el-col :span="15">
+                            <el-select v-model="q.userId" clearable placeholder="请选择" @focus='getuserList'>
+                                <el-option
+                                    v-for="item in userList"
+                                    :key="'U'+item.userId"
+                                    :label="item.displayName"
+                                    :value="item.userId">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+                    </el-row>
+                </el-col>
+                <el-button type="warning" icon="" size="small" @click="del">认领</el-button>
+            </el-row>
+
+            
+            
+        </div>
+            <!-- 搜索 -->
         <div class="sous">
             <el-row :gutter="20">
-                
+
+                <el-col :span="6">
+                    <el-row>
+                        <el-col :span="6">
+                            <label class="labelSS">选择公司:</label>
+                        </el-col>
+                        <el-col :span="18">
+                            <el-select v-model="q.deptId" filterable clearable placeholder="请选择">
+                                <el-option
+                                    v-for="item in $store.state.dept.comList"
+                                    :key="'D'+item.deptId"
+                                    :label="item.name"
+                                    :value="item.deptId">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+                    </el-row>
+                </el-col>
+                <el-col :span="6">
+                    <el-row>
+                        <el-col :span="6">
+                            <label class="labelSS">选择小组:</label>
+                        </el-col>
+                        <el-col :span="18">
+                            <el-select v-model="q.groupId" clearable placeholder="请选择" @focus='getGroupList'>
+                                <el-option
+                                    v-for="item in groupList"
+                                    :key="'G'+item.groupId"
+                                    :label="item.name"
+                                    :value="item.groupId">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+                    </el-row>
+                </el-col>
+                <el-col :span="6">
+                    <el-row>
+                        <el-col :span="6">
+                            <label class="labelSS">选择员工:</label>
+                        </el-col>
+                        <el-col :span="18">
+                            <el-select v-model="q.userId" clearable placeholder="请选择" @focus='getuserList'>
+                                <el-option
+                                    v-for="item in userList"
+                                    :key="'U'+item.userId"
+                                    :label="item.displayName"
+                                    :value="item.userId">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+                    </el-row>
+                </el-col>
                 <el-col :span="6">
                     <el-row>
                         <el-col :span="6">
@@ -22,10 +133,10 @@
                 </el-col>
                 <el-col :span="6">
                     <el-row>
-                        <el-col :span="7">
-                            <label class="labelSS">SKU／编码：</label>
+                        <el-col :span="6">
+                            <label class="labelSS">SKU/编码：</label>
                         </el-col>
-                        <el-col :span="17">
+                        <el-col :span="18">
                             <el-input
                                 size="medium"
                                 placeholder="请输入内容"
@@ -64,7 +175,6 @@
                         </el-col>
                     </el-row>
                 </el-col>
-                <div style="height:10px;float:left;width:100%"></div>
                 <el-col :span="12">
                     <el-row>
                         <el-col :span="3">
@@ -82,66 +192,11 @@
                 </el-col>
             </el-row>
         </div>
-        <!-- 筛选 -->
-        <div style="margin:16px 0">
-            <div class="tag-group">
-                <span class="tag-group__title">审核状态</span>
-                <el-tag
-                    v-for="item in audit"
-                    :key="item.code"
-                    size="medium"
-                    @click="auditClick(item.code)"
-                    :effect='item.code == auditValue ? "dark" : "plain"'>
-                    {{ item.value }} ({{item.count}})
-                </el-tag>
-            </div>
-            <div class="tag-group">
-                <span class="tag-group__title">产品类型</span>
-                <el-tag
-                    v-for="item in productType"
-                    :key="item.code"
-                    size="medium"
-                    @click="productTypeClick(item.code)"
-                    :effect='item.code == productTypeValue ? "dark" : "plain"'>
-                    {{ item.value }} ({{item.count}})
-                </el-tag>
-            </div>
-            <div class="tag-group">
-                <span class="tag-group__title">上传类型</span>
-                <el-tag
-                    v-for="item in upload"
-                    :key="item.code"
-                    size="medium"
-                    @click="uploadClick(item.code)"
-                    :effect='item.code == uploadValue ? "dark" : "plain"'>
-                    {{ item.value }} ({{item.count}})
-                </el-tag>
-            </div>
-        </div>
-        <!-- 操作 -->
-        <div class="divM">
-            <!-- <el-button type="primary" icon="el-icon-plus" size="small" @click="toProduct">原创产品</el-button> -->
-            <open-tab :product="true" type="primary" icon="el-icon-plus" dec='原创产品' urlName='productAddUpdate' :opt='{"productId":null}'></open-tab>
-            <el-button type="primary" icon="el-icon-delete" size="small" @click="del">删除</el-button>
-            <el-button type="primary" icon="el-icon-edit" size="small" @click="piliang">批量修改</el-button>
-            <el-button type="primary" size="small" @click="changeStats('001','SHELVE_STATE')">上架</el-button>
-            <el-button type="primary" size="small" @click="changeStats('002','SHELVE_STATE')">下架</el-button>
-            <el-button type="primary" size="small" @click="changeStats('001','AUDIT_STATE')">审核通过</el-button>
-            <el-button type="primary" size="small" @click="changeStats('002','AUDIT_STATE')">待审核</el-button>
-            
-            <div style="float:right;">
-                <el-button type="primary" icon="el-icon-download" size="small">插件下载</el-button>
-                <el-button type="text">采集手册</el-button>
-            </div>
-        </div>
+        
         <!-- 统计 -->
         <div class="statics divM">
             <div class="left">
                 <i class="el-icon-info" style="color:#409EFF"></i>&nbsp;&nbsp;已选择&nbsp;<a style="font-weight: 600">{{ selectedRowKeys.length }}</a>&nbsp;项&nbsp;&nbsp;
-            </div>
-            <div class="right">
-                <!-- 含变体产品数&nbsp;<a style="font-weight: 600">{{ selectedRowKeys.length }}</a>&nbsp;项&nbsp;&nbsp;&nbsp;
-                变体总数&nbsp;<a style="font-weight: 600">{{ selectedRowKeys.length }}</a>&nbsp;项&nbsp;&nbsp;&nbsp; -->
             </div>
         </div>
         <!-- 列表 -->
@@ -176,24 +231,17 @@
                 label="标题"
                 width="">
                 <template slot-scope="scope">
-                    <open-tab size="medium" type="text" icon="" :dec='scope.row.productTitle' urlName='productAddUpdate' :opt='{"productId":scope.row.productId}'></open-tab>
+                    <!-- <open-tab type="text" icon="" :dec='scope.row.productTitle' urlName='productLook' :opt='{"productId":scope.row.productId}'></open-tab> -->
+                    <open-tab size="medium" type="text" icon="" :dec='scope.row.productTitle' urlName='productLook' :opt='{"productId":scope.row.productId}'></open-tab>
                     <div v-if="scope.row.productSku"><span style="color:#999">SKU：</span>{{scope.row.productSku}}</div>
                     <div v-if="scope.row.categoryName"><span style="color:#999">分类：</span>{{scope.row.categoryName}}</div>
                 </template>
                 </el-table-column>
+                
                 <el-table-column
                 prop="createTime"
                 label="时间"
                 width="100">
-                </el-table-column>
-                <el-table-column
-                fixed="right"
-                label="操作"
-                width="100">
-                <template slot-scope="scope">
-                    <open-tab size="medium" type="text" icon="el-icon-edit" dec='' urlName='productAddUpdate' :opt='{"productId":scope.row.productId}'></open-tab>
-                    <!-- <el-button type="text" icon="el-icon-edit" @click=""></el-button> -->
-                </template>
                 </el-table-column>
             </el-table>
             <el-pagination
@@ -207,33 +255,32 @@
             </el-pagination>
         </div>
       </div>
-      <!-- 批量修改 -->
-      <product-piliang v-if="piliangVisible" :ids="ids" ref="addOrUpdate" @refreshDataList="getDataList"></product-piliang>
       
   </div>
 </template>
 
 <script>
   import OpenTab from '../../common/open'
-  import ProductPiliang from './product-piliang'
   import { getQuerycategory } from '@/api/product'
-  
   export default {
     components: {
-        OpenTab,
-        ProductPiliang
+        OpenTab
     },
       data(){
           return{
-              ids:[],
             showList:true,
             productD:{},
             q:{
                 startDate:'',
                 endDate:'',
                 title:'',
-                sku:''
+                sku:'',
+                deptId:null,
+                userId:null,
+                groupId:null
             },
+            groupList:[],
+            userList:[],
             dataListLoading:true,
             nowProTypeId:[],
             options:[],
@@ -263,36 +310,10 @@
                                 alert(data.msg);
                             }
                         })
-                        // this.$http({
-                        //     url: this.$http.adornUrl('/product/productcategory/querycategorybyparentid'),
-                        //     method: 'get',
-                        //     params: this.$http.adornParams({
-                        //         'categoryId':node.value
-                        //     })
-                        // }).then(({data}) => {
-                        //     if (data && data.code === 0) {
-                        //         const level = node.level;
-                        //         // const children = node.children;
-                        //         const nodes = [];
-                        //         if(r.categoryList.length != 0){
-                        //             r.categoryList.forEach(function (item) {
-                        //                 nodes.push({
-                        //                     value:item.categoryId,
-                        //                     label:item.categoryName+'('+item.count+')',
-                        //                     leaf: level >= 2
-                        //                 })
-                        //             })
-                        //             resolve(nodes);
-                        //         }
-                        //     } else {
-                        //         alert(r.msg);
-                        //     }
-                        // })
                     }
                 }
             },
             dataList:[],
-            piliangVisible:false,
             selectedRowKeys:[],
             audit:[],
             productType: [],
@@ -327,7 +348,7 @@
         // 获取产品状态列表
         getMyStatusList () {
             this.$http({
-                url: this.$http.adornUrl('/sys/sysdict/mystatuslist'),
+                url: this.$http.adornUrl('/sys/sysdict/allstatuslist'),
                 method: 'get',
                 params: this.$http.adornParams()
             }).then(({data}) => {
@@ -362,7 +383,7 @@
             // console.log(this.nowProTypeId);
             this.dataListLoading = true
             this.$http({
-                url: this.$http.adornUrl('/product/product/mylist'),
+                url: this.$http.adornUrl('/product/product/alllist'),
                 method: 'get',
                 params: this.$http.adornParams({
                     'page': this.pageIndex,
@@ -375,6 +396,9 @@
                     'auditNumber': this.auditValue,
                     'productNumber': this.productTypeValue,
                     'uploadNumber':this.uploadValue,
+                    'deptId':this.q.deptId,
+                    'groupId':this.q.groupId,
+                    'userId':this.q.userId
                 })
             }).then(({data}) => {
                 if (data && data.code === 0) {
@@ -396,6 +420,9 @@
                 endDate:'',
                 title:'',
                 sku:'',
+                deptId:null,
+                userId:null,
+                groupId:null
             }
         },
         // 每页数
@@ -459,22 +486,6 @@
                     }
                 })
             }).catch(() => {})
-        },
-        // 批量修改弹框
-        piliang(){
-            
-            if(this.dataListSelections.length == 0){
-                this.$message({
-                    message: '请选择一条数据',
-                    type: 'warning'
-                });
-            }else{
-                this.piliangVisible = true;
-                this.ids = this.dataListSelections.map(item => {
-                    return item.productId
-                })
-            }
-            
         },
         changeStats(code,type){
             var productIds = this.dataListSelections.map(item => {
@@ -568,10 +579,56 @@
 
                     // this.dataForm = data.product;
                     loading.close();
-                }else{
-                    this.$message.error(data.msg)
                 }
             })
+        },
+        // 获取小组下拉
+        getGroupList(){
+            if(this.q.deptId){
+                this.$http({
+                url: this.$http.adornUrl('/sys/sysgroup/select'),
+                method: 'get',
+                params: this.$http.adornParams({
+                    'deptId':this.q.deptId,
+                })
+            }).then(({data}) => {
+                if (data && data.code === 0) {
+                this.groupList = data.groupList
+                } else {
+                this.groupList = []
+                }
+            })
+            }else{
+                this.$message({
+                    message: '请先选择公司',
+                    type: 'warning'
+                });
+            }
+            
+        },
+        // 获取人员下拉
+        getuserList(){
+            if(this.q.deptId){
+                this.$http({
+                url: this.$http.adornUrl('/sys/user/getUserList'),
+                method: 'get',
+                params: this.$http.adornParams({
+                    'deptId':this.q.deptId,
+                    'groupId':this.q.groupId
+                })
+            }).then(({data}) => {
+                if (data && data.code === 0) {
+                    this.userList = data.userList
+                } else {
+                    this.userList = []
+                }
+            })
+            }else{
+                this.$message({
+                    message: '请先选择公司',
+                    type: 'warning'
+                });
+            }
         }
       }
   }

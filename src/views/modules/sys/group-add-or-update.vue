@@ -2,9 +2,9 @@
   <el-dialog
     :title="!dataForm.groupId ? '新增' : '修改'"
     :close-on-click-modal="false"
-    width="430px"
+    width="420px"
     :visible.sync="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="120px">
+    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="80px">
       <el-form-item label="小组名称" prop="name">
         <el-input v-model="dataForm.name" placeholder="请输入"></el-input>
       </el-form-item>
@@ -26,6 +26,7 @@
           v-model="userListS"
           filterable
           multiple
+          @change="userChange"
           placeholder="请选择">
               <el-option
                       v-for="item in userList"
@@ -56,7 +57,9 @@
         dataForm: {
           name:'',
           deptId:null,
-          userList:[]
+          userList:[],
+          userIdList:[],
+          flag:0,
         },
         dataRule: {
           name: [
@@ -79,6 +82,7 @@
           this.visible = true
           this.$nextTick(() => {
             this.$refs['dataForm'].resetFields();
+            
           })
         }).then(() => {
           if (this.dataForm.groupId) {
@@ -97,6 +101,9 @@
                 })
               }
             })
+          }else{
+            this.dataForm.flag = 1;
+            console.log(this.dataForm);
           }
         })
       },
@@ -106,9 +113,13 @@
           if (valid) {
             this.dataForm.userList = [];
             let that = this;
-            this.userListS.forEach(function(m){
-              that.dataForm.userList.push(that.userList.find(item => item.userId == m))
-            })
+            if(this.dataForm.flag == 1){
+                this.userListS.forEach(function(m){
+                  that.dataForm.userList.push(that.userList.find(item => item.userId == m))
+                })
+                this.dataForm.userIdList = this.userListS;
+            }
+            
             const loading = this.$loading({
               lock: true,
               text: 'Loading',
@@ -166,12 +177,14 @@
           }
         })
       },
+      // 小组成员改变
+      userChange(val){
+        this.dataForm.flag = 1;
+        console.log(this.dataForm);
+      }
 
     }
   }
 </script>
 <style>
-  .el-form-item input{
-    width :195px;
-  }
 </style>

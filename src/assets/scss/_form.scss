@@ -10,6 +10,9 @@
     padding: 20px 0;
     border-bottom: 4px solid #eee;
 }
+.blockDivForm .decVal{
+    color: #666;
+}
 .blockDivForm:last-child{
     border-bottom: 0;
 }
@@ -57,4 +60,8 @@
 .blockDivForm .el-tabs{
     width: 90%;
     margin-left: 5%;
+}
+
+.el-dialog__body .el-form .el-select{
+    width: 100%;
 }

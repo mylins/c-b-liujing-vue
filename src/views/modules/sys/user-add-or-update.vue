@@ -11,11 +11,11 @@
       <el-form :inline="true" :model="dataForm" :rules="dataRule" ref="dataForm" label-width="120px">
         <div class="blockDivForm">
           <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;账号信息</h3>
-          <el-form-item label="账号名称" prop="username">
-            <el-input v-model="dataForm.username" placeholder="账号长度必须在6到20个字符之间"></el-input>
-          </el-form-item>
           <el-form-item label="姓名" prop="displayName">
             <el-input v-model="dataForm.displayName" placeholder="姓名"></el-input>
+          </el-form-item>
+          <el-form-item label="账号名称" prop="username">
+            <el-input v-model="dataForm.username" placeholder="账号长度必须在6到20个字符之间"></el-input>
           </el-form-item>
           <el-form-item v-if="!dataForm.userId" label="密码" prop="password">
             <el-input v-model="dataForm.password" type="password" placeholder="密码"></el-input>
@@ -369,7 +369,4 @@
   }
 </script>
 <style>
-  .el-form-item input{
-    width :195px;
-  }
 </style>

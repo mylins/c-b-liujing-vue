@@ -8,38 +8,108 @@
                 
                 <el-col :span="6">
                     <el-row>
-                        <el-col :span="6">
-                            <label class="labelSS">产品标题：</label>
+                        <el-col :span="8">
+                            <label class="labelSS">订单ID：</label>
                         </el-col>
-                        <el-col :span="18">
+                        <el-col :span="16">
                             <el-input
                                 size="medium"
                                 placeholder="请输入内容"
-                                v-model="q.title">
+                                v-model="q.orderId">
                             </el-input>
                         </el-col>
                     </el-row>
                 </el-col>
                 <el-col :span="6">
                     <el-row>
-                        <el-col :span="7">
-                            <label class="labelSS">SKU／编码：</label>
+                        <el-col :span="8">
+                            <label class="labelSS">亚马逊订单ID：</label>
                         </el-col>
-                        <el-col :span="17">
+                        <el-col :span="16">
                             <el-input
                                 size="medium"
                                 placeholder="请输入内容"
-                                v-model="q.sku">
+                                v-model="q.amazonOrderId">
                             </el-input>
                         </el-col>
                     </el-row>
                 </el-col>
                 <el-col :span="6">
                     <el-row>
-                        <el-col :span="6">
+                        <el-col :span="8">
+                            <label class="labelSS">关联产品ID：</label>
+                        </el-col>
+                        <el-col :span="16">
+                            <el-input
+                                size="medium"
+                                placeholder="请输入内容"
+                                v-model="q.productId">
+                            </el-input>
+                        </el-col>
+                    </el-row>
+                </el-col>
+                <el-col :span="6">
+                    <el-row>
+                        <el-col :span="8">
+                            <label class="labelSS">产品SKU：</label>
+                        </el-col>
+                        <el-col :span="16">
+                            <el-input
+                                size="medium"
+                                placeholder="请输入内容"
+                                v-model="q.productSku">
+                            </el-input>
+                        </el-col>
+                    </el-row>
+                </el-col>
+                <el-col :span="6">
+                    <el-row>
+                        <el-col :span="8">
+                            <label class="labelSS">产品asin码：</label>
+                        </el-col>
+                        <el-col :span="16">
+                            <el-input
+                                size="medium"
+                                placeholder="请输入内容"
+                                v-model="q.productAsin">
+                            </el-input>
+                        </el-col>
+                    </el-row>
+                </el-col>
+                <el-col :span="6">
+                    <el-row>
+                        <el-col :span="8">
+                            <label class="labelSS">国内物流单号：</label>
+                        </el-col>
+                        <el-col :span="16">
+                            <el-input
+                                size="medium"
+                                placeholder="请输入内容"
+                                v-model="q.domesticWaybill">
+                            </el-input>
+                        </el-col>
+                    </el-row>
+                </el-col>
+                <el-col :span="6">
+                    <el-row>
+                        <el-col :span="8">
+                            <label class="labelSS">国际物流单号：</label>
+                        </el-col>
+                        <el-col :span="16">
+                            <el-input
+                                size="medium"
+                                placeholder="请输入内容"
+                                v-model="q.abroadWaybill">
+                            </el-input>
+                        </el-col>
+                    </el-row>
+                </el-col>
+                <el-col :span="6">
+                    <el-row>
+                        <el-col :span="8">
                             <label class="labelSS">开始时间：</label>
                         </el-col>
-                        <el-col :span="18">
+                        <el-col :span="16">
                             <el-date-picker
                             v-model="q.startDate"
                             value-format="yyyy-MM-dd"
@@ -51,27 +121,16 @@
                 </el-col>
                 <el-col :span="6">
                     <el-row>
-                        <el-col :span="6">
+                        <el-col :span="8">
                             <label class="labelSS">结束时间：</label>
                         </el-col>
-                        <el-col :span="18">
+                        <el-col :span="16">
                             <el-date-picker
                             v-model="q.endDate"
                             value-format="yyyy-MM-dd"
                             type="date"
                             placeholder="选择日期">
                             </el-date-picker>
-                        </el-col>
-                    </el-row>
-                </el-col>
-                <div style="height:10px;float:left;width:100%"></div>
-                <el-col :span="12">
-                    <el-row>
-                        <el-col :span="3">
-                            <label class="labelSS">产品分类：</label>
-                        </el-col>
-                        <el-col :span="21">
-                            <el-cascader v-model="nowProTypeId" :options="options" :props="props" clearable @visible-change="visibleChange"></el-cascader>
                         </el-col>
                     </el-row>
                 </el-col>
@@ -208,20 +267,20 @@
         </div>
       </div>
       <!-- 批量修改 -->
-      <product-piliang v-if="piliangVisible" :ids="ids" ref="addOrUpdate" @refreshDataList="getDataList"></product-piliang>
+      <!-- <product-piliang v-if="piliangVisible" :ids="ids" ref="addOrUpdate" @refreshDataList="getDataList"></product-piliang> -->
       
   </div>
 </template>
 
 <script>
   import OpenTab from '../../common/open'
-  import ProductPiliang from './product-piliang'
+//   import ProductPiliang from './product-piliang'
   import { getQuerycategory } from '@/api/product'
   
   export default {
     components: {
         OpenTab,
-        ProductPiliang
+        // ProductPiliang
     },
       data(){
           return{
@@ -231,8 +290,13 @@
             q:{
                 startDate:'',
                 endDate:'',
-                title:'',
-                sku:''
+                orderId:'',
+                amazonOrderId:'',
+                productId:'',
+                productSku:'',
+                productAsin:'',
+                domesticWaybill:'',
+                abroadWaybill:''
             },
             dataListLoading:true,
             nowProTypeId:[],

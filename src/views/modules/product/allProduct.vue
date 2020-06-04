@@ -168,14 +168,6 @@
                 </el-tag>
             </div>
         </div>
-        <!-- 统计 -->
-        <div class="statics divM">
-            <div class="left">
-                <i class="el-icon-info" style="color:#409EFF"></i>&nbsp;&nbsp;已选择&nbsp;<a style="font-weight: 600">{{ selectedRowKeys.length }}</a>&nbsp;项&nbsp;&nbsp;
-            </div>
-            <div class="right">
-            </div>
-        </div>
         <!-- 列表 -->
         <div class="divM">
             <el-table
@@ -183,10 +175,6 @@
                 v-loading="dataListLoading"
                 @selection-change="selectionChangeHandle"
                 style="width: 100%">
-                <el-table-column
-                type="selection"
-                width="55">
-                </el-table-column>
                 <el-table-column
                 fixed
                 prop=""

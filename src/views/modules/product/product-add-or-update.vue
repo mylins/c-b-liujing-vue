@@ -13,24 +13,29 @@
           <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;基本信息</h3>
           <el-form-item label="产品编号" prop="">
             <!-- <el-input :disabled="true" v-model="dataForm.productId" placeholder="产品编号"></el-input> -->
-            <el-button type="text">{{dataForm.productId}}</el-button>
+            <span class="decVal">{{dataForm.productId}}</span>
+            <!-- <el-button type="text">{{dataForm.productId}}</el-button> -->
           </el-form-item>
           <el-form-item v-if="!productId" label="审核状态" prop="">
-            <el-button type="text">{{dataForm.auditStatus == '002' ? '待审核' : ''}}</el-button>
+              <span class="decVal">待审核</span>
+            <!-- <el-button type="text">{{dataForm.auditStatus == '002' ? '待审核' : ''}}</el-button> -->
           </el-form-item>
           <el-form-item v-if="!productId" label="产品类型" prop="">
-            <el-button type="text">{{dataForm.productType == '002' ? '原创' : ''}}</el-button>
+              <span class="decVal">原创</span>
+            <!-- <el-button type="text">{{dataForm.productType == '002' ? '原创' : ''}}</el-button> -->
           </el-form-item>
           <el-form-item label="内部SKU" prop="productSku">
-            <el-button type="text">{{dataForm.productSku}}</el-button> &nbsp;&nbsp;
+              <span class="decVal">{{dataForm.productSku}}</span>
+            <!-- <el-button type="text">{{dataForm.productSku}}</el-button> &nbsp;&nbsp; -->
             <div style="display:inline-block">
                 <el-input v-model="dataForm.correction" placeholder="SKU修正,建议两位英文字母"></el-input>
             </div>
           </el-form-item>
           <br>
           <el-form-item label="产品分类" prop="categoryId">
-              <span style="color:#409EFF">{{dataForm.categoryName}}</span>
             <el-cascader ref="aaa" v-model="dataForm.categoryId" :options="options" :props="props" clearable @change="productCategorChange" @visible-change="visibleChange"></el-cascader>
+            <br>
+            <span class="decVal">{{dataForm.categoryName}}</span>
           </el-form-item>
           <br>
           <el-form-item v-if="productId" label="审核状态" prop="">
@@ -72,6 +77,7 @@
                                 <!-- <img :src="'http://'+item.imageUrl" alt=""> -->
                                 <el-image
                                 style="width: 142px; height: 142px"
+                                :preview-src-list="imgList"
                                 :src="'http://'+item.imageUrl"></el-image>
                             </li>
                         </transition-group>
@@ -718,9 +724,12 @@
                     width="40">
                 </el-table-column>
                 <el-table-column
-                    prop="variantCombination"
+                    prop=""
                     label="变体组合"
                     width="180">
+                    <template slot-scope="scope">
+                        <el-button type="text" @click="syColorImg(scope.$index)">{{scope.row.variantCombination}}</el-button>
+                    </template>
                 </el-table-column>
                 <el-table-column
                     prop=""
@@ -816,6 +825,7 @@
             <div class="tag-group">
                 <span class="tag-group__title">推荐</span>
                 <template v-if='addObj.type == "颜色（color）"'>
+                    <!-- :effect="(addObj.value.split(',').indexOf(recommendE[index]) == -1) ? '' : 'dark'" -->
                     <el-tag
                         v-for="(item,index) in recommend"
                         @click="pushValue(index)"
@@ -1001,24 +1011,8 @@
         }
       }
       return {
-        list:[
-            {
-                imageId:1,
-                sort:0,
-                imageUrl:'http://39.105.120.226/images/2020/5/10504785/1.jpg'
-            },
-            {
-                imageId:2,
-                sort:1,
-                imageUrl:'http://39.105.120.226/images/2020/3/10444483/0.jpg'
-            },
-            {
-                imageId:3,
-                sort:2,
-                imageUrl:'http://39.105.120.226/images/2020/3/10444450/0.jpg'
-            }
-        ],
         visible: false,
+        categoryIds:[],
         imgSVList:[],
         addVisible:false,
         addVMoneyVisible:false,
@@ -1032,6 +1026,7 @@
         addVMoneyList:[],
         itemV:{color:'',size:''},
         roleList: [],
+        imgList:[],
         productId:null,
         discountList:[1,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1],
         recommend:['米色','黑色','蓝色','青铜','棕色','明确','铜','奶油','金','绿色','灰色','金属','多色','橙子','粉','紫色','红','银','白色','黄色','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T'],
@@ -1154,13 +1149,9 @@
         options:[],
         props:{
             lazy:true,
-            // value:'label',
             lazyLoad: function(node, resolve) {
                 if(node.value){
-                    console.log(node)
                     getQuerycategory({'categoryId':node.value}).then((data) => {
-                        
-                        console.log(data == 0)
                         if (data.data && data.data.code == 0) {
                             const level = node.level;
                             const nodes = [];
@@ -1237,7 +1228,7 @@
             disabled: false,
             ghostClass: "ghost"
         };
-        }
+      }
     },
     methods: {
         moveImg(newIndex,oldIndex,el) {
@@ -1248,6 +1239,12 @@
       init (obj) {
         this.productId = obj.productId || 0;
         if(this.productId){
+            const loading = this.$loading({
+              lock: true,
+              text: 'Loading',
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0.7)'
+            });
             this.$http({
               url: this.$http.adornUrl('/product/product/productdetails'),
               method: 'get',
@@ -1255,8 +1252,15 @@
                   productId:this.productId
               })
             }).then(({data}) => {
+                loading.close();
               if (data && data.code === 0) {
-                this.dataForm = data.product
+                this.dataForm = data.product;
+                this.imgList = this.dataForm.imageList.map((item) => {
+                    return 'http://'+item.imageUrl
+                })
+                // console.log(this.imgList)
+              }else{
+                  this.$message.error(data.msg)
               }
             })
         }else{
@@ -1295,14 +1299,25 @@
             
         },
         productCategorChange(val){
-            var arr = this.$refs['aaa'].getCheckedNodes()[0].pathLabels;
-            this.dataForm.categoryName = arr.join('/')
+            console.log(val);
+            if(val.length != 0){
+                var arr = this.$refs['aaa'].getCheckedNodes()[0].pathLabels;
+                var arr1 = arr.map((item) => {
+                    return item.split('(')[0]
+                })
+                this.dataForm.categoryName = arr1.join('/');
+                this.categoryIds = val;
+            }else{
+                this.dataForm.categoryName = '';
+                this.categoryIds = val;
+            }
+            
         },
       // 表单提交
       dataFormSubmit () {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
-              this.dataForm.categoryId = this.dataForm.categoryId[this.dataForm.categoryId.length-1]
+            this.dataForm.categoryId = this.categoryIds[this.categoryIds.length-1]
             const loading = this.$loading({
               lock: true,
               text: 'Loading',
@@ -1346,6 +1361,7 @@
       getcostFreight(str){
           this.$refs['dataForm'].validateField(str,(valid) => {
               if(!valid){
+                  this.dataForm.categoryId = this.categoryIds[this.categoryIds.length-1]
                   const loading = this.$loading({
                     lock: true,
                     text: 'Loading',
@@ -1724,6 +1740,7 @@
                 item.variantStock = that.stock;
             })
             this.stockVisible = false
+            this.dataForm.viFlag = 1;
         },
         // 获取相册
         getImage(){
@@ -1744,9 +1761,12 @@
                 if (data && data.code === 0) {
                     console.log(data);
                     this.dataForm.imageList = data.imageInfo;
+                    this.imgList = this.dataForm.imageList.map((item) => {
+                        return 'http://'+item.imageUrl
+                    })
                     this.uploadImageVisible = false;
                 } else {
-                    
+                    this.$message.error(data.msg)
                 }
             })
         },
@@ -1778,7 +1798,7 @@
                         console.log(data);
                         this.getImage();
                     } else {
-                        
+                        this.$message.error(data.msg)
                     }
                 })
             })
@@ -1836,6 +1856,7 @@
             this.selectImageVisible = false;
             console.log(this.dataForm.variantsInfoList);
             this.imgSVList = [];
+            this.dataForm.viFlag = 1;
         },
         // 变体一键添加图片
         addImgVClick(index){
@@ -1851,8 +1872,8 @@
                 })
                 this.dataForm.variantsInfoList[index].imageUrl = arr.join(',');
             })
+            this.dataForm.viFlag = 1;
             
-            console.log(this.dataForm.variantsInfoList[index].imageUrl);
         },
         // 删除变体选中图片
         delImageVB(num,index){
@@ -1861,12 +1882,47 @@
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
+                this.dataForm.viFlag = 1;
                 var arr = this.dataForm.variantsInfoList[num].imageUrl.split(',');
                 arr.splice(index,1)
                 this.dataForm.variantsInfoList[num].imageUrl = arr.join(',');
             })
             
             
+        },
+        // 同步所有颜色图片
+        syColorImg(index){
+            
+            if(this.dataForm.variantsInfoList[index].imageUrl == ''){
+                this.$message({
+                    message: '该组合没有可以同步的图片',
+                    type: 'warning'
+                });
+            }else{
+                if(this.dataForm.variantsParameterList.length == 1){
+                    this.$message({
+                        message: '没有需要同步的变体',
+                        type: 'warning'
+                    });
+                }else{
+                    this.$confirm('确定同步该颜色的所有图片?', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        var that = this,
+                            color = this.dataForm.variantsInfoList[index].variantCombination.split(' - ')[0],
+                            str = this.dataForm.variantsInfoList[index].imageUrl;
+                        this.dataForm.variantsInfoList.forEach(function(item){
+                            if(item.variantCombination.split(' - ')[0] == color){
+                                item.imageUrl = str;
+                            }
+                            
+                        })
+                    })
+                }
+                
+            }
         }
     }
   }
