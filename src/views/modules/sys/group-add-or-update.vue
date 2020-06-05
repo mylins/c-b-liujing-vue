@@ -8,19 +8,6 @@
       <el-form-item label="小组名称" prop="name">
         <el-input v-model="dataForm.name" placeholder="请输入"></el-input>
       </el-form-item>
-      <el-form-item label="所属公司" prop="deptId">
-        <el-select
-          v-model="dataForm.deptId"
-          filterable
-          placeholder="请选择">
-              <el-option
-                      v-for="item in $store.state.dept.comList"
-                      :key="item.deptId"
-                      :label="item.name"
-                      :value="item.deptId">
-              </el-option>
-        </el-select>
-      </el-form-item>
       <el-form-item label="小组成员" prop="deptId">
         <el-select
           v-model="userListS"
@@ -111,13 +98,14 @@
       dataFormSubmit () {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
-            this.dataForm.userList = [];
+            
             let that = this;
             if(this.dataForm.flag == 1){
-                this.userListS.forEach(function(m){
-                  that.dataForm.userList.push(that.userList.find(item => item.userId == m))
-                })
-                this.dataForm.userIdList = this.userListS;
+              this.dataForm.userList = [];
+              this.userListS.forEach(function(m){
+                that.dataForm.userList.push(that.userList.find(item => item.userId == m))
+              })
+              this.dataForm.userIdList = this.userListS;
             }
             
             const loading = this.$loading({

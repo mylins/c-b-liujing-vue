@@ -55,7 +55,7 @@
               <el-radio :label="1">使用</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="共享公司" prop="" class="join">
+          <!-- <el-form-item label="共享公司" prop="" class="join">
             <el-select
               v-model="deptList"
               multiple
@@ -69,7 +69,7 @@
                           :value="item.deptId">
                   </el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
         </div>
         
         <div class="blockDivForm">
@@ -277,18 +277,18 @@
             });
             var that = this;
             this.dataForm.accountCount = parseInt(this.dataForm.accountCount);
-            this.dataForm.dataShareList = [];
-              this.deptList.forEach(function (t) {
-                  that.comList.forEach(function (i) {
-                      if(i.deptId == t){
-                          that.dataForm.dataShareList.push({
-                              shareDeptId:i.deptId,
-                              shareDeptName:i.name
-                          });
-                          return
-                      }
-                  })
-              })
+            // this.dataForm.dataShareList = [];
+            //   this.deptList.forEach(function (t) {
+            //       that.comList.forEach(function (i) {
+            //           if(i.deptId == t){
+            //               that.dataForm.dataShareList.push({
+            //                   shareDeptId:i.deptId,
+            //                   shareDeptName:i.name
+            //               });
+            //               return
+            //           }
+            //       })
+            //   })
             this.$http({
               url: this.$http.adornUrl(`/sys/dept/${!this.dataForm.deptId ? 'save' : 'update'}`),
               method: 'post',

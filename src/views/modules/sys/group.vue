@@ -290,14 +290,11 @@
           }).then(({data}) => {
             loading.close()
             if (data && data.code === 0) {
+              this.getDataList();
               this.$message({
                 message: '操作成功',
                 type: 'success',
-                duration: 1500,
-                onClose: () => {
-                  this.getDataList()
-                  
-                }
+                duration: 1000,
               })
             } else {
               this.$message.error(data.msg)

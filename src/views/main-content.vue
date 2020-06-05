@@ -119,7 +119,10 @@
     methods: {
       // tabs, 选中tab
       selectedTabHandle (tab) {
-        tab = this.mainTabs.filter(item => item.name === tab.name)
+        console.log(tab);
+        console.log(this.mainTabs);
+        var tab1 = this.mainTabs.filter(item => item.name === tab.name);
+        tab = tab1.filter(item => item.title === tab.label);
         if (tab.length >= 1) {
           this.$router.push({ name: tab[0].name, query: tab[0].query, params: tab[0].params })
         }
@@ -129,7 +132,7 @@
         this.mainTabs = this.mainTabs.filter(item => item.name !== tabName)
         if (this.mainTabs.length >= 1) {
           // 当前选中tab被删除
-          if (tabName === this.mainTabsActiveName) {
+          if (tabName === this.mainTabsActiveName ) {
             var tab = this.mainTabs[this.mainTabs.length - 1]
             this.$router.push({ name: tab.name, query: tab.query, params: tab.params }, () => {
               this.mainTabsActiveName = this.$route.name

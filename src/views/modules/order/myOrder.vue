@@ -143,64 +143,91 @@
         </div>
         <!-- 筛选 -->
         <div style="margin:16px 0">
-            <div class="tag-group">
+            <div class="tag-group" v-if="audit.length != 0">
                 <span class="tag-group__title">审核状态</span>
-                <el-tag
-                    v-for="item in audit"
+                <span 
+                    v-for="(item,index) in audit"
+                    :key="item.code"
+                    @click="auditClick(item.code)"
+                    class="el-tag el-tag--medium" 
+                    :style="item.code == auditValue ? {'background':color[index],'color':'#fff','border':'1px solid '+color[index]} : {'color':color[index],'background':'#fff','border':'1px solid '+color[index]}">{{ item.value }} ({{item.count}})</span>
+                <!-- <el-tag
+                    v-for="(item,index) in audit"
                     :key="item.code"
                     size="medium"
                     @click="auditClick(item.code)"
                     :effect='item.code == auditValue ? "dark" : "plain"'>
                     {{ item.value }} ({{item.count}})
-                </el-tag>
+                </el-tag> -->
             </div>
-            <div class="tag-group">
+            <div class="tag-group" v-if="audit.length != 0">
                 <span class="tag-group__title">产品类型</span>
-                <el-tag
+                <span 
+                    v-for="(item,index) in productType"
+                    :key="item.code"
+                    @click="productTypeClick(item.code)"
+                    class="el-tag el-tag--medium" 
+                    :style="item.code == productTypeValue ? {'background':color[index],'color':'#fff','border':'1px solid '+color[index]} : {'color':color[index],'background':'#fff','border':'1px solid '+color[index]}">
+                    {{ item.value }} ({{item.count}})</span>
+                <!-- <el-tag
                     v-for="item in productType"
                     :key="item.code"
                     size="medium"
                     @click="productTypeClick(item.code)"
                     :effect='item.code == productTypeValue ? "dark" : "plain"'>
                     {{ item.value }} ({{item.count}})
-                </el-tag>
+                </el-tag> -->
             </div>
-            <div class="tag-group">
+            <div class="tag-group" v-if="audit.length != 0">
                 <span class="tag-group__title">上传类型</span>
-                <el-tag
+                <span 
+                    v-for="(item,index) in upload"
+                    :key="item.code"
+                    @click="productTypeClick(item.code)"
+                    class="el-tag el-tag--medium" 
+                    :style="item.code == uploadValue ? {'background':color[index],'color':'#fff','border':'1px solid '+color[index]} : {'color':color[index],'background':'#fff','border':'1px solid '+color[index]}">
+                    {{ item.value }} ({{item.count}})</span>
+                <!-- <el-tag
                     v-for="item in upload"
                     :key="item.code"
                     size="medium"
                     @click="uploadClick(item.code)"
                     :effect='item.code == uploadValue ? "dark" : "plain"'>
                     {{ item.value }} ({{item.count}})
-                </el-tag>
+                </el-tag> -->
             </div>
         </div>
         <!-- 操作 -->
         <div class="divM">
-            <!-- <el-button type="primary" icon="el-icon-plus" size="small" @click="toProduct">原创产品</el-button> -->
-            <open-tab :product="true" type="primary" icon="el-icon-plus" dec='原创产品' urlName='productAddUpdate' :opt='{"productId":null}'></open-tab>
-            <el-button type="primary" icon="el-icon-delete" size="small" @click="del">删除</el-button>
-            <el-button type="primary" icon="el-icon-edit" size="small" @click="piliang">批量修改</el-button>
-            <el-button type="primary" size="small" @click="changeStats('001','SHELVE_STATE')">上架</el-button>
-            <el-button type="primary" size="small" @click="changeStats('002','SHELVE_STATE')">下架</el-button>
-            <el-button type="primary" size="small" @click="changeStats('001','AUDIT_STATE')">审核通过</el-button>
-            <el-button type="primary" size="small" @click="changeStats('002','AUDIT_STATE')">待审核</el-button>
+            <el-button type="primary" icon="el-icon-bottom" size="small" @click="getOrder">获取订单</el-button>
+            <el-button type="primary" icon="el-icon-edit-outline" size="small" @click="luruVisible = true">手工录入订单</el-button>
+            <el-button type="primary" icon="el-icon-star-off" size="small" @click="biaojiClick">标记订单状态</el-button>
             
-            <div style="float:right;">
+            <!-- <div style="float:right;">
                 <el-button type="primary" icon="el-icon-download" size="small">插件下载</el-button>
                 <el-button type="text">采集手册</el-button>
-            </div>
+            </div> -->
         </div>
         <!-- 统计 -->
         <div class="statics divM">
-            <div class="left">
+            <div class="left1">
                 <i class="el-icon-info" style="color:#409EFF"></i>&nbsp;&nbsp;已选择&nbsp;<a style="font-weight: 600">{{ selectedRowKeys.length }}</a>&nbsp;项&nbsp;&nbsp;
             </div>
             <div class="right">
-                <!-- 含变体产品数&nbsp;<a style="font-weight: 600">{{ selectedRowKeys.length }}</a>&nbsp;项&nbsp;&nbsp;&nbsp;
-                变体总数&nbsp;<a style="font-weight: 600">{{ selectedRowKeys.length }}</a>&nbsp;项&nbsp;&nbsp;&nbsp; -->
+                订单数&nbsp;<a style="font-weight: 600">{{ statisticsProfit.addOrderCounts }}</a>&nbsp;&nbsp;&nbsp;
+                销售额&nbsp;<a style="font-weight: 600">{{ statisticsProfit.salesVolume }}</a>&nbsp;&nbsp;&nbsp;
+                订单到账金额&nbsp;<a style="font-weight: 600">{{ statisticsProfit.accountSales }}</a>&nbsp;&nbsp;&nbsp;
+                核算订单数&nbsp;<a style="font-weight: 600">{{ statisticsProfit.checkOrderCounts }}</a>&nbsp;&nbsp;&nbsp;
+                核算订单金额&nbsp;<a style="font-weight: 600">{{ statisticsProfit.checkSalesVolume }}</a>&nbsp;&nbsp;&nbsp;
+                核算订单到账金额&nbsp;<a style="font-weight: 600">{{ statisticsProfit.checkAccountSales }}</a><br>
+                采购价&nbsp;<a style="font-weight: 600">{{ statisticsProfit.cost }}</a>&nbsp;&nbsp;&nbsp;
+                佣金&nbsp;<a style="font-weight: 600">{{ statisticsProfit.servicePrice }}</a>&nbsp;&nbsp;&nbsp;
+                运费&nbsp;<a style="font-weight: 600">{{ statisticsProfit.orderFreight }}</a>&nbsp;&nbsp;&nbsp;
+                核算利润&nbsp;<a style="font-weight: 600">{{ statisticsProfit.profit }}</a>&nbsp;&nbsp;&nbsp;
+                利润率&nbsp;<a style="font-weight: 600">{{ statisticsProfit.profitRate }}</a>&nbsp;&nbsp;&nbsp;
+                退款订单数&nbsp;<a style="font-weight: 600">{{ statisticsProfit.returnOrderCounts }}</a>&nbsp;&nbsp;&nbsp;
+                退款金额&nbsp;<a style="font-weight: 600">{{ statisticsProfit.returnCost }}</a>&nbsp;&nbsp;&nbsp;
+                退款率&nbsp;<a style="font-weight: 600">{{ statisticsProfit.returnCostProfit }}</a>
             </div>
         </div>
         <!-- 列表 -->
@@ -215,44 +242,150 @@
                 width="55">
                 </el-table-column>
                 <el-table-column
-                fixed
+                prop="productId"
+                label="订单号"
+                width="150">
+                <template slot-scope="scope">
+                    <span>{{scope.row.orderId}}</span>
+                    <el-image
+                        style="width: 25px; height: 13px"
+                        :src="'http://'+scope.row.mainImageUrl"></el-image>
+                    <span>{{comObj[scope.row.countryCode]}}</span>
+                </template>
+                </el-table-column>
+                <el-table-column
+                prop="buyDate"
+                label="下单时间"
+                width="100">
+                </el-table-column>
+                <el-table-column
                 prop=""
                 label="图片"
                 width="160">
-                <template slot-scope="scope">
-                    <el-image
-                        style="width: 120px; height: 120px"
-                        :src="'http://'+scope.row.mainImageUrl"></el-image>
-                </template>
+                    <template slot-scope="scope">
+                        <el-tooltip placement="right-start" effect="light">
+                            <div slot="content">
+                                <el-image
+                                style="width: 300px; height: 300px"
+                                :src="'http://'+scope.row.productImageUrl"></el-image>
+                            </div>
+                                <el-image
+                                style="width: 60px; height: 60px"
+                                :src="'http://'+scope.row.productImageUrl"></el-image>
+                        </el-tooltip>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="productId"
-                label="编号"
+                label="亚马逊单号"
                 width="150">
+                    <template slot-scope="scope">
+                        <el-tooltip v-if="scope.row.abroadRemark" :content="scope.row.abroadRemark" placement="bottom" effect="light">
+                            <i class="el-icon-s-opportunity" style="color:#F56C6C"></i>
+                        </el-tooltip>
+                        <el-tooltip v-if="scope.row.generalRemark" :content="scope.row.generalRemark" placement="bottom" effect="light">
+                            <i class="el-icon-s-flag" style="color:#F56C6C"></i>
+                        </el-tooltip>
+                        <open-tab size="medium" type="text" icon="" :dec='scope.row.amazonOrderId' urlName='productAddUpdate' :opt='{"orderId":scope.row.orderId}'></open-tab>
+                        <el-image
+                            style="width: 15px; height: 15px"
+                            :src="'http://'+scope.row.productImageUrl"></el-image>
+                        <span>{{scope.shopName}}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop=""
-                label="标题"
+                label="订单金额"
                 width="">
-                <template slot-scope="scope">
-                    <open-tab size="medium" type="text" icon="" :dec='scope.row.productTitle' urlName='productAddUpdate' :opt='{"productId":scope.row.productId}'></open-tab>
-                    <div v-if="scope.row.productSku"><span style="color:#999">SKU：</span>{{scope.row.productSku}}</div>
-                    <div v-if="scope.row.categoryName"><span style="color:#999">分类：</span>{{scope.row.categoryName}}</div>
-                </template>
+                    <template slot-scope="scope">
+                        <div>{{scope.row.orderMoney}}<span v-if="scope.row.rateCode">({{scope.row.rateCode}})</span></div>
+                        <div v-if="scope.row.orderMoneyCny"><span style="color:#999">{{scope.row.orderMoneyCny}}</span>}</div>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                prop="createTime"
-                label="时间"
+                prop=""
+                label="Amazon佣金"
+                width="">
+                    <template slot-scope="scope">
+                        <div>{{scope.row.amazonCommission}}<span v-if="scope.row.rateCode">({{scope.row.rateCode}})</span></div>
+                        <div v-if="scope.row.amazonCommissionCny"><span style="color:#999">¥{{scope.row.amazonCommissionCny}}</span>}</div>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                prop=""
+                label="到账金额"
+                width="">
+                    <template slot-scope="scope">
+                        <div>{{scope.row.accountMoney}}<span v-if="scope.row.rateCode">({{scope.row.rateCode}})</span></div>
+                        <div v-if="scope.row.accountMoneyCny"><span style="color:#999">¥{{scope.row.accountMoneyCny}}</span>}</div>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                prop="momentRate"
+                label="当天汇率"
                 width="100">
                 </el-table-column>
+                <el-table-column
+                prop="purchasePrice"
+                label="采购价"
+                width="100">
+                </el-table-column>
+                <el-table-column
+                prop="interFreight"
+                label="国际运费"
+                width="100">
+                </el-table-column>
+                <el-table-column
+                prop="platformCommissions"
+                label="平台佣金"
+                width="100">
+                </el-table-column>
+                <el-table-column
+                prop="returnCost"
+                label="退货费用"
+                width="100">
+                </el-table-column>
+                <el-table-column
+                prop="orderProfit"
+                label="利润"
+                width="100">
+                </el-table-column>
+                <el-table-column
+                prop="profitRate"
+                label="利润率"
+                width="100">
+                </el-table-column>
+                <el-table-column
+                prop=""
+                label="订单状态"
+                width="100">
+                    <template slot-scope="scope">
+                        <span 
+                            class="el-tag el-tag--medium" 
+                            :style="{'color':color[stateList.indexOf(scope.row.orderState)],'background':'#fff','border':'1px solid '+color[stateList.indexOf(scope.row.orderState)]}">
+                            {{ scope.row.orderState }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                prop="profitRate"
+                label="异常状态"
+                width="100">
+                    <template slot-scope="scope">
+                        <span 
+                            v-if="scope.row.abnormalStatus"
+                            class="el-tag el-tag--medium" 
+                            :style="{'color':color1[stateList.indexOf(scope.row.abnormalStatus)],'background':'#fff','border':'1px solid '+color1[stateList.indexOf(scope.row.abnormalStatus)]}">
+                            {{ scope.row.abnormalStatus }}</span>
+                    </template>
+                </el-table-column>
+                
                 <el-table-column
                 fixed="right"
                 label="操作"
                 width="100">
-                <template slot-scope="scope">
-                    <open-tab size="medium" type="text" icon="el-icon-edit" dec='' urlName='productAddUpdate' :opt='{"productId":scope.row.productId}'></open-tab>
-                    <!-- <el-button type="text" icon="el-icon-edit" @click=""></el-button> -->
-                </template>
+                    <template slot-scope="scope">
+                        <el-button type="text" icon="" @click="orderId = scope.row.orderId;returnMVisible = true">退款</el-button>
+                    </template>
                 </el-table-column>
             </el-table>
             <el-pagination
@@ -266,9 +399,87 @@
             </el-pagination>
         </div>
       </div>
-      <!-- 批量修改 -->
-      <!-- <product-piliang v-if="piliangVisible" :ids="ids" ref="addOrUpdate" @refreshDataList="getDataList"></product-piliang> -->
-      
+       <!-- 退款弹框 -->
+      <el-dialog
+        title="退款"
+        :visible.sync="returnMVisible"
+        width="400px">
+        <div>
+            <el-row style="margin-bottom:10px">
+                <el-col :span="4">
+                    <label style="display:inline-block;line-height:36px">退款金额</label>
+                </el-col>
+                <el-col :span="20">
+                    <el-input
+                        placeholder="请输入内容"
+                        v-model="returnMoney"
+                        clearable>
+                    </el-input>
+                </el-col>
+            </el-row>
+            <div style="color:#F56C6C;margin-top:10px;font-size:13px">
+            已核算利润的单：退款金额=损失费<br><br>
+            无核算利润的单：退款金额=订单金额*0.03（虚发货的订单需计算此项）+到账金额+采购费+平台佣金+其他损失费
+            </div>
+        </div>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="returnMVisible = false">取 消</el-button>
+            <el-button type="primary" @click="returnM">确 定</el-button>
+        </span>
+    </el-dialog>
+
+    <!-- 手工录入订单弹框 -->
+      <el-dialog
+        title="录入订单"
+        :visible.sync="luruVisible"
+        width="450px">
+        <div>
+            <el-row style="margin-bottom:10px">
+                <el-col :span="6">
+                    <label style="display:inline-block;line-height:36px">Amazon订单ID</label>
+                </el-col>
+                <el-col :span="18">
+                    <el-input
+                        placeholder="请输入内容"
+                        v-model="luruId"
+                        clearable>
+                    </el-input>
+                </el-col>
+            </el-row>
+        </div>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="luruVisible = false">取 消</el-button>
+            <el-button type="primary" @click="rluruClick">确 定</el-button>
+        </span>
+    </el-dialog>
+
+    <!-- 选中标记状态 -->
+      <el-dialog
+        title="标记订单状态"
+        :visible.sync="yichangVisible"
+        width="450px">
+        <div>
+            <el-row style="margin-bottom:10px">
+                <el-col :span="6">
+                    <label style="display:inline-block;line-height:36px">选择标记状态</label>
+                </el-col>
+                <el-col :span="18">
+                    <el-select v-model="yichangValue" placeholder="请选择">
+                        <el-option
+                        v-for="item in yichangList"
+                        :key="item.dataNumber"
+                        :label="item.dataContent"
+                        :value="item.dataNumber">
+                        </el-option>
+                    </el-select>
+                </el-col>
+            </el-row>
+        </div>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="yichangVisible = false">取 消</el-button>
+            <el-button type="primary" @click="rluruClick">确 定</el-button>
+        </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -284,9 +495,20 @@
     },
       data(){
           return{
-              ids:[],
-            showList:true,
+            orderId:'',
+            ids:[],
+            yichangValue:'',
+            yichangList:[],
+            yichangVisible:false,
             productD:{},
+            luruId:'',
+            luruVisible:false,
+            returnMoney:'',
+            returnMVisible:false,
+            stateList:[],
+            statisticsProfit:{},
+            color:['#409EFF','#fb4f4f','#f7915f','#eaa729','#a8de06','#45e63c','#4bd2ba','#07dbf3','#2592f1','#9d7bec'],
+            color:['#409EFF','#fb4f4f','#f7915f','#eaa729','#a8de06','#45e63c','#4bd2ba','#07dbf3','#2592f1','#9d7bec'],
             q:{
                 startDate:'',
                 endDate:'',
@@ -300,61 +522,6 @@
             },
             dataListLoading:true,
             nowProTypeId:[],
-            options:[],
-            props:{
-                lazy:true,
-                lazyLoad: function(node, resolve) {
-                    
-                    if(node.value){
-                        getQuerycategory({'categoryId':node.value}).then((data) => {
-                            console.log(data)
-                            console.log(data == 0)
-                            if (data.data && data.data.code == 0) {
-                                const level = node.level;
-                                // const children = node.children;
-                                const nodes = [];
-                                if(data.data.categoryList.length != 0){
-                                    data.data.categoryList.forEach(function (item) {
-                                        nodes.push({
-                                            value:item.categoryId,
-                                            label:item.categoryName+'('+item.count+')',
-                                            leaf: level >= 2
-                                        })
-                                    })
-                                    resolve(nodes);
-                                }
-                            } else {
-                                alert(data.msg);
-                            }
-                        })
-                        // this.$http({
-                        //     url: this.$http.adornUrl('/product/productcategory/querycategorybyparentid'),
-                        //     method: 'get',
-                        //     params: this.$http.adornParams({
-                        //         'categoryId':node.value
-                        //     })
-                        // }).then(({data}) => {
-                        //     if (data && data.code === 0) {
-                        //         const level = node.level;
-                        //         // const children = node.children;
-                        //         const nodes = [];
-                        //         if(r.categoryList.length != 0){
-                        //             r.categoryList.forEach(function (item) {
-                        //                 nodes.push({
-                        //                     value:item.categoryId,
-                        //                     label:item.categoryName+'('+item.count+')',
-                        //                     leaf: level >= 2
-                        //                 })
-                        //             })
-                        //             resolve(nodes);
-                        //         }
-                        //     } else {
-                        //         alert(r.msg);
-                        //     }
-                        // })
-                    }
-                }
-            },
             dataList:[],
             piliangVisible:false,
             selectedRowKeys:[],
@@ -367,10 +534,23 @@
             pageSize:20,
             pageIndex:1,
             totalPage:0,
-            dataListSelections:[]
+            dataListSelections:[],
+            comObj:{
+                'US':'美国',
+                'JP':'日本',
+                'ES':'西班牙',
+                'FR':'法国',
+                'GB':'英国',
+                'IT':'意大利',
+                'DE':'德国',
+                'BR':'巴西',
+                'CA':'加拿大',
+                'MX':'墨西哥',
+                'AU':'澳大利亚'
+            }
           }
       },
-      activated(){
+      created(){
           this.getMyStatusList();
           this.getDataList();
         //   this.visibleChange();
@@ -520,6 +700,7 @@
                     })
                     } else {
                     this.$message.error(data.msg)
+                    loading.close()
                     }
                 })
             }).catch(() => {})
@@ -587,31 +768,6 @@
                 })
             }).catch(() => {})
         },
-        // 产品分类下拉列表(一级)
-        visibleChange(bol){
-            if(bol){
-                this.$http({
-                    url: this.$http.adornUrl('/product/productcategory/querycategoryone'),
-                    method: 'post',
-                    data: this.$http.adornData()
-                }).then(({data}) => {
-                    if (data && data.code === 0) {
-                        console.log(data);
-                        var that = this;
-                        data.categoryOneList.forEach(function(item){
-                            that.options.push({
-                                value:item.categoryId,
-                                label:item.categoryName+'('+item.count+')',
-                            })
-                        })
-                    
-                    } else {
-                        this.$message.error(data.msg)
-                    }
-                })
-            }
-            
-        },
         // 原创第一步
         toProduct(){
             const loading = this.$loading({
@@ -636,6 +792,172 @@
                     this.$message.error(data.msg)
                 }
             })
+        },
+        // 退款
+        returnM(){
+            // this.returnMoney  退款金额
+            if(this.returnMoney = ''){
+                this.$message({
+                    message: '请填写退款金额',
+                    type: 'warning'
+                });
+            }else{
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+                this.$http({
+                    url: this.$http.adornUrl('/product/product/mylist'),
+                    method: 'get',
+                    params: this.$http.adornParams({
+                        'amazonOrderId': this.orderId,
+                        'returnCost': this.returnMoney,
+                    })
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                        this.$message({
+                            message: '操作成功',
+                            type: 'success',
+                            duration: 1000,
+                            onClose: () => {
+                                this.getDataList();
+                                this.returnMoney = ''
+                                loading.close()
+                            }
+                        })
+                        
+                    } else {
+                        this.$message.error(data.msg)
+                        loading.close();
+                    }
+                })
+            }
+            
+        },
+        // 获取订单
+        getOrder(){
+            const loading = this.$loading({
+                lock: true,
+                text: 'Loading',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
+            this.$http({
+                url: this.$http.adornUrl('/product/product/mylist'),
+                method: 'get',
+                params: this.$http.adornParams()
+            }).then(({data}) => {
+                if (data && data.code === 0) {
+                    this.$message({
+                        message: '操作成功',
+                        type: 'success',
+                        duration: 1000,
+                        onClose: () => {
+                            this.getDataList();
+                            loading.close()
+                        }
+                    })
+                    
+                } else {
+                    this.$message.error(data.msg)
+                    loading.close();
+                }
+            })
+        },
+        // 手工录入订单
+        rluruClick(){
+            // this.luruId  录入订单id
+            const loading = this.$loading({
+                lock: true,
+                text: 'Loading',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
+            this.$http({
+                url: this.$http.adornUrl('/product/product/mylist'),
+                method: 'get',
+                params: this.$http.adornParams({
+                    'amazonOrderId': this.luruId,
+                })
+            }).then(({data}) => {
+                if (data && data.code === 0) {
+                    this.$message({
+                        message: '操作成功',
+                        type: 'success',
+                        duration: 1000,
+                        onClose: () => {
+                            this.getDataList();
+                            this.luruId = ''
+                            loading.close()
+                        }
+                    })
+                    
+                } else {
+                    this.$message.error(data.msg)
+                    loading.close();
+                }
+            })
+        },
+        // 标记异常
+        biaojiClick(){
+            var orderIds = this.dataListSelections.map(item => {
+                return item.productId
+            })
+            if(this.dataListSelections.length == 0){
+                this.$message({
+                    message: '请选择一条数据',
+                    type: 'warning'
+                });
+                return 
+            }
+            this.yichangVisible = true;
+        },
+        // 标记异常确定
+        biaojiClickOk(){
+            var orderIds = this.dataListSelections.map(item => {
+                return item.productId
+            })
+            let label = this.yichangList.find(item => item.dataNumber == this.yichangValue)
+            this.$confirm('确定标记选中订单状态?', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                    });
+                this.$http({
+                    url: this.$http.adornUrl('/product/product/falsedeletion'),
+                    method: 'post',
+                    data: this.$http.adornData({
+                        'orderIds':orderIds,
+                        'abnormalStatus':this.yichangValue,
+                        'abnormalState':label
+                    })
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                    this.$message({
+                        message: '操作成功',
+                        type: 'success',
+                        duration: 1000,
+                        onClose: () => {
+                            this.getDataList();
+                            this.yichangValue = '';
+                            loading.close()
+                        }
+                    })
+                    } else {
+                        this.$message.error(data.msg)
+                        loading.close()
+                    }
+                })
+            }).catch(() => {})
+
         }
       }
   }
@@ -650,7 +972,7 @@
     }
     .statics{
         display: flex;
-        height: 39px;
+        /* height: 39px; */
         background-color: #e6f7ff;
         border: 1px solid #91d5ff;
         color: rgba(0,0,0,.6);
@@ -658,8 +980,8 @@
         border-radius: 4px;
         padding: 0 10px;
     }
-    .statics .left{
-        width: 300px;
+    .statics .left1{
+        width: 160px;
     }
     .statics .right{
         flex: 1;

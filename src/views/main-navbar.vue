@@ -13,6 +13,9 @@
         <el-menu-item class="site-navbar__switch" index="0" @click="sidebarFold = !sidebarFold" style="">
           <icon-svg name="zhedie"></icon-svg>
         </el-menu-item>
+        <el-menu-item class="site-navbar__switch" index="0" @click="tabsRefreshCurrentHandle" style="">
+          <i class="el-icon-refresh-right"></i>
+        </el-menu-item>
       </el-menu>
       <el-menu
         class="site-navbar__menu site-navbar__menu--right"
@@ -77,6 +80,10 @@
         get () { return this.$store.state.common.mainTabs },
         set (val) { this.$store.commit('common/updateMainTabs', val) }
       },
+      mainTabsActiveName: {
+        get () { return this.$store.state.common.mainTabsActiveName },
+        set (val) { this.$store.commit('common/updateMainTabsActiveName', val) }
+      },
       userName: {
         get () { return this.$store.state.user.name }
       }
@@ -88,6 +95,22 @@
         this.$nextTick(() => {
           this.$refs.updatePassowrd.init()
         })
+      },
+      // tabs, 删除tab
+      removeTabHandle (tabName) {
+        this.mainTabs = this.mainTabs.filter(item => item.name !== tabName)
+        if (this.mainTabs.length >= 1) {
+          // 当前选中tab被删除
+          if (tabName === this.mainTabsActiveName ) {
+            var tab = this.mainTabs[this.mainTabs.length - 1]
+            this.$router.push({ name: tab.name, query: tab.query, params: tab.params }, () => {
+              this.mainTabsActiveName = this.$route.name
+            })
+          }
+        } else {
+          this.menuActiveName = ''
+          this.$router.push({ name: 'home' })
+        }
       },
       // 退出
       logoutHandle () {
@@ -107,6 +130,14 @@
             }
           })
         }).catch(() => {})
+      },
+      // tabs, 刷新当前
+      tabsRefreshCurrentHandle () {
+        var tab = this.$route
+        this.removeTabHandle(tab.name)
+        this.$nextTick(() => {
+          this.$router.push({ name: tab.name, query: tab.query, params: tab.params })
+        })
       }
     }
   }

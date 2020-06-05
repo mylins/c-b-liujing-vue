@@ -134,7 +134,7 @@
         </div>
         <!-- 筛选 -->
         <div style="margin:16px 0">
-            <div class="tag-group">
+            <div class="tag-group" v-if="audit.length != 0">
                 <span class="tag-group__title">审核状态</span>
                 <el-tag
                     v-for="item in audit"
@@ -145,7 +145,7 @@
                     {{ item.value }} ({{item.count}})
                 </el-tag>
             </div>
-            <div class="tag-group">
+            <div class="tag-group" v-if="audit.length != 0">
                 <span class="tag-group__title">产品类型</span>
                 <el-tag
                     v-for="item in productType"
@@ -156,7 +156,7 @@
                     {{ item.value }} ({{item.count}})
                 </el-tag>
             </div>
-            <div class="tag-group">
+            <div class="tag-group" v-if="audit.length != 0">
                 <span class="tag-group__title">上传类型</span>
                 <el-tag
                     v-for="item in upload"
@@ -181,9 +181,16 @@
                 label="图片"
                 width="160">
                 <template slot-scope="scope">
-                    <el-image
-                        style="width: 120px; height: 120px"
-                        :src="'http://'+scope.row.mainImageUrl"></el-image>
+                    <el-tooltip placement="right-start" effect="light">
+                        <div slot="content">
+                            <el-image
+                            style="width: 300px; height: 300px"
+                            :src="'http://'+scope.row.mainImageUrl"></el-image>
+                        </div>
+                            <el-image
+                            style="width: 100px; height: 100px"
+                            :src="'http://'+scope.row.mainImageUrl"></el-image>
+                    </el-tooltip>
                 </template>
                 </el-table-column>
                 <el-table-column
@@ -196,8 +203,9 @@
                 label="标题"
                 width="">
                 <template slot-scope="scope">
+                    
                     <!-- <open-tab type="text" icon="" :dec='scope.row.productTitle' urlName='productLook' :opt='{"productId":scope.row.productId}'></open-tab> -->
-                    <open-tab size="medium" type="text" icon="" :dec='scope.row.productTitle' urlName='productLook' :opt='{"productId":scope.row.productId}'></open-tab>
+                    <open-tab :isMore="true" size="medium" type="text" icon="" :dec='scope.row.productTitle' urlName='productLook' :opt='{"productId":scope.row.productId}'></open-tab>
                     <div v-if="scope.row.productSku"><span style="color:#999">SKU：</span>{{scope.row.productSku}}</div>
                     <div v-if="scope.row.categoryName"><span style="color:#999">分类：</span>{{scope.row.categoryName}}</div>
                 </template>
@@ -292,7 +300,7 @@
             dataListSelections:[]
           }
       },
-      activated(){
+      created(){
           this.getMyStatusList();
           this.getDataList();
         //   this.visibleChange();

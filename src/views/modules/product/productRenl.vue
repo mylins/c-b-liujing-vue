@@ -11,7 +11,7 @@
                             <label class="labelSS">选择认领到的公司:</label>
                         </el-col>
                         <el-col :span="15">
-                            <el-select v-model="q.deptId" filterable clearable placeholder="请选择">
+                            <el-select v-model="q.toDeptId" filterable clearable placeholder="请选择">
                                 <el-option
                                     v-for="item in $store.state.dept.comList"
                                     :key="'D'+item.deptId"
@@ -28,7 +28,7 @@
                             <label class="labelSS">选择认领到的小组:</label>
                         </el-col>
                         <el-col :span="15">
-                            <el-select v-model="q.groupId" clearable placeholder="请选择" @focus='getGroupList'>
+                            <el-select v-model="q.toGroupId" clearable placeholder="请选择" @focus='getGroupList(q.toDeptId)'>
                                 <el-option
                                     v-for="item in groupList"
                                     :key="'G'+item.groupId"
@@ -45,7 +45,7 @@
                             <label class="labelSS">选择认领到的员工:</label>
                         </el-col>
                         <el-col :span="15">
-                            <el-select v-model="q.userId" clearable placeholder="请选择" @focus='getuserList'>
+                            <el-select v-model="q.toUserId" clearable placeholder="请选择" @focus='getuserList(q.toDeptId,q.toGroupId)' @change="getDataList">
                                 <el-option
                                     v-for="item in userList"
                                     :key="'U'+item.userId"
@@ -56,7 +56,7 @@
                         </el-col>
                     </el-row>
                 </el-col>
-                <el-button type="warning" icon="" size="small" @click="del">认领</el-button>
+                <el-button type="warning" icon="" size="small" @click="renlClickPL">认领</el-button>
             </el-row>
 
             
@@ -89,7 +89,7 @@
                             <label class="labelSS">选择小组:</label>
                         </el-col>
                         <el-col :span="18">
-                            <el-select v-model="q.groupId" clearable placeholder="请选择" @focus='getGroupList'>
+                            <el-select v-model="q.groupId" clearable placeholder="请选择" @focus='getGroupList(q.deptId)'>
                                 <el-option
                                     v-for="item in groupList"
                                     :key="'G'+item.groupId"
@@ -106,7 +106,7 @@
                             <label class="labelSS">选择员工:</label>
                         </el-col>
                         <el-col :span="18">
-                            <el-select v-model="q.userId" clearable placeholder="请选择" @focus='getuserList'>
+                            <el-select v-model="q.userId" clearable placeholder="请选择" @focus='getuserList(q.deptId,q.groupId)'>
                                 <el-option
                                     v-for="item in userList"
                                     :key="'U'+item.userId"
@@ -208,6 +208,7 @@
                 style="width: 100%">
                 <el-table-column
                 type="selection"
+                :selectable="checkSelectable"
                 width="55">
                 </el-table-column>
                 <el-table-column
@@ -216,9 +217,16 @@
                 label="图片"
                 width="160">
                 <template slot-scope="scope">
-                    <el-image
-                        style="width: 120px; height: 120px"
-                        :src="'http://'+scope.row.mainImageUrl"></el-image>
+                    <el-tooltip placement="right-start" effect="light">
+                        <div slot="content">
+                            <el-image
+                            style="width: 300px; height: 300px"
+                            :src="'http://'+scope.row.mainImageUrl"></el-image>
+                        </div>
+                            <el-image
+                            style="width: 100px; height: 100px"
+                            :src="'http://'+scope.row.mainImageUrl"></el-image>
+                    </el-tooltip>
                 </template>
                 </el-table-column>
                 <el-table-column
@@ -231,17 +239,33 @@
                 label="标题"
                 width="">
                 <template slot-scope="scope">
-                    <!-- <open-tab type="text" icon="" :dec='scope.row.productTitle' urlName='productLook' :opt='{"productId":scope.row.productId}'></open-tab> -->
-                    <open-tab size="medium" type="text" icon="" :dec='scope.row.productTitle' urlName='productLook' :opt='{"productId":scope.row.productId}'></open-tab>
+                    <span>{{scope.row.productTitle}}</span>
+                    <!-- <open-tab size="medium" type="text" icon="" :dec='scope.row.productTitle' urlName='productLook' :opt='{"productId":scope.row.productId}'></open-tab> -->
                     <div v-if="scope.row.productSku"><span style="color:#999">SKU：</span>{{scope.row.productSku}}</div>
                     <div v-if="scope.row.categoryName"><span style="color:#999">分类：</span>{{scope.row.categoryName}}</div>
                 </template>
                 </el-table-column>
-                
+                <el-table-column
+                    prop=""
+                    label="认领情况"
+                    width="100">
+                    <template slot-scope="scope">
+                        <el-tag v-if="scope.row.isClaim == 1">已认领</el-tag>
+                        <el-tag type="info" v-if="scope.row.isClaim == 0">未认领</el-tag>
+                    </template>
+                </el-table-column>
                 <el-table-column
                 prop="createTime"
                 label="时间"
                 width="100">
+                </el-table-column>
+                <el-table-column
+                    prop=""
+                    label="操作"
+                    width="100">
+                    <template slot-scope="scope">
+                        <el-button v-if="q.toUserId != '' && scope.row.isClaim == 0" type="text" @click="renlClick(scope.row.productId)">认领</el-button>
+                    </template>
                 </el-table-column>
             </el-table>
             <el-pagination
@@ -275,9 +299,12 @@
                 endDate:'',
                 title:'',
                 sku:'',
-                deptId:null,
-                userId:null,
-                groupId:null
+                deptId:'',
+                userId:'',
+                groupId:'',
+                toDeptId:'',
+                toGroupId:'',
+                toUserId:''
             },
             groupList:[],
             userList:[],
@@ -315,75 +342,23 @@
             },
             dataList:[],
             selectedRowKeys:[],
-            audit:[],
-            productType: [],
-            upload: [],
-            auditValue:'',
-            productTypeValue:'',
-            uploadValue:'',
             pageSize:20,
             pageIndex:1,
             totalPage:0,
             dataListSelections:[]
           }
       },
-      activated(){
-          this.getMyStatusList();
+      created(){
           this.getDataList();
         //   this.visibleChange();
       },
       methods:{
-        auditClick(num){
-            this.auditValue = num;
-            this.getDataList();
-        },
-        productTypeClick(num){
-            this.productTypeValue = num;
-            this.getDataList();
-        },
-        uploadClick(num){
-            this.uploadValue = num;
-            this.getDataList();
-        },
-        // 获取产品状态列表
-        getMyStatusList () {
-            this.$http({
-                url: this.$http.adornUrl('/sys/sysdict/allstatuslist'),
-                method: 'get',
-                params: this.$http.adornParams()
-            }).then(({data}) => {
-                if (data && data.code === 0) {
-                    console.log(data);
-                    this.audit = data.auditList;
-                    this.productType = data.productTypeList;
-                    this.upload = data.uploadList;
-                    this.audit.unshift({
-                        code:'',
-                        value:'全部',
-                        count:data.allCounts
-                    })
-                    this.productType.unshift({
-                        code:'',
-                        value:'全部',
-                        count:data.allCounts
-                    })
-                    this.upload.unshift({
-                        code:'',
-                        value:'全部',
-                        count:data.allCounts
-                    })
-                    // console.log(this.$store.state.dept)
-                } else {
-                    
-                }
-            })
-        },
         // 获取数据列表
         getDataList () {
             // console.log(this.nowProTypeId);
             this.dataListLoading = true
             this.$http({
-                url: this.$http.adornUrl('/product/product/alllist'),
+                url: this.$http.adornUrl('/product/product/getClaimList'),
                 method: 'get',
                 params: this.$http.adornParams({
                     'page': this.pageIndex,
@@ -398,7 +373,10 @@
                     'uploadNumber':this.uploadValue,
                     'deptId':this.q.deptId,
                     'groupId':this.q.groupId,
-                    'userId':this.q.userId
+                    'userId':this.q.userId,
+                    'toDeptId':this.q.toDeptId,
+                    'toGroupId':this.q.toGroupId,
+                    'toUserId':this.q.toUserId
                 })
             }).then(({data}) => {
                 if (data && data.code === 0) {
@@ -413,6 +391,15 @@
                 this.dataListLoading = false
             })
         },
+        checkSelectable(row){
+            var flag = true;
+            if(row.isClaim == 0){
+                flag = true
+            }else{
+                flag = false
+            }
+            return flag
+        },
         // 重置
         clean(){
             this.q = {
@@ -420,9 +407,12 @@
                 endDate:'',
                 title:'',
                 sku:'',
-                deptId:null,
-                userId:null,
-                groupId:null
+                deptId:'',
+                userId:'',
+                groupId:'',
+                toDeptId:'',
+                toGroupId:'',
+                toUserId:''
             }
         },
         // 每页数
@@ -439,53 +429,6 @@
         // 多选
         selectionChangeHandle (val) {
             this.dataListSelections = val
-        },
-        // 删除
-        del(){
-            console.log(this.dataListSelections);
-            var productIds = this.dataListSelections.map(item => {
-                return item.productId
-            })
-            console.log(productIds)
-            if(productIds.length == 0){
-                this.$message({
-                    message: '请选择一条数据',
-                    type: 'warning'
-                });
-                return 
-            }
-            this.$confirm('确定对选项进行删除操作?', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                const loading = this.$loading({
-                    lock: true,
-                    text: 'Loading',
-                    spinner: 'el-icon-loading',
-                    background: 'rgba(0, 0, 0, 0.7)'
-                    });
-                this.$http({
-                    url: this.$http.adornUrl('/product/product/falsedeletion'),
-                    method: 'post',
-                    data: this.$http.adornData(productIds, false)
-                }).then(({data}) => {
-                    if (data && data.code === 0) {
-                    this.$message({
-                        message: '操作成功',
-                        type: 'success',
-                        duration: 1000,
-                        onClose: () => {
-                            this.getDataList()
-                            this.getMyStatusList();
-                            loading.close()
-                        }
-                    })
-                    } else {
-                    this.$message.error(data.msg)
-                    }
-                })
-            }).catch(() => {})
         },
         changeStats(code,type){
             var productIds = this.dataListSelections.map(item => {
@@ -559,37 +502,14 @@
             }
             
         },
-        // 原创第一步
-        toProduct(){
-            const loading = this.$loading({
-                lock: true,
-                text: 'Loading',
-                spinner: 'el-icon-loading',
-                background: 'rgba(0, 0, 0, 0.7)'
-            });
-            this.$http({
-                url: this.$http.adornUrl('/product/product/getproductid'),
-                method: 'get',
-                params: this.$http.adornParams()
-            }).then(({data}) => {
-                if (data && data.code === 0) {
-                    console.log(data);
-                    this.productD = data.product;
-                    this.showList = false;
-
-                    // this.dataForm = data.product;
-                    loading.close();
-                }
-            })
-        },
         // 获取小组下拉
-        getGroupList(){
-            if(this.q.deptId){
+        getGroupList(id){
+            if(id){
                 this.$http({
                 url: this.$http.adornUrl('/sys/sysgroup/select'),
                 method: 'get',
                 params: this.$http.adornParams({
-                    'deptId':this.q.deptId,
+                    'deptId':id,
                 })
             }).then(({data}) => {
                 if (data && data.code === 0) {
@@ -607,14 +527,14 @@
             
         },
         // 获取人员下拉
-        getuserList(){
-            if(this.q.deptId){
+        getuserList(id,id1){
+            if(id){
                 this.$http({
                 url: this.$http.adornUrl('/sys/user/getUserList'),
                 method: 'get',
                 params: this.$http.adornParams({
-                    'deptId':this.q.deptId,
-                    'groupId':this.q.groupId
+                    'deptId':id,
+                    'groupId':id1
                 })
             }).then(({data}) => {
                 if (data && data.code === 0) {
@@ -629,6 +549,101 @@
                     type: 'warning'
                 });
             }
+        },
+        // 认领
+        renlClick(id){
+            this.$confirm('确定对选项进行认领操作?', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                    });
+                this.$http({
+                    url: this.$http.adornUrl('/product/productclaim/claim'),
+                    method: 'post',
+                    data: this.$http.adornData({
+                        'productId':id,
+                        'userId':this.q.toUserId
+                    })
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                    this.$message({
+                        message: '操作成功',
+                        type: 'success',
+                        duration: 1000,
+                        onClose: () => {
+                            this.getDataList()
+                            loading.close()
+                        }
+                    })
+                    } else {
+                        this.$message.error(data.msg)
+                        loading.close()
+                    }
+                })
+            }).catch(() => {})
+        },
+        // 批量认领
+        renlClickPL(){
+            if(this.q.toUserId == ''){
+                this.$message({
+                    message: '请选择认领到的人',
+                    type: 'warning'
+                });
+                return 
+            }
+            var productIds = this.dataListSelections.map(item => {
+                return item.productId
+            })
+            console.log(productIds)
+            if(productIds.length == 0){
+                this.$message({
+                    message: '请选择一条数据',
+                    type: 'warning'
+                });
+                return 
+            }
+            
+            this.$confirm('确定对选项进行认领操作?', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                    });
+                this.$http({
+                    url: this.$http.adornUrl('/product/productclaim/batchClaim'),
+                    method: 'post',
+                    data: this.$http.adornData({
+                        'productIds':productIds,
+                        'userId':this.q.toUserId
+                    })
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                        this.$message({
+                            message: '操作成功',
+                            type: 'success',
+                            duration: 1000,
+                            onClose: () => {
+                                this.getDataList()
+                                loading.close()
+                            }
+                        })
+                    } else {
+                        this.$message.error(data.msg)
+                        loading.close()
+                    }
+                })
+            }).catch(() => {})
         }
       }
   }

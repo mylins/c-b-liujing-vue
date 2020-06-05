@@ -84,7 +84,7 @@
         </div>
         <!-- 筛选 -->
         <div style="margin:16px 0">
-            <div class="tag-group">
+            <div class="tag-group" v-if="audit.length != 0">
                 <span class="tag-group__title">审核状态</span>
                 <el-tag
                     v-for="item in audit"
@@ -95,7 +95,7 @@
                     {{ item.value }} ({{item.count}})
                 </el-tag>
             </div>
-            <div class="tag-group">
+            <div class="tag-group" v-if="productType.length != 0">
                 <span class="tag-group__title">产品类型</span>
                 <el-tag
                     v-for="item in productType"
@@ -106,7 +106,7 @@
                     {{ item.value }} ({{item.count}})
                 </el-tag>
             </div>
-            <div class="tag-group">
+            <div class="tag-group" v-if="upload.length != 0">
                 <span class="tag-group__title">上传类型</span>
                 <el-tag
                     v-for="item in upload"
@@ -161,9 +161,17 @@
                 label="图片"
                 width="160">
                 <template slot-scope="scope">
-                    <el-image
-                        style="width: 120px; height: 120px"
-                        :src="'http://'+scope.row.mainImageUrl"></el-image>
+                    <el-tooltip placement="right-start" effect="light">
+                        <div slot="content">
+                            <el-image
+                            style="width: 300px; height: 300px"
+                            :src="'http://'+scope.row.mainImageUrl"></el-image>
+                        </div>
+                            <el-image
+                            style="width: 100px; height: 100px"
+                            :src="'http://'+scope.row.mainImageUrl"></el-image>
+                    </el-tooltip>
+                    
                 </template>
                 </el-table-column>
                 <el-table-column
@@ -176,7 +184,7 @@
                 label="标题"
                 width="">
                 <template slot-scope="scope">
-                    <open-tab size="medium" type="text" icon="" :dec='scope.row.productTitle' urlName='productAddUpdate' :opt='{"productId":scope.row.productId}'></open-tab>
+                    <open-tab :isMore="true" size="medium" type="text" icon="" :dec='scope.row.productTitle' urlName='productAddUpdate' :opt='{"productId":scope.row.productId}'></open-tab>
                     <div v-if="scope.row.productSku"><span style="color:#999">SKU：</span>{{scope.row.productSku}}</div>
                     <div v-if="scope.row.categoryName"><span style="color:#999">分类：</span>{{scope.row.categoryName}}</div>
                 </template>
@@ -191,8 +199,8 @@
                 label="操作"
                 width="100">
                 <template slot-scope="scope">
-                    <open-tab size="medium" type="text" icon="el-icon-edit" dec='' urlName='productAddUpdate' :opt='{"productId":scope.row.productId}'></open-tab>
-                    <!-- <el-button type="text" icon="el-icon-edit" @click=""></el-button> -->
+                    <open-tab :isMore="true" size="medium" type="text" icon="el-icon-edit" dec='' urlName='productAddUpdate' :opt='{"productId":scope.row.productId}'></open-tab>
+                    <el-button type="text" icon="" @click="copy(scope.row.productId)">复制</el-button>
                 </template>
                 </el-table-column>
             </el-table>
@@ -306,7 +314,7 @@
             dataListSelections:[]
           }
       },
-      activated(){
+      created(){
           this.getMyStatusList();
           this.getDataList();
         //   this.visibleChange();
@@ -383,8 +391,7 @@
                     this.totalPage = data.page.totalCount
                     console.log(this.$store.state.dept)
                 } else {
-                    this.dataList = []
-                    this.totalPage = 0
+                    this.$message.error(data.msg)
                 }
                 this.dataListLoading = false
             })
@@ -456,6 +463,7 @@
                     })
                     } else {
                     this.$message.error(data.msg)
+                    loading.close()
                     }
                 })
             }).catch(() => {})
@@ -572,7 +580,44 @@
                     this.$message.error(data.msg)
                 }
             })
-        }
+        },
+        copy(id){
+            this.$confirm('确定复制该产品?', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                    });
+                this.$http({
+                    url: this.$http.adornUrl('/product/product/copyProduct'),
+                    method: 'get',
+                    params: this.$http.adornParams({
+                        'productId':id
+                    })
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                        this.$message({
+                            message: '操作成功',
+                            type: 'success',
+                            duration: 1000,
+                            onClose: () => {
+                                this.getDataList()
+                                loading.close()
+                            }
+                        })
+                    } else {
+                        this.$message.error(data.msg)
+                        loading.close()
+                    }
+                })
+            }).catch(() => {})
+        },
+
       }
   }
 </script>
