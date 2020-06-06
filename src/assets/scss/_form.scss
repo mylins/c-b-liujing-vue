@@ -65,3 +65,12 @@
 .el-dialog__body .el-form .el-select{
     width: 100%;
 }
+.felDiv .el-select , .felDiv .el-select .el-input__inner{
+    width: 100%;
+}
+.felDiv>.el-row>.el-col-8{
+    margin-bottom: 16px;
+}
+.felDiv>.el-row>.el-col-8>.el-col-10{
+    text-align: right;
+}

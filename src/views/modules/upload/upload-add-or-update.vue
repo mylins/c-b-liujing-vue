@@ -11,18 +11,18 @@
       <el-form :inline="true" :model="dataForm" :rules="dataRule" ref="dataForm" label-width="120px">
         <div class="blockDivForm">
           <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;上传产品</h3>
-          <el-form-item label="开始编号" prop="">
+          <el-form-item label="开始编号" prop="startId">
             <el-input v-model="dataForm.startId" placeholder="请输入"></el-input>
-            <div style="color:#F56C6C;font-size:12px">产品编号都是递增的，本次要导出产品起始编号</div>
+            <div style="color:#E6A23C;font-size:12px">产品编号都是递增的，本次要导出产品起始编号</div>
           </el-form-item>
-          <el-form-item label="结束编号" prop="">
+          <el-form-item label="结束编号" prop="endId">
             <el-input v-model="dataForm.endId" placeholder="请输入"></el-input>
-            <div style="color:#F56C6C;font-size:12px">要导出产品的结束编号，结束编号起始编号</div>
+            <div style="color:#E6A23C;font-size:12px">要导出产品的结束编号，结束编号起始编号</div>
           </el-form-item>
           <br>
-          <el-form-item label="上传编号" prop="productTitle">
+          <el-form-item label="上传编号" prop="">
             <el-input class="textIN" type="textarea" :rows="2" v-model="dataForm.uploadIds" placeholder="请输入"></el-input>
-            <div style="color:#F56C6C;font-size:12px">填写产品ID后（逗号隔开，逗号为英文逗号，不能有空格），将只上传填写的ID列表，不填写则上传其他条件筛选出的产品，标准格式：12,123,456,789</div>
+            <div style="color:#E6A23C;font-size:12px">填写产品ID后（逗号隔开，逗号为英文逗号，不能有空格），将只上传填写的ID列表，不填写则上传其他条件筛选出的产品，标准格式：12,123,456,789</div>
           </el-form-item>
           <br>
           <el-form-item label="授权店铺" prop="grantShopId">
@@ -50,10 +50,11 @@
             <!-- <div style="color:#F56C6C;margin-top:-6px;font-size:12px">如果只更新产品信息，则不需要选中上面选项</div> -->
           </el-form-item>
           <br>
+          
           <el-form-item label="选择分类" prop="amazonCategoryId">
               <div style="display:flex;">
                   <div style="width:620px">
-                      <el-cascader ref="aaa" v-model="amazonCategoryId" :options="options" :props="props" clearable @change="productCategorChange" @visible-change="visibleChange"></el-cascader>
+                      <el-cascader ref="aaa" :props="props" v-model="amazonCategoryId" :options="options" clearable @change="productCategorChange" @visible-change="visibleChange"></el-cascader>
                         <br>
                         <span class="decVal">{{dataForm.amazonCategory}}</span>
                   </div>
@@ -78,18 +79,37 @@
             </el-select>
           </el-form-item>
           <br>
-          <h3 v-if="dataForm.fieldsEntityList.length != 0"> <i class="el-icon-menu"></i> &nbsp;&nbsp;分类属性</h3>
-          <el-form-item v-for="item in dataForm.middleEntitys" :key="item.fieldDisplayName" :label="item.fieldDisplayName" prop="property.domesticFreight">
-            <!-- <el-input v-model="dataForm.property.domesticFreight" placeholder="请选择"></el-input> -->
-            <el-select v-model="item.value" filterable placeholder="请选择">
-                <el-option
-                    v-for="val in item.templateFieldValueDtos"
-                    :key="val.value"
-                    :label="val.cnValue"
-                    :value="val.value">
-                </el-option>
-            </el-select>
-          </el-form-item>
+          <div v-if="dataForm.fieldsEntityList.length != 0" class="felDiv">
+            <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;分类信息</h3>
+            <el-row>
+                <el-col :span="8" v-for="item in dataForm.fieldsEntityList" :key="item.fieldId">
+                    <el-col :span="10">
+                        <label class="el-form-item__label">{{item.fieldDisplayName}}</label>
+                    </el-col>
+                    <el-col :span="14">
+                        <el-select v-model="item.value" filterable placeholder="请选择">
+                            <el-option
+                                v-for="val in item.templateFieldValueDtos"
+                                :key="val.value"
+                                :label="val.cnValue"
+                                :value="val.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                </el-col>
+            </el-row>
+            <!-- <el-form-item v-for="item in dataForm.fieldsEntityList" :key="item.fieldId" :label="item.fieldDisplayName" prop="property.domesticFreight">
+                <el-select v-model="item.value" filterable placeholder="请选择">
+                    <el-option
+                        v-for="val in item.templateFieldValueDtos"
+                        :key="val.value"
+                        :label="val.cnValue"
+                        :value="val.value">
+                    </el-option>
+                </el-select>
+            </el-form-item> -->
+          </div>
+          
         </div>
       </el-form>
 
@@ -131,13 +151,14 @@
   import { getAmazonCategoryId } from '@/api/product'
   export default {
     data () {
-      var number = (rule, value, callback) => {
-        if (/[^\d.]/g.test(value)) {
-          callback(new Error('只能填写数字'))
+      var id = (rule, value, callback) => {
+        if (this.dataForm.uploadIds == '') {
+          callback(new Error('上传ID和开始结束ID必须要有一个有效值'))
         } else {
           callback()
         }
       }
+      let that=this;
       return {
         shopList:[],
         historyVisible:false,
@@ -171,21 +192,40 @@
                 if(node.value){
                     getAmazonCategoryId({'amazonCategoryId':node.value}).then((data) => {
                         if (data.data && data.data.code == 0) {
-                            const level = node.level;
+                            // const level = node.level;
                             const nodes = [];
+                            
                             if(data.data.amazonCategoryEntityChildList.length != 0){
                                 data.data.amazonCategoryEntityChildList.forEach(function (item) {
-                                    nodes.push({
-                                        value:item.id,
-                                        label:item.displayName,
-                                        labelId:item.nodeId,
-                                        leaf: level >= 2
+                                    getAmazonCategoryId({'amazonCategoryId':item.id}).then((d) => {
+                                        let leaf = d.data.amazonCategoryEntityChildList.length == 0;
+                                        console.log(leaf);
+                                        nodes.push({
+                                            value:item.id,
+                                            label:item.displayName,
+                                            labelId:item.nodeId,
+                                            leaf: leaf
+                                        })
                                     })
+                                    // nodes.push({
+                                    //     value:item.id,
+                                    //     label:item.displayName,
+                                    //     labelId:item.nodeId,
+                                    //     leaf: level >= 3
+                                    // })
+                                    
                                 })
-                                resolve(nodes);
+                                setTimeout(() => {
+                                    that.$nextTick(() => {
+                                        resolve(nodes);
+                                    })
+                                },1000)
+                                
+                                console.log(nodes);
+                                
                             }else{
                                 console.log(node.isLeaf);
-                                // props.node.leaf = true;
+                                // node.isLeaf = true;
                             }
                         } else {
                             alert(data.msg);
@@ -208,6 +248,9 @@
             ],
             amazonTemplateId: [
                 { required: true, message: '分类模版不能为空', trigger: 'change' },
+            ],
+            startId:[
+                { validator: id, trigger: 'blur' }
             ]
         }
       }
@@ -219,6 +262,12 @@
         this.init(this.$route.params);
         this.getShopList();
     },
+    watch:{
+        // amazonCategoryId(val){
+        //     console.log(val);
+        //     this.loadRegionChild(val);
+        // }
+    },
     computed: {
       mainTabs: {
         get () { return this.$store.state.common.mainTabs },
@@ -228,6 +277,9 @@
         get () { return this.$store.state.common.mainTabsActiveName },
         set (val) { this.$store.commit('common/updateMainTabsActiveName', val) }
       },
+    //   options(){
+    //       return this.processingData(this.options1)
+    //   }
       
     },
     methods: {
@@ -361,9 +413,11 @@
                                 that.options.push({
                                     value:item.id,
                                     label:item.displayName,
-                                    labelId:item.nodeId
+                                    labelId:item.nodeId,
                                 })
                             })
+                            // this.options = this.processingData(this.options);
+                            console.log()
                         
                         } else {
                             this.$message.error(data.msg)
@@ -393,9 +447,120 @@
             }else{
                 this.dataForm.amazonCategory = '';
                 this.amazonCategoryId = val;
+                this.dataForm.amazonCategoryId ='';
+                this.dataForm.amazonCategoryNodeId = '';
             }
             
         },
+        findRegionOption(regionOptions, regionArr) {
+            if (_.isEmpty(regionArr) || _.isEmpty(regionOptions)) {
+                return null
+            }
+
+            let regionId = _.first(regionArr)
+            let regionOption = _.find(regionOptions, regionOption => {
+                return regionOption.value === regionId
+            })
+            if (!regionOption) {
+                return null
+            }
+            let tailRegionArr = _.tail(regionArr)
+            if (_.isEmpty(tailRegionArr)) {
+                return regionOption
+            }
+            return this.findRegionOption(regionOption.children, tailRegionArr)
+        },
+        loadRegionChild(regionIdArr) {
+            let regionOptions = this.options
+            let regionOptionInUI = this.findRegionOption(regionOptions, regionIdArr)
+            if (
+                !regionOptionInUI ||
+                !regionOptionInUI.children ||
+                regionOptionInUI.children.length > 0
+            ) {
+                return null
+            }
+
+            let regionKey = _.last(regionIdArr)
+            if (!regionKey) {
+                return null
+            }
+
+            this.$http({
+                url: this.$http.adornUrl('/upload/amazoncategory/childCategoryList'),
+                method: 'post',
+                data: this.$http.adornData({
+                    amazonCategoryId:regionKey,
+                })
+            }).then((data) => {
+                var that = this;
+                if(data.amazonCategoryEntityChildList.length != 0){
+                    regionOptionInUI.children= [];
+                    data.amazonCategoryEntityChildList.forEach(function(item){
+                        regionOptionInUI.children.push({
+                            value:item.id,
+                            label:item.displayName,
+                            labelId:item.nodeId,
+                            children:[]
+                        })
+                    })
+                }
+            })
+
+            api
+                .getRegionHiera(regionKey)
+                .then(res => {
+                regionOptionInUI.children = res.data  //后台返回数据
+                })
+        },
+        // visibleChangeTwo(val){
+        //     this.$http({
+        //         url: this.$http.adornUrl('/upload/amazoncategory/childCategoryList'),
+        //         method: 'post',
+        //         data: this.$http.adornData({
+        //             amazonCategoryId:val[0],
+        //         })
+        //     }).then(({data}) => {
+        //         if (data && data.code === 0) {
+        //             console.log(data);
+        //             var that = this;
+        //             if(data.amazonCategoryEntityChildList.length != 0){
+        //                 data.amazonCategoryEntityChildList.forEach(function(item){
+        //                     that.options1.push({
+        //                         value:item.id,
+        //                         label:item.displayName,
+        //                         labelId:item.nodeId,
+        //                         parentId:item.parentId
+        //                     })
+        //                 })
+        //                 this.options = this.processingData(this.options)
+        //             }
+                    
+        //             // this.options1 = this.options1.concat(data.amazonCategoryEntityChildList);
+        //             // var that = this;
+        //             // var obj = {};
+        //             // val.forEach(function(m,i){
+        //             //     if(i == 0){
+        //             //         obj = that.options.find(item => item.value == m)
+        //             //     }else{
+        //             //         obj = obj.find(item => item.value == m)
+        //             //     }
+        //             //     if(i == val.length-1){
+        //                     // data.amazonCategoryEntityChildList.forEach(function(item){
+        //                     //     obj.children.push({
+        //                     //         value:item.id,
+        //                     //         label:item.displayName,
+        //                     //         labelId:item.nodeId
+        //                     //     })
+        //                     // })
+        //             //     }
+        //             // })
+                
+        //         } else {
+        //             this.$message.error(data.msg)
+        //         }
+        //     })
+        // },
         // 选择模版
         getTemplate(){
             if(this.dataForm.amazonCategoryId){

@@ -248,11 +248,9 @@
             props:{
                 lazy:true,
                 lazyLoad: function(node, resolve) {
-                    
+                    console.log(node)
                     if(node.value){
                         getQuerycategory({'categoryId':node.value}).then((data) => {
-                            console.log(data)
-                            console.log(data == 0)
                             if (data.data && data.data.code == 0) {
                                 const level = node.level;
                                 // const children = node.children;
@@ -266,36 +264,14 @@
                                         })
                                     })
                                     resolve(nodes);
+                                }else{
+
                                 }
                             } else {
                                 alert(data.msg);
                             }
                         })
-                        // this.$http({
-                        //     url: this.$http.adornUrl('/product/productcategory/querycategorybyparentid'),
-                        //     method: 'get',
-                        //     params: this.$http.adornParams({
-                        //         'categoryId':node.value
-                        //     })
-                        // }).then(({data}) => {
-                        //     if (data && data.code === 0) {
-                        //         const level = node.level;
-                        //         // const children = node.children;
-                        //         const nodes = [];
-                        //         if(r.categoryList.length != 0){
-                        //             r.categoryList.forEach(function (item) {
-                        //                 nodes.push({
-                        //                     value:item.categoryId,
-                        //                     label:item.categoryName+'('+item.count+')',
-                        //                     leaf: level >= 2
-                        //                 })
-                        //             })
-                        //             resolve(nodes);
-                        //         }
-                        //     } else {
-                        //         alert(r.msg);
-                        //     }
-                        // })
+                        // 
                     }
                 }
             },
