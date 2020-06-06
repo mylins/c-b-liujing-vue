@@ -165,8 +165,8 @@
         </div>
         <!-- 操作 -->
         <div class="divM">
-            <el-button type="primary" icon="el-icon-bottom" size="small" @click="getOrder">获取订单</el-button>
-            <el-button type="primary" icon="el-icon-edit-outline" size="small" @click="luruVisible = true">手工录入订单</el-button>
+            <!-- <el-button type="primary" icon="el-icon-bottom" size="small" @click="getOrder">获取订单</el-button> -->
+            <!-- <el-button type="primary" icon="el-icon-edit-outline" size="small" @click="luruVisible = true">手工录入订单</el-button> -->
             <el-button type="primary" icon="el-icon-star-off" size="small" @click="biaojiClick">标记订单状态</el-button>
             
             <!-- <div style="float:right;">
@@ -226,6 +226,15 @@
                 </el-table-column>
                 <el-table-column
                 prop=""
+                label="公司"
+                width="100">
+                    <template slot-scope="scope">
+                        <div>{{scope.row.deptName}}</div>
+                        <span>操作人：{{scope.row.userName}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                prop=""
                 label="图片"
                 width="160">
                     <template slot-scope="scope">
@@ -260,35 +269,8 @@
                     </template>
                 </el-table-column>
                 <el-table-column
-                prop=""
-                label="订单金额"
-                width="">
-                    <template slot-scope="scope">
-                        <div>{{scope.row.orderMoney}}<span v-if="scope.row.rateCode">({{scope.row.rateCode}})</span></div>
-                        <div v-if="scope.row.orderMoneyCny"><span style="color:#999">{{scope.row.orderMoneyCny}}</span>}</div>
-                    </template>
-                </el-table-column>
-                <el-table-column
-                prop=""
-                label="Amazon佣金"
-                width="">
-                    <template slot-scope="scope">
-                        <div>{{scope.row.amazonCommission}}<span v-if="scope.row.rateCode">({{scope.row.rateCode}})</span></div>
-                        <div v-if="scope.row.amazonCommissionCny"><span style="color:#999">¥{{scope.row.amazonCommissionCny}}</span>}</div>
-                    </template>
-                </el-table-column>
-                <el-table-column
-                prop=""
-                label="到账金额"
-                width="">
-                    <template slot-scope="scope">
-                        <div>{{scope.row.accountMoney}}<span v-if="scope.row.rateCode">({{scope.row.rateCode}})</span></div>
-                        <div v-if="scope.row.accountMoneyCny"><span style="color:#999">¥{{scope.row.accountMoneyCny}}</span>}</div>
-                    </template>
-                </el-table-column>
-                <el-table-column
-                prop="momentRate"
-                label="当天汇率"
+                prop="orderNumber"
+                label="数量"
                 width="100">
                 </el-table-column>
                 <el-table-column
@@ -297,28 +279,13 @@
                 width="100">
                 </el-table-column>
                 <el-table-column
-                prop="interFreight"
-                label="国际运费"
+                prop="domesticWaybill"
+                label="国内物流单号"
                 width="100">
                 </el-table-column>
                 <el-table-column
-                prop="platformCommissions"
-                label="平台佣金"
-                width="100">
-                </el-table-column>
-                <el-table-column
-                prop="returnCost"
-                label="退货费用"
-                width="100">
-                </el-table-column>
-                <el-table-column
-                prop="orderProfit"
-                label="利润"
-                width="100">
-                </el-table-column>
-                <el-table-column
-                prop="profitRate"
-                label="利润率"
+                prop="abroadWaybill"
+                label="国际物流单号"
                 width="100">
                 </el-table-column>
                 <el-table-column
@@ -394,31 +361,6 @@
         </span>
     </el-dialog>
 
-    <!-- 手工录入订单弹框 -->
-      <el-dialog
-        title="录入订单"
-        :visible.sync="luruVisible"
-        width="450px">
-        <div>
-            <el-row style="margin-bottom:10px">
-                <el-col :span="6">
-                    <label style="display:inline-block;line-height:36px">Amazon订单ID</label>
-                </el-col>
-                <el-col :span="18">
-                    <el-input
-                        placeholder="请输入内容"
-                        v-model="luruId"
-                        clearable>
-                    </el-input>
-                </el-col>
-            </el-row>
-        </div>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="luruVisible = false">取 消</el-button>
-            <el-button type="primary" @click="rluruClick">确 定</el-button>
-        </span>
-    </el-dialog>
-
     <!-- 选中标记状态 -->
       <el-dialog
         title="标记订单状态"
@@ -452,7 +394,6 @@
 <script>
   import OpenTab from '../../common/open'
 //   import ProductPiliang from './product-piliang'
-  import { getQuerycategory } from '@/api/product'
   
   export default {
     components: {
@@ -521,11 +462,15 @@
       },
       methods:{
         auditClick(num){
-            this.orderStatusValue = num;
+            this.auditValue = num;
             this.getDataList();
         },
         productTypeClick(num){
-            this.abnormalStatusValue = num;
+            this.productTypeValue = num;
+            this.getDataList();
+        },
+        uploadClick(num){
+            this.uploadValue = num;
             this.getDataList();
         },
         // 获取订单状态列表
@@ -549,6 +494,7 @@
                         value:'全部',
                         count:data.allCounts
                     })
+                    // console.log(this.$store.state.dept)
                 } else {
                     
                 }
@@ -559,7 +505,7 @@
             // console.log(this.nowProTypeId);
             this.dataListLoading = true
             this.$http({
-                url: this.$http.adornUrl('/order/order/getMyList'),
+                url: this.$http.adornUrl('/order/order/purchaseList'),
                 method: 'get',
                 params: this.$http.adornParams({
                     'page': this.pageIndex,
@@ -666,31 +612,6 @@
                 })
             }).catch(() => {})
         },
-        // 原创第一步
-        toProduct(){
-            const loading = this.$loading({
-                lock: true,
-                text: 'Loading',
-                spinner: 'el-icon-loading',
-                background: 'rgba(0, 0, 0, 0.7)'
-            });
-            this.$http({
-                url: this.$http.adornUrl('/product/product/getproductid'),
-                method: 'get',
-                params: this.$http.adornParams()
-            }).then(({data}) => {
-                if (data && data.code === 0) {
-                    console.log(data);
-                    this.productD = data.product;
-                    this.showList = false;
-
-                    // this.dataForm = data.product;
-                    loading.close();
-                }else{
-                    this.$message.error(data.msg)
-                }
-            })
-        },
         // 退款
         returnM(){
             // this.returnMoney  退款金额
@@ -733,70 +654,6 @@
                 })
             }
             
-        },
-        // 获取订单
-        getOrder(){
-            const loading = this.$loading({
-                lock: true,
-                text: 'Loading',
-                spinner: 'el-icon-loading',
-                background: 'rgba(0, 0, 0, 0.7)'
-            });
-            this.$http({
-                url: this.$http.adornUrl('/product/product/mylist'),
-                method: 'get',
-                params: this.$http.adornParams()
-            }).then(({data}) => {
-                if (data && data.code === 0) {
-                    this.$message({
-                        message: '操作成功',
-                        type: 'success',
-                        duration: 1000,
-                        onClose: () => {
-                            this.getDataList();
-                            loading.close()
-                        }
-                    })
-                    
-                } else {
-                    this.$message.error(data.msg)
-                    loading.close();
-                }
-            })
-        },
-        // 手工录入订单
-        rluruClick(){
-            // this.luruId  录入订单id
-            const loading = this.$loading({
-                lock: true,
-                text: 'Loading',
-                spinner: 'el-icon-loading',
-                background: 'rgba(0, 0, 0, 0.7)'
-            });
-            this.$http({
-                url: this.$http.adornUrl('/order/order/downloadSingleOrder'),
-                method: 'get',
-                params: this.$http.adornParams({
-                    'amazonOrderId': this.luruId,
-                })
-            }).then(({data}) => {
-                if (data && data.code === 0) {
-                    this.$message({
-                        message: '操作成功',
-                        type: 'success',
-                        duration: 1000,
-                        onClose: () => {
-                            this.getDataList();
-                            this.luruId = ''
-                            loading.close()
-                        }
-                    })
-                    
-                } else {
-                    this.$message.error(data.msg)
-                    loading.close();
-                }
-            })
         },
         // 标记异常
         biaojiClick(){

@@ -155,12 +155,13 @@
                 // console.log(this.nowProTypeId);
                 this.dataListLoading = true
                 this.$http({
-                    url: this.$http.adornUrl('/product/product/mylist'),
+                    url: this.$http.adornUrl('/upload/upload/getMyUploadList'),
                     method: 'get',
                     params: this.$http.adornParams({
                         'page': this.pageIndex,
                         'limit': this.pageSize,
-                        'uploadProductsIds':this.q.id
+                        'uploadProductsIds':this.q.id,
+                        'type':0
                     })
                 }).then(({data}) => {
                     if (data && data.code === 0) {
@@ -169,8 +170,7 @@
                         this.totalPage = data.page.totalCount
                         console.log(this.$store.state.dept)
                     } else {
-                        this.dataList = []
-                        this.totalPage = 0
+                        this.$message.error(data.msg)
                     }
                     this.dataListLoading = false
                 })

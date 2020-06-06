@@ -165,8 +165,8 @@
         </div>
         <!-- 操作 -->
         <div class="divM">
-            <el-button type="primary" icon="el-icon-bottom" size="small" @click="getOrder">获取订单</el-button>
-            <el-button type="primary" icon="el-icon-edit-outline" size="small" @click="luruVisible = true">手工录入订单</el-button>
+            <!-- <el-button type="primary" icon="el-icon-bottom" size="small" @click="getOrder">获取订单</el-button> -->
+            <!-- <el-button type="primary" icon="el-icon-edit-outline" size="small" @click="luruVisible = true">手工录入订单</el-button> -->
             <el-button type="primary" icon="el-icon-star-off" size="small" @click="biaojiClick">标记订单状态</el-button>
             
             <!-- <div style="float:right;">
@@ -223,6 +223,15 @@
                 prop="buyDate"
                 label="下单时间"
                 width="100">
+                </el-table-column>
+                <el-table-column
+                prop="buyDate"
+                label="公司"
+                width="100">
+                    <template slot-scope="scope">
+                        <div>{{scope.row.deptName}}</div>
+                        <span>操作人：{{scope.row.userName}}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop=""
@@ -344,15 +353,6 @@
                             {{ scope.row.abnormalStatus }}</span>
                     </template>
                 </el-table-column>
-                
-                <el-table-column
-                fixed="right"
-                label="操作"
-                width="100">
-                    <template slot-scope="scope">
-                        <el-button type="text" icon="" @click="orderId = scope.row.orderId;returnMVisible = true">退款</el-button>
-                    </template>
-                </el-table-column>
             </el-table>
             <el-pagination
             @size-change="sizeChangeHandle"
@@ -365,59 +365,6 @@
             </el-pagination>
         </div>
       </div>
-       <!-- 退款弹框 -->
-      <el-dialog
-        title="退款"
-        :visible.sync="returnMVisible"
-        width="400px">
-        <div>
-            <el-row style="margin-bottom:10px">
-                <el-col :span="4">
-                    <label style="display:inline-block;line-height:36px">退款金额</label>
-                </el-col>
-                <el-col :span="20">
-                    <el-input
-                        placeholder="请输入内容"
-                        v-model="returnMoney"
-                        clearable>
-                    </el-input>
-                </el-col>
-            </el-row>
-            <div style="color:#F56C6C;margin-top:10px;font-size:13px">
-            已核算利润的单：退款金额=损失费<br><br>
-            无核算利润的单：退款金额=订单金额*0.03（虚发货的订单需计算此项）+到账金额+采购费+平台佣金+其他损失费
-            </div>
-        </div>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="returnMVisible = false">取 消</el-button>
-            <el-button type="primary" @click="returnM">确 定</el-button>
-        </span>
-    </el-dialog>
-
-    <!-- 手工录入订单弹框 -->
-      <el-dialog
-        title="录入订单"
-        :visible.sync="luruVisible"
-        width="450px">
-        <div>
-            <el-row style="margin-bottom:10px">
-                <el-col :span="6">
-                    <label style="display:inline-block;line-height:36px">Amazon订单ID</label>
-                </el-col>
-                <el-col :span="18">
-                    <el-input
-                        placeholder="请输入内容"
-                        v-model="luruId"
-                        clearable>
-                    </el-input>
-                </el-col>
-            </el-row>
-        </div>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="luruVisible = false">取 消</el-button>
-            <el-button type="primary" @click="rluruClick">确 定</el-button>
-        </span>
-    </el-dialog>
 
     <!-- 选中标记状态 -->
       <el-dialog
@@ -452,7 +399,6 @@
 <script>
   import OpenTab from '../../common/open'
 //   import ProductPiliang from './product-piliang'
-  import { getQuerycategory } from '@/api/product'
   
   export default {
     components: {
@@ -521,11 +467,15 @@
       },
       methods:{
         auditClick(num){
-            this.orderStatusValue = num;
+            this.auditValue = num;
             this.getDataList();
         },
         productTypeClick(num){
-            this.abnormalStatusValue = num;
+            this.productTypeValue = num;
+            this.getDataList();
+        },
+        uploadClick(num){
+            this.uploadValue = num;
             this.getDataList();
         },
         // 获取订单状态列表
@@ -549,6 +499,7 @@
                         value:'全部',
                         count:data.allCounts
                     })
+                    // console.log(this.$store.state.dept)
                 } else {
                     
                 }
@@ -559,7 +510,7 @@
             // console.log(this.nowProTypeId);
             this.dataListLoading = true
             this.$http({
-                url: this.$http.adornUrl('/order/order/getMyList'),
+                url: this.$http.adornUrl('/order/order/getAllList'),
                 method: 'get',
                 params: this.$http.adornParams({
                     'page': this.pageIndex,
@@ -665,138 +616,6 @@
                     }
                 })
             }).catch(() => {})
-        },
-        // 原创第一步
-        toProduct(){
-            const loading = this.$loading({
-                lock: true,
-                text: 'Loading',
-                spinner: 'el-icon-loading',
-                background: 'rgba(0, 0, 0, 0.7)'
-            });
-            this.$http({
-                url: this.$http.adornUrl('/product/product/getproductid'),
-                method: 'get',
-                params: this.$http.adornParams()
-            }).then(({data}) => {
-                if (data && data.code === 0) {
-                    console.log(data);
-                    this.productD = data.product;
-                    this.showList = false;
-
-                    // this.dataForm = data.product;
-                    loading.close();
-                }else{
-                    this.$message.error(data.msg)
-                }
-            })
-        },
-        // 退款
-        returnM(){
-            // this.returnMoney  退款金额
-            if(this.returnMoney = ''){
-                this.$message({
-                    message: '请填写退款金额',
-                    type: 'warning'
-                });
-            }else{
-                const loading = this.$loading({
-                    lock: true,
-                    text: 'Loading',
-                    spinner: 'el-icon-loading',
-                    background: 'rgba(0, 0, 0, 0.7)'
-                });
-                this.$http({
-                    url: this.$http.adornUrl('/product/product/mylist'),
-                    method: 'get',
-                    params: this.$http.adornParams({
-                        'amazonOrderId': this.orderId,
-                        'returnCost': this.returnMoney,
-                    })
-                }).then(({data}) => {
-                    if (data && data.code === 0) {
-                        this.$message({
-                            message: '操作成功',
-                            type: 'success',
-                            duration: 1000,
-                            onClose: () => {
-                                this.getDataList();
-                                this.returnMoney = ''
-                                loading.close()
-                            }
-                        })
-                        
-                    } else {
-                        this.$message.error(data.msg)
-                        loading.close();
-                    }
-                })
-            }
-            
-        },
-        // 获取订单
-        getOrder(){
-            const loading = this.$loading({
-                lock: true,
-                text: 'Loading',
-                spinner: 'el-icon-loading',
-                background: 'rgba(0, 0, 0, 0.7)'
-            });
-            this.$http({
-                url: this.$http.adornUrl('/product/product/mylist'),
-                method: 'get',
-                params: this.$http.adornParams()
-            }).then(({data}) => {
-                if (data && data.code === 0) {
-                    this.$message({
-                        message: '操作成功',
-                        type: 'success',
-                        duration: 1000,
-                        onClose: () => {
-                            this.getDataList();
-                            loading.close()
-                        }
-                    })
-                    
-                } else {
-                    this.$message.error(data.msg)
-                    loading.close();
-                }
-            })
-        },
-        // 手工录入订单
-        rluruClick(){
-            // this.luruId  录入订单id
-            const loading = this.$loading({
-                lock: true,
-                text: 'Loading',
-                spinner: 'el-icon-loading',
-                background: 'rgba(0, 0, 0, 0.7)'
-            });
-            this.$http({
-                url: this.$http.adornUrl('/order/order/downloadSingleOrder'),
-                method: 'get',
-                params: this.$http.adornParams({
-                    'amazonOrderId': this.luruId,
-                })
-            }).then(({data}) => {
-                if (data && data.code === 0) {
-                    this.$message({
-                        message: '操作成功',
-                        type: 'success',
-                        duration: 1000,
-                        onClose: () => {
-                            this.getDataList();
-                            this.luruId = ''
-                            loading.close()
-                        }
-                    })
-                    
-                } else {
-                    this.$message.error(data.msg)
-                    loading.close();
-                }
-            })
         },
         // 标记异常
         biaojiClick(){

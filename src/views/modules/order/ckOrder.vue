@@ -37,48 +37,6 @@
                 <el-col :span="6">
                     <el-row>
                         <el-col :span="8">
-                            <label class="labelSS">关联产品ID：</label>
-                        </el-col>
-                        <el-col :span="16">
-                            <el-input
-                                size="medium"
-                                placeholder="请输入内容"
-                                v-model="q.productId">
-                            </el-input>
-                        </el-col>
-                    </el-row>
-                </el-col>
-                <el-col :span="6">
-                    <el-row>
-                        <el-col :span="8">
-                            <label class="labelSS">产品SKU：</label>
-                        </el-col>
-                        <el-col :span="16">
-                            <el-input
-                                size="medium"
-                                placeholder="请输入内容"
-                                v-model="q.productSku">
-                            </el-input>
-                        </el-col>
-                    </el-row>
-                </el-col>
-                <el-col :span="6">
-                    <el-row>
-                        <el-col :span="8">
-                            <label class="labelSS">产品asin码：</label>
-                        </el-col>
-                        <el-col :span="16">
-                            <el-input
-                                size="medium"
-                                placeholder="请输入内容"
-                                v-model="q.productAsin">
-                            </el-input>
-                        </el-col>
-                    </el-row>
-                </el-col>
-                <el-col :span="6">
-                    <el-row>
-                        <el-col :span="8">
                             <label class="labelSS">国内物流单号：</label>
                         </el-col>
                         <el-col :span="16">
@@ -104,40 +62,13 @@
                         </el-col>
                     </el-row>
                 </el-col>
-                <el-col :span="6">
-                    <el-row>
-                        <el-col :span="8">
-                            <label class="labelSS">开始时间：</label>
-                        </el-col>
-                        <el-col :span="16">
-                            <el-date-picker
-                            v-model="q.startDate"
-                            value-format="yyyy-MM-dd"
-                            type="date"
-                            placeholder="选择日期">
-                            </el-date-picker>
-                        </el-col>
-                    </el-row>
-                </el-col>
-                <el-col :span="6">
-                    <el-row>
-                        <el-col :span="8">
-                            <label class="labelSS">结束时间：</label>
-                        </el-col>
-                        <el-col :span="16">
-                            <el-date-picker
-                            v-model="q.endDate"
-                            value-format="yyyy-MM-dd"
-                            type="date"
-                            placeholder="选择日期">
-                            </el-date-picker>
-                        </el-col>
-                    </el-row>
-                </el-col>
                 
-                <el-col :span="6">
-                    <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList">查询</el-button>
-                    <el-button type="" icon="el-icon-refresh" size="medium" @click="clean">重置</el-button>
+                <el-col :span="24">
+                    <div style="float:right">
+                        <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList">查询</el-button>
+                        <el-button type="" icon="el-icon-refresh" size="medium" @click="clean">重置</el-button>
+                    </div>
+                    
                 </el-col>
             </el-row>
         </div>
@@ -152,61 +83,13 @@
                     class="el-tag el-tag--medium" 
                     :style="item.code == orderStatusValue ? {'background':color[index],'color':'#fff','border':'1px solid '+color[index]} : {'color':color[index],'background':'#fff','border':'1px solid '+color[index]}">{{ item.value }} ({{item.count}})</span>
             </div>
-            <div class="tag-group" v-if="abnormalStatusList.length != 0">
-                <span class="tag-group__title">异常状态</span>
-                <span 
-                    v-for="(item,index) in abnormalStatusList"
-                    :key="item.code"
-                    @click="productTypeClick(item.code)"
-                    class="el-tag el-tag--medium" 
-                    :style="item.code == abnormalStatusValue ? {'background':color[index],'color':'#fff','border':'1px solid '+color[index]} : {'color':color[index],'background':'#fff','border':'1px solid '+color[index]}">
-                    {{ item.value }} ({{item.count}})</span>
-            </div>
-        </div>
-        <!-- 操作 -->
-        <div class="divM">
-            <el-button type="primary" icon="el-icon-bottom" size="small" @click="getOrder">获取订单</el-button>
-            <el-button type="primary" icon="el-icon-edit-outline" size="small" @click="luruVisible = true">手工录入订单</el-button>
-            <el-button type="primary" icon="el-icon-star-off" size="small" @click="biaojiClick">标记订单状态</el-button>
-            
-            <!-- <div style="float:right;">
-                <el-button type="primary" icon="el-icon-download" size="small">插件下载</el-button>
-                <el-button type="text">采集手册</el-button>
-            </div> -->
-        </div>
-        <!-- 统计 -->
-        <div class="statics divM">
-            <div class="left1">
-                <i class="el-icon-info" style="color:#409EFF"></i>&nbsp;&nbsp;已选择&nbsp;<a style="font-weight: 600">{{ selectedRowKeys.length }}</a>&nbsp;项&nbsp;&nbsp;
-            </div>
-            <div class="right">
-                订单数&nbsp;<a style="font-weight: 600">{{ statisticsProfit.addOrderCounts }}</a>&nbsp;&nbsp;&nbsp;
-                销售额&nbsp;<a style="font-weight: 600">{{ statisticsProfit.salesVolume }}</a>&nbsp;&nbsp;&nbsp;
-                订单到账金额&nbsp;<a style="font-weight: 600">{{ statisticsProfit.accountSales }}</a>&nbsp;&nbsp;&nbsp;
-                核算订单数&nbsp;<a style="font-weight: 600">{{ statisticsProfit.checkOrderCounts }}</a>&nbsp;&nbsp;&nbsp;
-                核算订单金额&nbsp;<a style="font-weight: 600">{{ statisticsProfit.checkSalesVolume }}</a>&nbsp;&nbsp;&nbsp;
-                核算订单到账金额&nbsp;<a style="font-weight: 600">{{ statisticsProfit.checkAccountSales }}</a><br>
-                采购价&nbsp;<a style="font-weight: 600">{{ statisticsProfit.cost }}</a>&nbsp;&nbsp;&nbsp;
-                佣金&nbsp;<a style="font-weight: 600">{{ statisticsProfit.servicePrice }}</a>&nbsp;&nbsp;&nbsp;
-                运费&nbsp;<a style="font-weight: 600">{{ statisticsProfit.orderFreight }}</a>&nbsp;&nbsp;&nbsp;
-                核算利润&nbsp;<a style="font-weight: 600">{{ statisticsProfit.profit }}</a>&nbsp;&nbsp;&nbsp;
-                利润率&nbsp;<a style="font-weight: 600">{{ statisticsProfit.profitRate }}</a>&nbsp;&nbsp;&nbsp;
-                退款订单数&nbsp;<a style="font-weight: 600">{{ statisticsProfit.returnOrderCounts }}</a>&nbsp;&nbsp;&nbsp;
-                退款金额&nbsp;<a style="font-weight: 600">{{ statisticsProfit.returnCost }}</a>&nbsp;&nbsp;&nbsp;
-                退款率&nbsp;<a style="font-weight: 600">{{ statisticsProfit.returnCostProfit }}</a>
-            </div>
         </div>
         <!-- 列表 -->
         <div class="divM">
             <el-table
                 :data="dataList"
                 v-loading="dataListLoading"
-                @selection-change="selectionChangeHandle"
                 style="width: 100%">
-                <el-table-column
-                type="selection"
-                width="55">
-                </el-table-column>
                 <el-table-column
                 prop="productId"
                 label="订单号"
@@ -223,6 +106,15 @@
                 prop="buyDate"
                 label="下单时间"
                 width="100">
+                </el-table-column>
+                <el-table-column
+                prop=""
+                label="公司"
+                width="100">
+                    <template slot-scope="scope">
+                        <div>{{scope.row.deptName}}</div>
+                        <span>操作人：{{scope.row.userName}}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop=""
@@ -260,35 +152,8 @@
                     </template>
                 </el-table-column>
                 <el-table-column
-                prop=""
-                label="订单金额"
-                width="">
-                    <template slot-scope="scope">
-                        <div>{{scope.row.orderMoney}}<span v-if="scope.row.rateCode">({{scope.row.rateCode}})</span></div>
-                        <div v-if="scope.row.orderMoneyCny"><span style="color:#999">{{scope.row.orderMoneyCny}}</span>}</div>
-                    </template>
-                </el-table-column>
-                <el-table-column
-                prop=""
-                label="Amazon佣金"
-                width="">
-                    <template slot-scope="scope">
-                        <div>{{scope.row.amazonCommission}}<span v-if="scope.row.rateCode">({{scope.row.rateCode}})</span></div>
-                        <div v-if="scope.row.amazonCommissionCny"><span style="color:#999">¥{{scope.row.amazonCommissionCny}}</span>}</div>
-                    </template>
-                </el-table-column>
-                <el-table-column
-                prop=""
-                label="到账金额"
-                width="">
-                    <template slot-scope="scope">
-                        <div>{{scope.row.accountMoney}}<span v-if="scope.row.rateCode">({{scope.row.rateCode}})</span></div>
-                        <div v-if="scope.row.accountMoneyCny"><span style="color:#999">¥{{scope.row.accountMoneyCny}}</span>}</div>
-                    </template>
-                </el-table-column>
-                <el-table-column
-                prop="momentRate"
-                label="当天汇率"
+                prop="orderNumber"
+                label="数量"
                 width="100">
                 </el-table-column>
                 <el-table-column
@@ -297,28 +162,13 @@
                 width="100">
                 </el-table-column>
                 <el-table-column
-                prop="interFreight"
-                label="国际运费"
+                prop="domesticWaybill"
+                label="国内物流单号"
                 width="100">
                 </el-table-column>
                 <el-table-column
-                prop="platformCommissions"
-                label="平台佣金"
-                width="100">
-                </el-table-column>
-                <el-table-column
-                prop="returnCost"
-                label="退货费用"
-                width="100">
-                </el-table-column>
-                <el-table-column
-                prop="orderProfit"
-                label="利润"
-                width="100">
-                </el-table-column>
-                <el-table-column
-                prop="profitRate"
-                label="利润率"
+                prop="abroadWaybill"
+                label="国际物流单号"
                 width="100">
                 </el-table-column>
                 <el-table-column
@@ -350,7 +200,8 @@
                 label="操作"
                 width="100">
                     <template slot-scope="scope">
-                        <el-button type="text" icon="" @click="orderId = scope.row.orderId;returnMVisible = true">退款</el-button>
+                        <el-button v-if="scope.row.orderStatus =='InShipped'" type="text" icon="" @click="rukuClick(scope.row.orderId)">入库</el-button>
+                        <el-button v-if="scope.row.orderStatus =='Warehousing'" type="text" icon="" @click="chukuClick(scope.row.orderId)">出库</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -394,31 +245,6 @@
         </span>
     </el-dialog>
 
-    <!-- 手工录入订单弹框 -->
-      <el-dialog
-        title="录入订单"
-        :visible.sync="luruVisible"
-        width="450px">
-        <div>
-            <el-row style="margin-bottom:10px">
-                <el-col :span="6">
-                    <label style="display:inline-block;line-height:36px">Amazon订单ID</label>
-                </el-col>
-                <el-col :span="18">
-                    <el-input
-                        placeholder="请输入内容"
-                        v-model="luruId"
-                        clearable>
-                    </el-input>
-                </el-col>
-            </el-row>
-        </div>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="luruVisible = false">取 消</el-button>
-            <el-button type="primary" @click="rluruClick">确 定</el-button>
-        </span>
-    </el-dialog>
-
     <!-- 选中标记状态 -->
       <el-dialog
         title="标记订单状态"
@@ -452,7 +278,6 @@
 <script>
   import OpenTab from '../../common/open'
 //   import ProductPiliang from './product-piliang'
-  import { getQuerycategory } from '@/api/product'
   
   export default {
     components: {
@@ -521,11 +346,15 @@
       },
       methods:{
         auditClick(num){
-            this.orderStatusValue = num;
+            this.auditValue = num;
             this.getDataList();
         },
         productTypeClick(num){
-            this.abnormalStatusValue = num;
+            this.productTypeValue = num;
+            this.getDataList();
+        },
+        uploadClick(num){
+            this.uploadValue = num;
             this.getDataList();
         },
         // 获取订单状态列表
@@ -549,6 +378,7 @@
                         value:'全部',
                         count:data.allCounts
                     })
+                    // console.log(this.$store.state.dept)
                 } else {
                     
                 }
@@ -559,7 +389,7 @@
             // console.log(this.nowProTypeId);
             this.dataListLoading = true
             this.$http({
-                url: this.$http.adornUrl('/order/order/getMyList'),
+                url: this.$http.adornUrl('/order/order/depotOrderList'),
                 method: 'get',
                 params: this.$http.adornParams({
                     'page': this.pageIndex,
@@ -666,31 +496,6 @@
                 })
             }).catch(() => {})
         },
-        // 原创第一步
-        toProduct(){
-            const loading = this.$loading({
-                lock: true,
-                text: 'Loading',
-                spinner: 'el-icon-loading',
-                background: 'rgba(0, 0, 0, 0.7)'
-            });
-            this.$http({
-                url: this.$http.adornUrl('/product/product/getproductid'),
-                method: 'get',
-                params: this.$http.adornParams()
-            }).then(({data}) => {
-                if (data && data.code === 0) {
-                    console.log(data);
-                    this.productD = data.product;
-                    this.showList = false;
-
-                    // this.dataForm = data.product;
-                    loading.close();
-                }else{
-                    this.$message.error(data.msg)
-                }
-            })
-        },
         // 退款
         returnM(){
             // this.returnMoney  退款金额
@@ -733,70 +538,6 @@
                 })
             }
             
-        },
-        // 获取订单
-        getOrder(){
-            const loading = this.$loading({
-                lock: true,
-                text: 'Loading',
-                spinner: 'el-icon-loading',
-                background: 'rgba(0, 0, 0, 0.7)'
-            });
-            this.$http({
-                url: this.$http.adornUrl('/product/product/mylist'),
-                method: 'get',
-                params: this.$http.adornParams()
-            }).then(({data}) => {
-                if (data && data.code === 0) {
-                    this.$message({
-                        message: '操作成功',
-                        type: 'success',
-                        duration: 1000,
-                        onClose: () => {
-                            this.getDataList();
-                            loading.close()
-                        }
-                    })
-                    
-                } else {
-                    this.$message.error(data.msg)
-                    loading.close();
-                }
-            })
-        },
-        // 手工录入订单
-        rluruClick(){
-            // this.luruId  录入订单id
-            const loading = this.$loading({
-                lock: true,
-                text: 'Loading',
-                spinner: 'el-icon-loading',
-                background: 'rgba(0, 0, 0, 0.7)'
-            });
-            this.$http({
-                url: this.$http.adornUrl('/order/order/downloadSingleOrder'),
-                method: 'get',
-                params: this.$http.adornParams({
-                    'amazonOrderId': this.luruId,
-                })
-            }).then(({data}) => {
-                if (data && data.code === 0) {
-                    this.$message({
-                        message: '操作成功',
-                        type: 'success',
-                        duration: 1000,
-                        onClose: () => {
-                            this.getDataList();
-                            this.luruId = ''
-                            loading.close()
-                        }
-                    })
-                    
-                } else {
-                    this.$message.error(data.msg)
-                    loading.close();
-                }
-            })
         },
         // 标记异常
         biaojiClick(){
@@ -856,6 +597,68 @@
                 })
             }).catch(() => {})
 
+        },
+        // 入库
+        rukuClick(id){
+            const loading = this.$loading({
+                lock: true,
+                text: 'Loading',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
+            this.$http({
+                url: this.$http.adornUrl('/order/order/allruku'),
+                method: 'get',
+                params: this.$http.adornParams({
+                    'orderId': id
+                })
+            }).then(({data}) => {
+                if (data && data.code === 0) {
+                    this.$message({
+                        message: '操作成功',
+                        type: 'success',
+                        duration: 1000,
+                        onClose: () => {
+                            this.getDataList();
+                            loading.close()
+                        }
+                    })
+                } else {
+                    this.$message.error(data.msg)
+                    loading.close()
+                }
+            })
+        },
+        // 出库
+        chukuClick(id){
+            const loading = this.$loading({
+                lock: true,
+                text: 'Loading',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
+            this.$http({
+                url: this.$http.adornUrl('/order/order/listchuku'),
+                method: 'get',
+                params: this.$http.adornParams({
+                    'orderId': id
+                })
+            }).then(({data}) => {
+                if (data && data.code === 0) {
+                    this.$message({
+                        message: '操作成功',
+                        type: 'success',
+                        duration: 1000,
+                        onClose: () => {
+                            this.getDataList();
+                            loading.close()
+                        }
+                    })
+                } else {
+                    this.$message.error(data.msg)
+                    loading.close()
+                }
+            })
         }
       }
   }
