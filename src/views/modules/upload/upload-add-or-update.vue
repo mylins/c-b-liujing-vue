@@ -25,7 +25,7 @@
             <div style="color:#F56C6C;font-size:12px">填写产品ID后（逗号隔开，逗号为英文逗号，不能有空格），将只上传填写的ID列表，不填写则上传其他条件筛选出的产品，标准格式：12,123,456,789</div>
           </el-form-item>
           <br>
-          <el-form-item label="授权店铺" prop="">
+          <el-form-item label="授权店铺" prop="grantShopId">
             <el-select v-model="dataForm.grantShopId" placeholder="请选择" @change="grantShopChange">
                 <el-option
                 v-for="item in shopList"
@@ -37,7 +37,7 @@
           </el-form-item>
           
           <br>
-          <el-form-item label="更新选项" prop="">
+          <el-form-item label="更新选项" prop="operateItem">
             <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
             <el-checkbox-group v-model="dataForm.operateItem" @change="handleCheckedCitiesChange">
               <!-- <el-checkbox v-for="role in roleList" :key="role.roleId" :label="role.roleId">{{ role.roleName }}</el-checkbox> -->
@@ -47,10 +47,10 @@
               <el-checkbox label="3">库存</el-checkbox>
               <el-checkbox label="4">价格</el-checkbox>
             </el-checkbox-group>
-            <div style="color:#F56C6C;margin-top:-6px;font-size:12px">如果只更新产品信息，则不需要选中上面选项</div>
+            <!-- <div style="color:#F56C6C;margin-top:-6px;font-size:12px">如果只更新产品信息，则不需要选中上面选项</div> -->
           </el-form-item>
           <br>
-          <el-form-item label="选择分类" prop="categoryId">
+          <el-form-item label="选择分类" prop="amazonCategoryId">
               <div style="display:flex;">
                   <div style="width:620px">
                       <el-cascader ref="aaa" v-model="amazonCategoryId" :options="options" :props="props" clearable @change="productCategorChange" @visible-change="visibleChange"></el-cascader>
@@ -58,7 +58,7 @@
                         <span class="decVal">{{dataForm.amazonCategory}}</span>
                   </div>
                   <div style="width:240px">
-                      <el-input v-model="dataForm.amazonCategoryId" placeholder="分类节点ID"></el-input>
+                      <el-input v-model="dataForm.amazonCategoryId" placeholder="分类节点ID" :disabled="true"></el-input>
                   </div>
                   <div>
                       <el-button type="primary" plain>历史选择</el-button>
@@ -67,20 +67,29 @@
               
           </el-form-item>
           <br>
-          <!-- <el-form-item label="分类模版" prop="">
-            <el-select v-model="dataForm.property.discount" placeholder="请选择" @change="getcostFreight('property.discount')">
+          <el-form-item label="分类模版" prop="amazonTemplateId">
+            <el-select v-model="dataForm.amazonTemplateId" placeholder="请选择" @focus="getTemplate" @change="templateChange">
                 <el-option
-                v-for="item in discountList"
-                :key="item"
-                :label="item"
-                :value="item">
+                v-for="item in templateList"
+                :key="item.templateId"
+                :label="item.templateDisplayName"
+                :value="item.templateId">
                 </el-option>
             </el-select>
-          </el-form-item> -->
+          </el-form-item>
           <br>
-          <!-- <el-form-item label="分类属性" prop="property.domesticFreight" :rules="dataRule.domesticFreight">
-            <el-input v-model="dataForm.property.domesticFreight" placeholder="国内运费(¥)"></el-input>
-          </el-form-item> -->
+          <h3 v-if="dataForm.fieldsEntityList.length != 0"> <i class="el-icon-menu"></i> &nbsp;&nbsp;分类属性</h3>
+          <el-form-item v-for="item in dataForm.middleEntitys" :key="item.fieldDisplayName" :label="item.fieldDisplayName" prop="property.domesticFreight">
+            <!-- <el-input v-model="dataForm.property.domesticFreight" placeholder="请选择"></el-input> -->
+            <el-select v-model="item.value" filterable placeholder="请选择">
+                <el-option
+                    v-for="val in item.templateFieldValueDtos"
+                    :key="val.value"
+                    :label="val.cnValue"
+                    :value="val.value">
+                </el-option>
+            </el-select>
+          </el-form-item>
         </div>
       </el-form>
 
@@ -146,22 +155,25 @@
             amazonTemplate:'',
             operateItem:[],
             fieldsEntityList:[],
-            amazonNodeId:null
+            amazonNodeId:null,
         },
+        templateList:[],
         options:[],
         props:{
             lazy:true,
             lazyLoad: function(node, resolve) {
+                console.log(node.data);
                 if(node.value){
-                    getQuerycategory({'categoryId':node.value}).then((data) => {
+                    getAmazonCategoryId({'amazonCategoryId':node.data.labelId}).then((data) => {
                         if (data.data && data.data.code == 0) {
                             const level = node.level;
                             const nodes = [];
                             if(data.data.categoryList.length != 0){
                                 data.data.categoryList.forEach(function (item) {
                                     nodes.push({
-                                        value:item.categoryId,
-                                        label:item.categoryName+'('+item.count+')',
+                                        value:item.nodeId,
+                                        label:item.displayName,
+                                        labelId:item.id,
                                         leaf: level >= 2
                                     })
                                 })
@@ -175,36 +187,18 @@
             }
         },
         dataRule: {
-          purchasePrice: [
-            { required: true, message: '采购价格不能为空', trigger: 'blur' },
-            { validator: number, trigger: 'blur' }
-          ],
-          domesticFreight: [
-                { required: true, message: '国内运费不能为空', trigger: 'blur' },
-                { validator: number, trigger: 'blur' }
+            grantShopId: [
+                { required: true, message: '授权店铺不能为空', trigger: 'change' }
             ],
-            productWeight: [
-                { required: true, message: '包装毛重不能为空', trigger: 'blur' },
-                { validator: number, trigger: 'blur' }
+            operateItem: [
+                { required: true, message: '更新选项不能为空', trigger: 'change' },
             ],
-            productWide: [
-                { required: true, message: '宽不能为空', trigger: 'blur' },
-                { validator: number, trigger: 'blur' }
+            amazonCategoryId: [
+                { required: true, message: '分类不能为空', trigger: 'blur' }
             ],
-            productLength: [
-                { required: true, message: '长不能为空', trigger: 'blur' },
-                { validator: number, trigger: 'blur' }
-            ],
-            productHeight: [
-                { required: true, message: '高不能为空', trigger: 'blur' },
-                { validator: number, trigger: 'blur' }
-            ],
-            discount: [
-                { required: true, message: '不能为空', trigger: 'blur' },
-            ],
-          categoryId:[
-            {required: true, message: '分类不能为空', trigger: 'change' }
-          ]
+            amazonTemplateId: [
+                { required: true, message: '分类模版不能为空', trigger: 'change' },
+            ]
         }
       }
     },
@@ -318,7 +312,13 @@
         },
         // 授权店铺更改
         grantShopChange(){
-            this.grantShop = this.shopList.find(item => item.grantShopId == this.dataForm.grantShopId)
+            this.dataForm.grantShop = this.shopList.find(item => item.grantShopId == this.dataForm.grantShopId).shopName;
+            this.options = [];
+            this.templateList = [];
+            this.dataForm.middleEntitys = [];
+            this.dataForm.amazonCategoryId = '';
+            this.dataForm.amazonTemplateId = '';
+
         },
         // 更新选项全选
         handleCheckAllChange(val){
@@ -346,12 +346,13 @@
                         if (data && data.code === 0) {
                             console.log(data);
                             var that = this;
-                            // data.categoryOneList.forEach(function(item){
-                            //     that.options.push({
-                            //         value:item.categoryId,
-                            //         label:item.categoryName+'('+item.count+')',
-                            //     })
-                            // })
+                            data.amazonCategoryEntityList.forEach(function(item){
+                                that.options.push({
+                                    value:item.nodeId,
+                                    label:item.displayName,
+                                    labelId:item.id
+                                })
+                            })
                         
                         } else {
                             this.$message.error(data.msg)
@@ -371,10 +372,10 @@
             console.log(val);
             if(val.length != 0){
                 var arr = this.$refs['aaa'].getCheckedNodes()[0].pathLabels;
-                var arr1 = arr.map((item) => {
-                    return item.split('(')[0]
-                })
-                this.dataForm.amazonCategory = arr1.join('/');
+                // var arr1 = arr.map((item) => {
+                //     return item.split('(')[0]
+                // })
+                this.dataForm.amazonCategory = arr.join('/');
                 this.amazonCategoryId = val;
                 this.dataForm.amazonCategoryId = val[val.length-1];
             }else{
@@ -385,15 +386,15 @@
         },
         // 选择模版
         getTemplate(){
-            if(this.dataForm.grantShopId){
+            if(this.dataForm.amazonCategoryId){
                 this.$http({
-                    url: this.$http.adornUrl('/amazon/amazongrantshop/myShopList'),
+                    url: this.$http.adornUrl('/upload/template/list'),
                     method: 'get',
                     params: this.$http.adornParams()
                 }).then(({data}) => {
                     if (data && data.code === 0) {
                         console.log(data);
-                        this.shopList = data.shopList
+                        // this.templateList = data.shopList
                     } else {
                         this.$message.error(data.msg)
                     }
@@ -401,10 +402,14 @@
                 })
             }else{
                 this.$message({
-                    message: '请选择授权店铺',
+                    message: '请选择分类',
                     type: 'warning'
                 });
             }
+        },
+        // 模版更改
+        templateChange(){
+            this.dataForm.amazonTemplate = this.templateList.find(item => item.templateId == this.dataForm.amazonTemplateId).templateDisplayName;
         }
 
     }

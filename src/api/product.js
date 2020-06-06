@@ -10,7 +10,7 @@ export function getQuerycategory(obj) {
 export function getAmazonCategoryId(obj){
     return http({
         url: http.adornUrl('/upload/amazoncategory/childCategoryList'),
-        method: 'get',
-        params:obj
+        method: 'post',
+        data:http.adornData(obj)
     })
 }
