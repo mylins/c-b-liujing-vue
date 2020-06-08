@@ -5,8 +5,8 @@
     :visible.sync="visible">
     <div class="conDivForm" style="overflow-y:auto;height:500px">
       <el-form :inline="true" :model="dataForm" :rules="dataRule" ref="dataForm" label-width="120px">
-        <div class="blockDivForm">
-          <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;基本信息</h3>
+        <div class="blockDivForm" style="padding-top:0;">
+          <h3 style="margin-top:0;"> <i class="el-icon-menu"></i> &nbsp;&nbsp;基本信息</h3>
           <el-form-item label="产品分类" prop="categoryId">
               <!-- <span>{{dataForm.categoryName}}</span> -->
             <el-cascader ref="aaa" v-model="dataForm.categoryId" :options="options" :props="props" clearable @change="productCategorChange" @visible-change="visibleChange"></el-cascader>
@@ -510,7 +510,14 @@
           productSku:'',
           imageList:[],
           freightCostList:[],
-          introductionList:[{},{},{},{},{},{},{}],
+          introductionList:[{countryCode:'ZH'},
+            {countryCode: "GB"},
+            {countryCode: "FR"},
+            {countryCode: "IT"},
+            {countryCode: "ES"},
+            {countryCode: "DE"},
+            {countryCode: "JP"}],
+          
           productTitle:'',
           property:{
               purchasePrice:0,
@@ -567,15 +574,15 @@
         }
       }
     },
-    created(){
-        this.visible = true;
-        this.$nextTick(() => {
-            this.$refs['dataForm'].resetFields();
-        })
-    },
     computed: {
     },
     methods: {
+        init(){
+            this.visible = true;
+            this.$nextTick(() => {
+                this.$refs['dataForm'].resetFields();
+            })
+        },
       // 产品分类下拉列表(一级)
         visibleChange(bol){
             if(bol){

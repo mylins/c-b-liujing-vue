@@ -82,6 +82,9 @@
               if (data && data.code === 0) {
                 this.$cookie.set('token', data.token)
                 this.$router.replace({ name: 'home' })
+                this.$store.dispatch('getComList');
+                this.$store.dispatch('getAreaList');
+                this.$store.dispatch('getUser');
               } else {
                 this.getCaptcha()
                 this.$message.error(data.msg)

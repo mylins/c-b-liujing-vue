@@ -65,7 +65,23 @@
             <!-- 搜索 -->
         <div class="sous">
             <el-row :gutter="20">
-
+                <el-col :span="6">
+                    <el-row>
+                        <el-col :span="6">
+                            <label class="labelSS">选择区域:</label>
+                        </el-col>
+                        <el-col :span="18">
+                            <el-select v-model="q.areaId" filterable clearable placeholder="请选择">
+                                <el-option
+                                    v-for="item in $store.state.dept.areaList"
+                                    :key="item.deptId"
+                                    :label="item.name"
+                                    :value="item.deptId">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+                    </el-row>
+                </el-col>
                 <el-col :span="6">
                     <el-row>
                         <el-col :span="6">

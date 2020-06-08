@@ -33,6 +33,10 @@
       isMore:{
         type:Boolean,
         default:false
+      },
+      isMoreL:{
+        type:Boolean,
+        default:false
       }
     },
     data () {
@@ -127,9 +131,10 @@
         console.log(this.isMore);
         if(this.isMore){
           let id = this.opt.productId ? this.opt.productId : this.opt.orderId;
-          let decTitle = this.opt.productId ? '产品表单' : '订单表单'
+          let decTitle = this.opt.productId ? '产品表单' : '订单表单';
           let title = id+decTitle;
           let name = this.urlName+id;
+          let url = this.opt.productId ? 'product/product-add-or-update' : 'order/order-update'
 
           this.$router.addRoutes([{
             path: '/',
@@ -137,7 +142,25 @@
             name: 'main',
             children:[{
               path: '/'+name, 
-              component: () => import('../modules/product/product-add-or-update'), 
+              component: () => import('../modules/'+url), 
+              name: name, 
+              meta: { title: title, isTab: true } 
+            }]
+          }])
+          this.$router.push({ name: name,params: this.opt})
+        }else if(this.isMoreL){
+          let id = this.opt.productId;
+          let title = id+'产品详情';
+          let name = this.urlName+id;
+          let url = 'product/product-look'
+
+          this.$router.addRoutes([{
+            path: '/',
+            component: () => import('../main'),
+            name: 'main',
+            children:[{
+              path: '/'+name, 
+              component: () => import('../modules/'+url), 
               name: name, 
               meta: { title: title, isTab: true } 
             }]

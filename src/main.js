@@ -36,6 +36,8 @@ new Vue({
   store,
   mounted(){
     this.$store.dispatch('getComList');
+    this.$store.dispatch('getAreaList');
+    this.$store.dispatch('getUser');
     console.log(this.$store.state.common.mainTabs);
   },
   template: '<App/>',

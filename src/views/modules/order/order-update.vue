@@ -3,7 +3,11 @@
     <div class="conDivForm">
       <el-form :inline="true" :model="dataForm" :rules="dataRule" ref="dataForm" label-width="120px">
         <div class="blockDivForm">
-          <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;基本信息</h3>
+          <h3> 
+              <i class="el-icon-menu"></i> &nbsp;&nbsp;基本信息&nbsp;&nbsp;
+              <el-button v-if="dataForm.orderState == '国际已发货' && dataForm.abnormalState != '国内物流异常' && dataForm.abnormalState != '国际物流异常'" type="primary" icon="" size="small" plain @click="okClick">已完成</el-button>&nbsp;&nbsp;
+              <el-button v-if="dataForm.abnormalState == '国内物流异常' && dataForm.abnormalState == '国际物流异常'" type="primary" icon="" size="small" plain @click="shipAddressVi = true">已处理</el-button>
+          </h3>
           <el-form-item label="订单ID" prop="">
             <span class="decVal">{{dataForm.orderId}}</span>
           </el-form-item>
@@ -27,34 +31,119 @@
               <span class="decVal">{{dataForm.buyDate}}</span>
           </el-form-item>
         </div>
+        <div class="blockDivForm">
+          <h3> 
+              <i class="el-icon-menu"></i> &nbsp;&nbsp;产品信息
+          </h3>
+          <div v-for="item in dataForm.orderProductList" :key="item.productId">
+              <div class="proDiv">
+                  <div class="img">
+                      <el-image
+                        style="width: 110px; height: 110px"
+                        :src="item.productImageUrl"></el-image>
+                  </div>
+                  <div class="con">
+                      <div style="color:#666;margin-bottom:10px"><el-link :href="item.amazonProductUrl" target="_blank">{{item.productTitle}}</el-link></div>
+                      <el-row :gutter="20">
+                          <el-col :span="9">
+                              <span style="color:#999">SKU：</span>
+                              <open-tab v-if="item.productId" :isMore="true" size="medium" type="text" icon="" :dec='item.productSku' urlName='productAddUpdate' :opt='{"productId":item.productId}'></open-tab>
+                              <span style="color:#666" v-else>{{item.productSku}}</span>
+                          </el-col>
+                          &nbsp;&nbsp;&nbsp;&nbsp;
+                          <el-col :span="9">
+                              <span style="color:#999">ASIN：</span>
+                              <span style="color:#666">{{item.productAsin}}</span>
+                          </el-col>
+                      </el-row>
+                      <el-row :gutter="20">
+                          <el-col :span="9">
+                              <span style="color:#999">数量：</span>
+                              <span style="color:#666">{{item.orderItemNumber}}</span>
+                          </el-col>
+                          &nbsp;&nbsp;&nbsp;&nbsp;
+                          <el-col :span="9">
+                              <span style="color:#999">金额：</span>
+                              <span style="color:#666">{{item.productPrice}}</span>
+                          </el-col>
+                      </el-row>
+                  </div>
+              </div>
+              <div class="domDiv">
+                <h4> 
+                    <i class="el-icon-truck"></i> &nbsp;&nbsp;物流信息&nbsp;&nbsp;
+                    <el-button type="primary" icon="" size="small" plain @click="shipAddressVi = true">采购物流编辑</el-button>&nbsp;&nbsp;
+                    <el-button type="primary" icon="" size="small" plain @click="shipAddressVi = true">补发物流编辑</el-button>
+                </h4>
+                <div class="con">
+                    <el-form-item label="采购价(￥)" prop="">
+                        <span class="decVal">{{item.domesticLogistics.price ? item.domesticLogistics.price : '无'}}</span>
+                    </el-form-item>
+                    <el-form-item label="物流单号" prop="">
+                        <span class="decVal">{{item.domesticLogistics.waybill ? item.domesticLogistics.waybill : '无'}}</span>
+                    </el-form-item>
+                    <el-form-item label="物流更新" prop="">
+                        <span class="decVal">{{item.domesticLogistics.logisticsCompany ? item.domesticLogistics.logisticsCompany : '无'}}</span>
+                    </el-form-item>
+                    <el-form-item label="更新日期" prop="">
+                        <span class="decVal">{{item.domesticLogistics.issuanceDate ? item.domesticLogistics.issuanceDate : '无'}}</span>
+                    </el-form-item>
+                </div>
+                <!-- <div class="con">
+                    <el-form-item label="采购价(￥)" prop="">
+                        <span class="decVal">{{item.domesticLogisticsReissue.price ? item.domesticLogisticsReissue.price : '无'}}</span>
+                    </el-form-item>
+                    <el-form-item label="物流单号" prop="">
+                        <span class="decVal">{{item.domesticLogisticsReissue.waybill ? item.domesticLogisticsReissue.waybill : '无'}}</span>
+                    </el-form-item>
+                    <el-form-item label="物流更新" prop="">
+                        <span class="decVal">{{item.domesticLogisticsReissue.logisticsCompany ? item.domesticLogisticsReissue.logisticsCompany : '无'}}</span>
+                    </el-form-item>
+                    <el-form-item label="更新日期" prop="">
+                        <span class="decVal">{{item.domesticLogisticsReissue.issuanceDate ? item.domesticLogisticsReissue.issuanceDate : '无'}}</span>
+                    </el-form-item>
+                </div> -->
+              </div>
+              
+
+          </div>
+          
+          
+        </div>
 
         <div class="blockDivForm">
-          <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;产品信息</h3>
-          <el-form-item label="厂商名称" prop="">
-              <!-- <span class="decVal">{{dataForm.categoryName}}</span> -->
-              <span class="decVal">{{dataForm.info.producerName ? dataForm.info.producerName : '无'}}</span>
+          <h3> 
+              <i class="el-icon-menu"></i> &nbsp;&nbsp;寄件信息&nbsp;&nbsp;
+              <el-button type="primary" icon="" size="small" plain @click="shipAddressVi = true">编辑</el-button>
+          </h3>
+          <el-form-item label="收件人" prop="">
+              <span class="decVal">{{dataForm.shipAddress.shipName ? dataForm.shipAddress.shipName : '无'}}</span>
           </el-form-item>
-          <el-form-item label="品牌名称" prop="">
-              <span class="decVal">{{dataForm.info.brandName ? dataForm.info.brandName : '无'}}</span>
+          <el-form-item label="收件人国家" prop="">
+              <span class="decVal">{{dataForm.shipAddress.shipCountry ? dataForm.shipAddress.shipCountry : '无'}}</span>
           </el-form-item>
-          <el-form-item label="厂商编号" prop="">
-              <span class="decVal">{{dataForm.info.manufacturerNumber ? dataForm.info.manufacturerNumber : '无'}}</span>
+          <el-form-item label="收件人国家(中文)" prop="">
+              <span class="decVal">{{dataForm.shipAddress.shipCountryName ? dataForm.shipAddress.shipCountryName : '无'}}</span>
           </el-form-item>
-          <el-form-item label="产品库存" prop="stock">
-              <span class="decVal">{{dataForm.info.stock ? dataForm.info.stock : '无'}}</span>
+          <el-form-item label="ZIP" prop="">
+              <span class="decVal">{{dataForm.shipAddress.shipZip ? dataForm.shipAddress.shipZip : '无'}}</span>
           </el-form-item>
-          <el-form-item label="产品来源" prop="productSku">
-              <span class="decVal">{{dataForm.info.productSource ? dataForm.info.productSource : '无'}}</span>
+          <el-form-item label="州" prop="">
+              <span class="decVal">{{dataForm.shipAddress.shipRegion ? dataForm.shipAddress.shipRegion : '无'}}</span>
           </el-form-item>
-          <el-form-item label="来源地址" prop="productTitle">
-              <span class="decVal">{{dataForm.info.sellerLink ? dataForm.info.sellerLink : '无'}}</span>
+          <el-form-item label="市" prop="">
+              <span class="decVal">{{dataForm.shipAddress.shipCity ? dataForm.shipAddress.shipCity : '无'}}</span>
           </el-form-item>
-          <el-form-item label="附加备注" prop="stock">
-              <span class="decVal">{{dataForm.info.productRemark ? dataForm.info.productRemark : '无'}}</span>
+          <el-form-item label="街道" prop="">
+              <span class="decVal">{{dataForm.shipAddress.shipAddressLine1 ? dataForm.shipAddress.shipAddressLine1 : '无'}}</span>
           </el-form-item>
+          <el-form-item label="详细地址" prop="">
+              <span class="decVal">{{dataForm.shipAddress.shipAddressDetail ? dataForm.shipAddress.shipAddressDetail : '无'}}</span>
+          </el-form-item>
+          
         </div>
         <div class="blockDivForm">
-          <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;国际物流</h3>
+          <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;国际物流&nbsp;&nbsp; <el-button type="primary" icon="" size="small" plain @click="abroadLogisticsListVi = true;wuliuDetails.abroadLogisticsId = ''">添加</el-button></h3>
           <br>
           <el-table
             class="freTable"
@@ -120,6 +209,16 @@
                 label="创建时间"
                 width="">
             </el-table-column>
+            <el-table-column
+                prop=""
+                label="操作"
+                width="">
+                <template slot-scope="scope">
+                    <el-button type="text" icon="el-icon-bottom" size="small" @click="dayin(scope.row.abroadLogisticsId)">打印</el-button>
+                    <el-button type="text" icon="el-icon-bottom" size="small" @click="mingxi(scope.row)">明细</el-button>
+                    <el-button v-if="scope.row.isDeleted == 0" type="text" icon="el-icon-bottom" size="small" @click="zuof(scope.row.abroadLogisticsId)">作废</el-button>
+                </template>
+            </el-table-column>
 
                 
           </el-table>
@@ -138,47 +237,47 @@
                 width="">
             </el-table-column>
             <el-table-column
-                prop="money"
+                prop="orderMoney"
                 :label="'订单金额('+dataForm.momentRate+')'"
                 width="">
             </el-table-column>
             <el-table-column
-                prop="type"
+                prop="amazonCommission"
                 label="Amazon佣金"
                 width="">
             </el-table-column>
             <el-table-column
-                prop="type"
+                prop="accountMoney"
                 label="到账金额"
                 width="">
             </el-table-column>
             <el-table-column
-                prop="type"
+                prop="purchasePrice"
                 label="采购价"
                 width="">
             </el-table-column>
             <el-table-column
-                prop="type"
+                prop="interFreight"
                 label="国际运费"
                 width="">
             </el-table-column>
             <el-table-column
-                prop="type"
+                prop="platformCommissions"
                 label="平台佣金"
                 width="">
             </el-table-column>
             <el-table-column
-                prop="type"
+                prop="returnCost"
                 label="退货费用"
                 width="">
             </el-table-column>
             <el-table-column
-                prop="type"
+                prop="orderProfit"
                 label="利润"
                 width="">
             </el-table-column>
             <el-table-column
-                prop="type"
+                prop="profitRate"
                 label="利润率"
                 width="">
             </el-table-column>
@@ -248,12 +347,9 @@
         title="添加备注"
         :visible.sync="remarkVisible"
         width="500px">
-        <div>
-            <el-row style="margin-bottom:10px">
-                <el-col :span="6">
-                    <label style="display:inline-block;line-height:36px">备注类型</label>
-                </el-col>
-                <el-col :span="18">
+        <div class="remakDiv">
+            <el-form :model="remarkObj" :rules="remarkObjRule" status-icon ref="remarkObjForm" label-width="100px" class="demo-ruleForm">
+                <el-form-item label="备注类型" prop="type">
                     <el-select v-model="remarkObj.type" placeholder="请选择">
                         <el-option
                         v-for="item in remarkList"
@@ -262,53 +358,209 @@
                         :value="item">
                         </el-option>
                     </el-select>
-                </el-col>
-            </el-row>
-            <el-row style="margin-bottom:10px">
-                <el-col :span="6">
-                    <label style="display:inline-block;line-height:36px">备注内容</label>
-                </el-col>
-                <el-col :span="18">
-                    <el-select v-model="remarkObj.con" placeholder="请选择">
-                        <el-option
-                        v-for="item in remarkList"
-                        :key="item"
-                        :label="item"
-                        :value="item">
-                        </el-option>
-                    </el-select>
-                </el-col>
-            </el-row>
+                </el-form-item>
+                <el-form-item label="备注内容" prop="con">
+                    <el-input type="textarea" v-model="remarkObj.con"></el-input>
+                </el-form-item>
+            </el-form>
         </div>
         <span slot="footer" class="dialog-footer">
             <el-button @click="remarkVisible = false">取 消</el-button>
             <el-button type="primary" @click="addRemark">确 定</el-button>
         </span>
-    </el-dialog>
-    <!-- <el-form-item label="包装尺寸" prop="" required>
-              <el-col :span="6">
-                  <el-form-item prop="property.productLength" :rules="dataRule.productLength">
-                      <span class="decVal">{{dataForm.property.productLength ? dataForm.property.productLength : '无'}}</span>
-                  </el-form-item>
-              </el-col>
-              <el-col :span="3">
-                *
-              </el-col>
-              <el-col :span="6">
-                  <el-form-item prop="property.productWide" :rules="dataRule.productWide">
-                      <span class="decVal">{{dataForm.property.productWide ? dataForm.property.productWide : '无'}}</span>
-                  </el-form-item>
-              </el-col>
-              <el-col :span="3">
-                *
-              </el-col>
-              <el-col :span="6">
-                  <el-form-item prop="property.productHeight" :rules="dataRule.productHeight">
-                      <span class="decVal">{{dataForm.property.productHeight ? dataForm.property.productHeight : '无'}}</span>
-                  </el-form-item>
-              </el-col>
-            
-          </el-form-item> -->
+      </el-dialog>
+        <!-- 编辑寄件信息 -->
+      <el-dialog
+        title="寄件信息编辑"
+        :visible.sync="shipAddressVi"
+        width="600px">
+        <div>
+            <el-form :model="shipAddressObj" status-icon ref="shipAddressObjForm" label-width="120px" class="demo-ruleForm">
+                <el-form-item label="收件人" prop="">
+                    <el-input v-model="shipAddressObj.shipName" placeholder="请输入内容" clearable></el-input>
+                </el-form-item>
+                <el-form-item label="TEL" prop="">
+                    <el-input v-model="shipAddressObj.shipTel" placeholder="请输入内容" clearable></el-input>
+                </el-form-item>
+                <el-form-item label="收件人国家" prop="">
+                    <el-input v-model="shipAddressObj.shipCountry" placeholder="请输入内容" clearable></el-input>
+                </el-form-item>
+                <el-form-item label="收件人国家(中文)" prop="">
+                    <el-input v-model="shipAddressObj.shipCountryName" placeholder="请输入内容" clearable></el-input>
+                </el-form-item>
+                <el-form-item label="ZIP" prop="">
+                    <el-input v-model="shipAddressObj.shipZip" placeholder="请输入内容" clearable></el-input>
+                </el-form-item>
+                <el-form-item label="州" prop="">
+                    <el-input v-model="shipAddressObj.shipRegion" placeholder="请输入内容" clearable></el-input>
+                </el-form-item>
+                <el-form-item label="市" prop="">
+                    <el-input v-model="shipAddressObj.shipCity" placeholder="请输入内容" clearable></el-input>
+                </el-form-item>
+                <el-form-item label="街道" prop="">
+                    <el-input v-model="shipAddressObj.shipAddressLine1" placeholder="请输入内容" clearable></el-input>
+                </el-form-item>
+                <el-form-item label="详细地址" prop="">
+                    <el-input type="textarea" v-model="shipAddressObj.shipAddressDetail"></el-input>
+                </el-form-item>
+            </el-form>
+        </div>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="shipAddressVi = false">取 消</el-button>
+            <el-button type="primary" @click="shipAddressClick">确 定</el-button>
+        </span>
+      </el-dialog>
+        <!-- 添加国际物流 -->
+        <el-dialog
+            title="添加国际物流"
+            :visible.sync="abroadLogisticsListVi"
+            width="1000px">
+            <div>
+                <template v-if="!wuliuDetails.abroadLogisticsId">
+                    <div class="proDiv" style="margint-bottom:16px" v-for="item in dataForm.orderProductList" :key="item.productId">
+                        <div class="img">
+                            <el-image
+                            style="width: 110px; height: 110px"
+                            :src="item.productImageUrl"></el-image>
+                        </div>
+                        <div class="con">
+                            <div style="color:#666;margin-bottom:16px">{{item.productTitle}}</div>
+                            <el-row :gutter="20">
+                                <el-col :span="9">
+                                    <span style="color:#999">SKU：</span>
+                                    <open-tab v-if="item.productId" :isMore="true" size="medium" type="text" icon="" :dec='item.productSku' urlName='productAddUpdate' :opt='{"productId":item.productId}'></open-tab>
+                                    <span style="color:#666" v-else>{{item.productSku}}</span>
+                                </el-col>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <el-col :span="9">
+                                    <span style="color:#999">数量：</span>
+                                    <span style="color:#666">{{item.orderItemNumber}}</span>
+                                </el-col>
+                            </el-row>
+                            <!-- <el-row :gutter="20">
+                                <el-col :span="10">
+                                    <span style="color:#999">运输数量：</span>
+                                    <el-input-number v-model="num" :min="1" :max="item.orderItemNumber" label="描述文字"></el-input-number>
+                                </el-col>
+                            </el-row> -->
+
+                        </div>
+                    </div>
+                </template>
+                
+                <el-form :inline="true" :model="wuliuDetails" :rules="dataRule" status-icon ref="wuliuDetailsForm" label-width="100px" class="demo-ruleForm">
+                    <el-form-item label="中文" prop="chineseName">
+                        <span v-if="wuliuDetails.abroadLogisticsId" class="decVal">{{wuliuDetails.chineseName}}</span>
+                        <el-input v-else v-model="wuliuDetails.chineseName" placeholder="请输入内容" clearable></el-input>
+                    </el-form-item>
+                    <el-form-item label="英文" prop="englishName">
+                        <span v-if="wuliuDetails.abroadLogisticsId" class="decVal">{{wuliuDetails.englishName}}</span>
+                        <el-input v-else v-model="wuliuDetails.englishName" placeholder="请输入内容" clearable></el-input>
+                    </el-form-item>
+                    <el-form-item label="重量" prop="weight">
+                        <span v-if="wuliuDetails.abroadLogisticsId" class="decVal">{{wuliuDetails.weight}}</span>
+                        <el-input v-else v-model="wuliuDetails.weight" placeholder="请输入内容" clearable></el-input>
+                    </el-form-item>
+                    <br>
+                    <el-form-item label="体积" prop="" required>
+                        <el-col :span="6">
+                            <el-form-item prop="length">
+                                <span v-if="wuliuDetails.abroadLogisticsId" class="decVal">{{wuliuDetails.length}}</span>
+                                <el-input v-else v-model="wuliuDetails.length" placeholder="请输入内容" clearable></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="1" style="text-align:center">
+                            *
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item prop="width">
+                                <span v-if="wuliuDetails.abroadLogisticsId" class="decVal">{{wuliuDetails.width}}</span>
+                                <el-input v-else v-model="wuliuDetails.width" placeholder="请输入内容" clearable></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="1" style="text-align:center">
+                            *
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item prop="height">
+                                <span v-if="wuliuDetails.abroadLogisticsId" class="decVal">{{wuliuDetails.height}}</span>
+                                <el-input v-else v-model="wuliuDetails.height" placeholder="请输入内容" clearable></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-form-item>
+                    <br>
+                    <el-form-item label="物流" prop="wuliuType">
+                        <el-col :span="10">
+                            <el-form-item label="" prop="wuliuType">
+                                <el-select v-model="wuliuDetails.wuliuType" filterable placeholder="请选择" :disabled="wuliuDetails.abroadLogisticsId ? true : false">
+                                    <el-option
+                                            key="0"
+                                            label="云途小包"
+                                            value="0">
+                                    </el-option>
+                                    <el-option
+                                            key="1"
+                                            label="三态大包"
+                                            value="1">
+                                    </el-option>
+                                        <el-option
+                                                key="2"
+                                                label="燕文物流"
+                                                value="2">
+                                    </el-option>
+                                        <el-option
+                                                key="3"
+                                                label="德邦物流"
+                                                value="3">
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="1">
+                            <div style="height:10px"> </div>
+                        </el-col>
+                        <el-col :span="10">
+                            <el-form-item label="" prop="xianlu">
+                                <span v-if="wuliuDetails.abroadLogisticsId" class="decVal">{{wuliuDetails.channelName}}</span>
+                                <el-select v-else v-model="wuliuDetails.xianlu" filterable placeholder="请选择" @focus="getWuliuXianl">
+                                    <el-option
+                                            v-for="item in guojilogistics"
+                                            :key="item.channelId"
+                                            :label="item.channelName"
+                                            :value="item.channelId">
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                    </el-form-item>
+                    <el-form-item v-if="wuliuDetails.wuliuType == 1 || wuliuDetails.wuliuType == 2" label="海关编码" prop="itemCodeId">
+                        <span v-if="wuliuDetails.abroadLogisticsId" class="decVal">{{wuliuDetails.itemCode}} {{wuliuDetails.itemCnMaterial}}</span>
+                        <el-select v-else v-model="wuliuDetails.itemCodeId" filterable placeholder="请选择" @focus="getHGBM" @change="changeHG">
+                            <el-option
+                                    v-for="item in itemCodelist"
+                                    :key="item.itemCodeId"
+                                    :label="item.itemCode+item.itemCnMaterial"
+                                    :value="item.itemCodeId">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-button type="primary" icon="" size="small" plain @click="createdNum">生产运单号</el-button>
+                    <br>
+                    <el-form-item v-if="wuliuDetails.wuliuType == 1" label="门牌号" prop="">
+                        <el-input v-model="wuliuDetails.doorNumber" :disabled="true"></el-input>
+                    </el-form-item>
+                    <el-form-item label="运单号" prop="">
+                        <el-input v-model="wuliuDetails.addyundanhao" :disabled="true"></el-input>
+                    </el-form-item>
+                    <el-form-item label="追踪号" prop="">
+                        <el-input v-model="wuliuDetails.addzhuizonghao" :disabled="true"></el-input>
+                    </el-form-item>
+                </el-form>
+                <!-- <span slot="footer" class="dialog-footer">
+                    <el-button @click="abroadLogisticsListVi = false">确 定</el-button>
+                </span> -->
+            </div>
+        </el-dialog>    
     </div>
   </div>
 </template>
@@ -334,7 +586,10 @@
             type:'',
             con:''
         },
-        orderObj:[],
+        shipAddressVi:false,
+        abroadLogisticsListVi:false,
+        shipAddressObj:{},
+        orderObj:[{},{}],
         stock:null,
         addVMoneyList:[],
         itemV:{color:'',size:''},
@@ -342,182 +597,137 @@
         productId:null,
         discountList:[1,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1],
         freightLoading:false,
+        wuliuDetails:{
+            abroadLogisticsId:'',
+            chineseName:'',
+            englishName:'',
+            weight:'',
+            length:'',
+            width:'',
+            height:'',
+            doorNumber:'',
+            addyundanhao:'',
+            addzhuizonghao:'',
+            itemCodeId:'',
+            xianlu:'',
+            wuliuType:'',
+            itemCodeId:''
+        },
+        wuliuType:'',
+        xianlu:'',
+        guojilogistics:[],
+        itemCodelist:[],
         dataForm: {
-          productId: null,
-          auditStatus:'',
-          productType:'',
-          productCategor:null,
-          productSku:'',
-          imageList:[],
-          freightCostList:[{
-            countryCode: "",
-            finalPrice: 0,
-            foreignCurrency: 0,
-            freight: 0,
-            optimization: 0,
-            price: 0,
-            profit: 0,
-            profitRate: "0.00%",
-          },{
-              countryCode: "",
-            finalPrice: 0,
-            foreignCurrency: 0,
-            freight: 0,
-            optimization: 0,
-            price: 0,
-            profit: 0,
-            profitRate: "0.00%",
-          },{
-              countryCode: "",
-            finalPrice: 0,
-            foreignCurrency: 0,
-            freight: 0,
-            optimization: 0,
-            price: 0,
-            profit: 0,
-            profitRate: "0.00%",
-          },{
-              countryCode: "",
-            finalPrice: 0,
-            foreignCurrency: 0,
-            freight: 0,
-            optimization: 0,
-            price: 0,
-            profit: 0,
-            profitRate: "0.00%",
-          },{
-              countryCode: "",
-            finalPrice: 0,
-            foreignCurrency: 0,
-            freight: 0,
-            optimization: 0,
-            price: 0,
-            profit: 0,
-            profitRate: "0.00%",
-          },{
-              countryCode: "",
-            finalPrice: 0,
-            foreignCurrency: 0,
-            freight: 0,
-            optimization: 0,
-            price: 0,
-            profit: 0,
-            profitRate: "0.00%",
-          },{
-              countryCode: "",
-            finalPrice: 0,
-            foreignCurrency: 0,
-            freight: 0,
-            optimization: 0,
-            price: 0,
-            profit: 0,
-            profitRate: "0.00%",
-          },{
-              countryCode: "",
-            finalPrice: 0,
-            foreignCurrency: 0,
-            freight: 0,
-            optimization: 0,
-            price: 0,
-            profit: 0,
-            profitRate: "0.00%",
-          },{
-              countryCode: "",
-            finalPrice: 0,
-            foreignCurrency: 0,
-            freight: 0,
-            optimization: 0,
-            price: 0,
-            profit: 0,
-            profitRate: "0.00%",
-          },{
-              countryCode: "",
-            finalPrice: 0,
-            foreignCurrency: 0,
-            freight: 0,
-            optimization: 0,
-            price: 0,
-            profit: 0,
-            profitRate: "0.00%",
-          }],
-          introductionList:[{},{},{},{},{},{},{}],
-          productTitle:'',
-          property:{
-              purchasePrice:0,
-              domesticFreight:0
-          },
+          orderId:'',
+          shopName:'',
+          orderNumber:'',
+          purchasePrice:'',
+          orderState:'',
+          amazonOrderId:'',
+          buyDate:'',
+          remarkList:[],
+          abroadLogisticsList:[],
           info:{},
-          variantsInfoList:[],
-          variantsParameterList:[],
-          viFlag:0,
-          vpFlag:0
+          shipAddress:{},
+          orderProductList:[]
         },
         addObj:{type:null,value:''},
         nowProTypeId:[],
         
         dataRule: {
-          purchasePrice: [
-            { required: true, message: '采购价格不能为空', trigger: 'blur' },
-            { validator: number, trigger: 'blur' }
-          ],
-          domesticFreight: [
-                { required: true, message: '国内运费不能为空', trigger: 'blur' },
+            chineseName: [
+                { required: true, message: '中文不能为空', trigger: 'blur' }
+            ],
+            englishName: [
+                { required: true, message: '英文不能为空', trigger: 'blur' }
+            ],
+            weight: [
+                { required: true, message: '重量不能为空', trigger: 'blur' },
                 { validator: number, trigger: 'blur' }
             ],
-            productWeight: [
-                { required: true, message: '包装毛重不能为空', trigger: 'blur' },
-                { validator: number, trigger: 'blur' }
-            ],
-            productWide: [
+            width: [
                 { required: true, message: '宽不能为空', trigger: 'blur' },
                 { validator: number, trigger: 'blur' }
             ],
-            productLength: [
+            length: [
                 { required: true, message: '长不能为空', trigger: 'blur' },
                 { validator: number, trigger: 'blur' }
             ],
-            productHeight: [
+            height: [
                 { required: true, message: '高不能为空', trigger: 'blur' },
                 { validator: number, trigger: 'blur' }
             ],
-          categoryId:[
-            {required: true, message: '分类不能为空', trigger: 'change' }
-          ]
+            wuliuType:[
+                {required: true, message: '不能为空', trigger: 'change' }
+            ],
+            xianlu:[
+                {required: true, message: '不能为空', trigger: 'change' }
+            ],
+            itemCodeId:[
+                {required: true, message: '不能为空', trigger: 'change' }
+            ],
+        },
+        remarkObjRule:{
+            type:[
+                {required: true, message: '请选择备注类型', trigger: 'change' }
+            ],
+            con:[
+                {required: true, message: '请填写备注内容', trigger: 'blur' }
+            ]
         }
       }
     },
     created(){
-        this.init(this.$route.params)
+        this.dataForm.orderId = this.$route.params.orderId;
+        this.init()
     },
     methods: {
-        moveImg(newIndex,oldIndex,el) {
-            // this.dataForm.imageList = this.dataForm.imageList.shunxu((a, b) => a.sort - b.sort);
-            console.log(this.dataForm.imageList[newIndex]);
-            console.log(this.dataForm.imageList[oldIndex]);
-        },
-        init (obj) {
-            this.productId = obj.productId || 0;
-            if(this.productId){
-                this.$http({
-                url: this.$http.adornUrl('/product/product/productdetails'),
+        init () {
+            const loading = this.$loading({
+                lock: true,
+                text: 'Loading',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
+            this.$http({
+                url: this.$http.adornUrl('/order/order/getOrderInfo'),
                 method: 'get',
                 params: this.$http.adornParams({
-                    productId:this.productId
+                    orderId:this.dataForm.orderId
                 })
-                }).then(({data}) => {
+            }).then(({data}) => {
+                loading.close()
                 if (data && data.code === 0) {
-                    this.dataForm = data.product;
-                    this.imgList = this.dataForm.imageList.map((item) => {
-                        return 'http://'+item.imageUrl
-                    })
+                    this.dataForm = data.orderDTO;
+                    
+                    if(!this.dataForm.shipAddress){
+                        this.dataForm.shipAddress = {};
+                    }
+                    this.shipAddressObj = JSON.parse(JSON.stringify(this.dataForm.shipAddress))
+                    this.orderObj[0].type = '国际币种';
+                    this.orderObj[1].type = '人民币';
+                    this.orderObj[0].amazonCommission = this.dataForm.amazonCommissionForeign;
+                    this.orderObj[1].amazonCommission = this.dataForm.amazonCommission;
+                    this.orderObj[0].orderMoney = this.dataForm.orderMoneyForeign;
+                    this.orderObj[1].orderMoney = this.dataForm.orderMoney;
+                    this.orderObj[0].accountMoney = this.dataForm.accountMoneyForeign;
+                    this.orderObj[1].accountMoney = this.dataForm.accountMoney;
+                    this.orderObj[0].purchasePrice = '--';
+                    this.orderObj[1].purchasePrice = this.dataForm.purchasePrice;
+                    this.orderObj[0].interFreight = '--';
+                    this.orderObj[1].interFreight = this.dataForm.interFreight;
+                    this.orderObj[0].platformCommissions = '--';
+                    this.orderObj[1].platformCommissions = this.dataForm.platformCommissions;
+                    this.orderObj[0].returnCost = '--';
+                    this.orderObj[1].returnCost = this.dataForm.returnCost;
+                    this.orderObj[0].orderProfit = '--';
+                    this.orderObj[1].orderProfit = this.dataForm.orderProfit;
+                    this.orderObj[0].profitRate = '--';
+                    this.orderObj[1].profitRate = this.dataForm.profitRate;
+                }else{
+                    this.$message.error(data.msg)
                 }
-                })
-            }else{
-                this.$nextTick(() => {
-                    this.$refs['dataForm'].resetFields();
-                    this.dataForm = obj.obj;
-                })
-            }
+            })
         },
         checkGroup(val){
             console.log(val)
@@ -525,18 +735,306 @@
         // 表单提交
         dataFormSubmit () {
             this.$refs['dataForm'].validate((valid) => {
-            if (valid) {
-                this.dataForm.categoryId = this.dataForm.categoryId[this.dataForm.categoryId.length-1]
+                if (valid) {
+                    // this.dataForm.categoryId = this.dataForm.categoryId[this.dataForm.categoryId.length-1]
+                    const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                    });
+                    this.$http({
+                        url: this.$http.adornUrl(`/product/product/${!this.productId ? 'originalproduct' : 'modifyproduct'}`),
+                        method: 'post',
+                        data: this.$http.adornData(this.dataForm)
+                    }).then(({data}) => {
+                        if (data && data.code === 0) {
+                            this.$message({
+                                message: '操作成功',
+                                type: 'success',
+                                duration: 1000,
+                                onClose: () => {
+                                    this.$refs.back.removeTabHandle(this.mainTabsActiveName);
+                                    loading.close();
+                                // this.$nextTick(() => {
+                                //   this.$refs['dataForm'].resetFields();
+                                // })
+                                }
+                            })
+                        
+                        } else {
+                            this.$message.error(data.msg)
+                            loading.close();
+                        }
+                    })
+                    
+                }
+            })
+        },
+        // 添加备注
+        addRemark(){
+            // this.remarkObj 备注信息对象
+            this.remarkVisible = false;
+            this.$refs['remarkObjForm'].validate((valid) => {
+                if (valid) {
+                    const loading = this.$loading({
+                        lock: true,
+                        text: 'Loading',
+                        spinner: 'el-icon-loading',
+                        background: 'rgba(0, 0, 0, 0.7)'
+                    });
+                    this.$http({
+                        url: this.$http.adornUrl('/order/orderremark/saveNew'),
+                        method: 'post',
+                        data: this.$http.adornData({
+                            orderId:this.dataForm.orderId,
+                            remark:this.remarkObj.con,
+                            remarkType:this.remarkObj.type
+                        })
+                    }).then(({data}) => {
+                        if (data && data.code === 0) {
+                            this.$message({
+                                message: '操作成功',
+                                type: 'success',
+                                duration: 1000,
+                                onClose: () => {
+                                    loading.close();
+                                    this.init();
+                                    // this.$nextTick(() => {
+                                    //     this.$refs['wuliuDetailsForm'].resetFields();
+                                    // })
+                                }
+                            })
+                        
+                        } else {
+                            this.$message.error(data.msg)
+                            loading.close();
+                        }
+                    })
+                    
+                }
+            })
+
+        },
+        // 编辑寄件信息
+        shipAddressClick(){
+            this.$confirm('确定修改寄件信息?', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
                 const loading = this.$loading({
-                lock: true,
-                text: 'Loading',
-                spinner: 'el-icon-loading',
-                background: 'rgba(0, 0, 0, 0.7)'
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                    });
+                this.$http({
+                    url: this.$http.adornUrl('/order/ordershipaddress/update'),
+                    method: 'post',
+                    data: this.$http.adornData(this.shipAddressObj)
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                    this.$message({
+                        message: '操作成功',
+                        type: 'success',
+                        duration: 1000,
+                        onClose: () => {
+                            this.dataForm.shipAddress = this.shipAddressObj;
+                            this.shipAddressVi = false;
+                            loading.close()
+                        }
+                    })
+                    } else {
+                        this.$message.error(data.msg)
+                        loading.close()
+                    }
+                })
+            }).catch(() => {})
+        },
+        // 获取物流线路
+        getWuliuXianl(){
+            if(this.wuliuDetails.wuliuType){
+                this.$http({
+                    url: this.$http.adornUrl('/order/order/getShippingMethodCode'),
+                    method: 'get',
+                    params: this.$http.adornParams({
+                        type:this.wuliuDetails.wuliuType
+                    })
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                        console.log(data);
+                        this.guojilogistics = data.channelilist;
+                    } else {
+                        this.$message.error(data.msg)
+                    }
+                })
+            }else{
+                this.$message({
+                    message: '请选择物流类型',
+                    type: 'warning'
+                });
+            }
+            
+        },
+        // 获取海关编码
+        getHGBM(){
+            this.$http({
+                url: this.$http.adornUrl('/order/order/getItemCode'),
+                method: 'get',
+                params: this.$http.adornParams()
+            }).then(({data}) => {
+                if (data && data.code === 0) {
+                    console.log(data);
+                    this.itemCodelist = data.itemCodelist;
+                } else {
+                    this.$message.error(data.msg)
+                }
+            })
+        },
+        // 海关编码改变
+        changeHG(val){
+            var obj = this.itemCodelist.find(item => item.itemCodeId == val);
+            this.wuliuDetails.chineseName = obj.itemCnMaterial;
+            this.wuliuDetails.englishName = obj.itemEnMaterial;
+        },
+        // 生成运单号
+        createdNum(){
+            this.$refs['wuliuDetailsForm'].validate((valid) => {
+                if (valid) {
+                    const loading = this.$loading({
+                        lock: true,
+                        text: 'Loading',
+                        spinner: 'el-icon-loading',
+                        background: 'rgba(0, 0, 0, 0.7)'
+                    });
+                    this.$http({
+                        url: this.$http.adornUrl('/order/order/createAbroadWaybill'),
+                        method: 'post',
+                        data: this.$http.adornData({
+                            orderId:this.dataForm.orderId,
+                            orderItemRelationList:this.dataForm.orderProductList,
+                            amazonOrderId:'',
+                            packageType:parseInt(this.wuliuDetails.wuliuType),
+                            channelId:this.wuliuDetails.xianlu,
+                            doorNumber:this.wuliuDetails.doorNumber,
+                            chineseName:this.wuliuDetails.chineseNamem,
+                            englishName:this.wuliuDetails.englishName,
+                            length:this.wuliuDetails.length,
+                            width:this.wuliuDetails.width,
+                            height:this.wuliuDetails.height,
+                            weight:this.wuliuDetails.weight
+                        })
+                    }).then(({data}) => {
+                        if (data && data.code === 0) {
+                            this.$message({
+                                message: '操作成功',
+                                type: 'success',
+                                duration: 1000,
+                                onClose: () => {
+                                    loading.close();
+                                    // this.$nextTick(() => {
+                                    //     this.$refs['wuliuDetailsForm'].resetFields();
+                                    // })
+                                }
+                            })
+                        
+                        } else {
+                            this.$message.error(data.msg)
+                            loading.close();
+                        }
+                    })
+                    
+                }
+            })
+        },
+        // 已完成
+        okClick(){
+            this.$confirm('确定该订单已完成?', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                    });
+                this.$http({
+                    url: this.$http.adornUrl('/order/order/updateState'),
+                    method: 'post',
+                    data: this.$http.adornData({
+                        orderId:this.dataForm.orderId,
+                        orderState:'已完成'
+                    })
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                    this.$message({
+                        message: '操作成功',
+                        type: 'success',
+                        duration: 1000,
+                        onClose: () => {
+                            this.init();
+                            loading.close()
+                        }
+                    })
+                    } else {
+                        this.$message.error(data.msg)
+                        loading.close()
+                    }
+                })
+            }).catch(() => {})
+        },
+        // 已处理
+        okClick(){
+            this.$confirm('确定该订单已处理?', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
                 });
                 this.$http({
-                    url: this.$http.adornUrl(`/product/product/${!this.productId ? 'originalproduct' : 'modifyproduct'}`),
-                    method: 'post',
-                    data: this.$http.adornData(this.dataForm)
+                    url: this.$http.adornUrl('/order/order/updateOrderAbnormalState'),
+                    method: 'get',
+                    params: this.$http.adornParams({
+                        orderId:this.dataForm.orderId
+                    })
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                    this.$message({
+                        message: '操作成功',
+                        type: 'success',
+                        duration: 1000,
+                        onClose: () => {
+                            this.init();
+                            loading.close()
+                        }
+                    })
+                    } else {
+                        this.$message.error(data.msg)
+                        loading.close()
+                    }
+                })
+            }).catch(() => {})
+        },
+        // 打印
+        dayin(id){
+            let obj = this.dataForm.abroadLogisticsList.find(item => item.abroadLogisticsId == id)
+            if(obj.printUrl){
+                window.open(obj.printUrl)
+            }else{
+                this.$http({
+                    url: this.$http.adornUrl('/order/order/printLogisticAbroad'),
+                    method: 'get',
+                    params: this.$http.adornParams({
+                        abroadLogisticsId:id
+                    })
                 }).then(({data}) => {
                     if (data && data.code === 0) {
                         this.$message({
@@ -544,27 +1042,56 @@
                             type: 'success',
                             duration: 1000,
                             onClose: () => {
-                                this.$refs.back.removeTabHandle(this.mainTabsActiveName);
-                                loading.close();
-                            // this.$nextTick(() => {
-                            //   this.$refs['dataForm'].resetFields();
-                            // })
+                                window.open(data.url)
                             }
                         })
-                    
                     } else {
                         this.$message.error(data.msg)
-                        loading.close();
                     }
                 })
-                
             }
-            })
+
         },
-        // 添加备注
-        addRemark(){
-            // this.remarkObj 备注信息对象
-            this.remarkVisible = false;
+        // 作废
+        zuof(id){
+            this.$confirm('确定作废该物流?', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+                this.$http({
+                    url: this.$http.adornUrl('/order/order/deleteLogisticAbroad'),
+                    method: 'get',
+                    params: this.$http.adornParams({
+                        abroadLogisticsId:id
+                    })
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                    this.$message({
+                        message: '操作成功',
+                        type: 'success',
+                        duration: 1000,
+                        onClose: () => {
+                            this.init();
+                            loading.close()
+                        }
+                    })
+                    } else {
+                        this.$message.error(data.msg)
+                        loading.close()
+                    }
+                })
+            }).catch(() => {})
+        },
+        // 明细
+        mingxi(row){
+            this.wuliuDetails = row;
         }
 
     }
@@ -572,38 +1099,25 @@
 </script>
 <style>
     
-  .imgUl{
-      margin: 0;
-      padding: 0;
+  .remakDiv .el-select{
+      width: 100%;
+  }
+  .proDiv{
       display: flex;
+      margin-left: 60px;
   }
-  .imgUl .imgLi{
-      list-style: none;
-      width: 152px;
-      margin: 3px;
-      position: relative;
+  .proDiv .img{
+      width: 120px;
+      padding-right: 10px;
   }
-  .imgUl .imgLi .selec{
-      position: absolute;
-      left: 6px;
-      top: 6px;
+  .proDiv .el-row{
+      margin-bottom: 10px;
   }
-  .imgUl .imgLi .selec .el-checkbox__label{
-      color: transparent;
+  .domDiv{
+      margin-bottom: 10px;
   }
-  .biantiDiv{
-      display: flex;
-  }
-  .biantiDiv>div{
-      width: 60px;
-      height: 60px;
-      padding: 5px;
-      position: relative;
-  }
-  .biantiDiv>div>.close{
-      position: absolute;
-      top: -10px;
-      right: 0;
-      z-index: 1;
+  .domDiv h4{
+      color: #409EFF;
+      margin-bottom: 10px;
   }
 </style>

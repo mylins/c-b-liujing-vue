@@ -159,7 +159,7 @@
                     :key="item.code"
                     @click="productTypeClick(item.code)"
                     class="el-tag el-tag--medium" 
-                    :style="item.code == abnormalStatusValue ? {'background':color[index],'color':'#fff','border':'1px solid '+color[index]} : {'color':color[index],'background':'#fff','border':'1px solid '+color[index]}">
+                    :style="item.code == abnormalStatusValue ? {'background':color1[index],'color':'#fff','border':'1px solid '+color1[index]} : {'color':color1[index],'background':'#fff','border':'1px solid '+color1[index]}">
                     {{ item.value }} ({{item.count}})</span>
             </div>
         </div>
@@ -168,7 +168,7 @@
             <el-button type="primary" icon="el-icon-bottom" size="small" @click="getOrder">获取订单</el-button>
             <el-button type="primary" icon="el-icon-edit-outline" size="small" @click="luruVisible = true">手工录入订单</el-button>
             <el-button type="primary" icon="el-icon-star-off" size="small" @click="biaojiClick">标记订单状态</el-button>
-            
+            <open-tab size="medium" type="text" icon="" dec='订单表单' urlName='orderAddUpdate' :opt='{"orderId":null}'></open-tab>
             <!-- <div style="float:right;">
                 <el-button type="primary" icon="el-icon-download" size="small">插件下载</el-button>
                 <el-button type="text">采集手册</el-button>
@@ -210,12 +210,12 @@
                 <el-table-column
                 prop="productId"
                 label="订单号"
-                width="150">
+                width="100">
                 <template slot-scope="scope">
                     <span>{{scope.row.orderId}}</span>
                     <el-image
                         style="width: 25px; height: 13px"
-                        :src="'http://'+scope.row.mainImageUrl"></el-image>
+                        :src="'src/assets/img/'+scope.row.countryCode+'.jpg'"></el-image>
                     <span>{{comObj[scope.row.countryCode]}}</span>
                 </template>
                 </el-table-column>
@@ -227,24 +227,24 @@
                 <el-table-column
                 prop=""
                 label="图片"
-                width="160">
+                width="70">
                     <template slot-scope="scope">
                         <el-tooltip placement="right-start" effect="light">
                             <div slot="content">
                                 <el-image
                                 style="width: 300px; height: 300px"
-                                :src="'http://'+scope.row.productImageUrl"></el-image>
+                                :src="scope.row.productImageUrl"></el-image>
                             </div>
                                 <el-image
                                 style="width: 60px; height: 60px"
-                                :src="'http://'+scope.row.productImageUrl"></el-image>
+                                :src="scope.row.productImageUrl"></el-image>
                         </el-tooltip>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="productId"
                 label="亚马逊单号"
-                width="150">
+                width="200">
                     <template slot-scope="scope">
                         <el-tooltip v-if="scope.row.abroadRemark" :content="scope.row.abroadRemark" placement="bottom" effect="light">
                             <i class="el-icon-s-opportunity" style="color:#F56C6C"></i>
@@ -252,10 +252,10 @@
                         <el-tooltip v-if="scope.row.generalRemark" :content="scope.row.generalRemark" placement="bottom" effect="light">
                             <i class="el-icon-s-flag" style="color:#F56C6C"></i>
                         </el-tooltip>
-                        <open-tab size="medium" type="text" icon="" :dec='scope.row.amazonOrderId' urlName='productAddUpdate' :opt='{"orderId":scope.row.orderId}'></open-tab>
+                        <open-tab :isMore="true" size="medium" type="text" icon="" :dec='scope.row.amazonOrderId' urlName='orderAddUpdate' :opt='{"orderId":scope.row.orderId}'></open-tab>
                         <el-image
                             style="width: 15px; height: 15px"
-                            :src="'http://'+scope.row.productImageUrl"></el-image>
+                            src="src/assets/img/yamaxun.jpg"></el-image>
                         <span>{{scope.shopName}}</span>
                     </template>
                 </el-table-column>
@@ -328,7 +328,7 @@
                     <template slot-scope="scope">
                         <span 
                             class="el-tag el-tag--medium" 
-                            :style="{'color':color[stateList.indexOf(scope.row.orderState)],'background':'#fff','border':'1px solid '+color[stateList.indexOf(scope.row.orderState)]}">
+                            :style="{'color':color[states.indexOf(scope.row.orderState)],'background':'#fff','border':'1px solid '+color[states.indexOf(scope.row.orderState)]}">
                             {{ scope.row.orderState }}</span>
                     </template>
                 </el-table-column>
@@ -340,7 +340,7 @@
                         <span 
                             v-if="scope.row.abnormalStatus"
                             class="el-tag el-tag--medium" 
-                            :style="{'color':color1[stateList.indexOf(scope.row.abnormalStatus)],'background':'#fff','border':'1px solid '+color1[stateList.indexOf(scope.row.abnormalStatus)]}">
+                            :style="{'color':color1[states1.indexOf(scope.row.abnormalStatus)],'background':'#fff','border':'1px solid '+color1[states1.indexOf(scope.row.abnormalStatus)]}">
                             {{ scope.row.abnormalStatus }}</span>
                     </template>
                 </el-table-column>
@@ -443,7 +443,7 @@
         </div>
         <span slot="footer" class="dialog-footer">
             <el-button @click="yichangVisible = false">取 消</el-button>
-            <el-button type="primary" @click="rluruClick">确 定</el-button>
+            <el-button type="primary" @click="biaojiClickOk">确 定</el-button>
         </span>
     </el-dialog>
   </div>
@@ -474,7 +474,9 @@
             stateList:[],
             statisticsProfit:{},
             color:['#409EFF','#fb4f4f','#f7915f','#eaa729','#a8de06','#45e63c','#4bd2ba','#07dbf3','#2592f1','#9d7bec'],
-            color:['#409EFF','#fb4f4f','#f7915f','#eaa729','#a8de06','#45e63c','#4bd2ba','#07dbf3','#2592f1','#9d7bec'],
+            color1:['#409EFF','#f7915f','#eaa729','#fb4f4f','#c552f3','#ea6320','#f97171'],
+            states:['','已付款','虚发货','已采购','已发货','仓库已入库','仓库已出库','国际已发货','已完成'],
+            states1:['','缺货','补发','问题','退款','国际物流异常','国内物流异常'],
             q:{
                 startDate:'',
                 endDate:'',
@@ -515,7 +517,7 @@
           }
       },
       created(){
-        //   this.getMyStatusList();
+          this.getMyStatusList();
           this.getDataList();
         //   this.visibleChange();
       },
@@ -531,26 +533,40 @@
         // 获取订单状态列表
         getMyStatusList () {
             this.$http({
-                url: this.$http.adornUrl('/sys/sysdict/mystatuslist'),
+                url: this.$http.adornUrl('/sys/sysdict/orderStateList'),
                 method: 'get',
                 params: this.$http.adornParams()
             }).then(({data}) => {
                 if (data && data.code === 0) {
                     console.log(data);
-                    this.orderStatusList = data.auditList;
-                    this.abnormalStatusList = data.productTypeList;
-                    this.orderStatusList.unshift({
+                    var that = this;
+                    this.orderStatusList = [{
                         code:'',
                         value:'全部',
-                        count:data.allCounts
-                    })
-                    this.abnormalStatusList.unshift({
+                        count:data.allOrderCount
+                    }];
+                    this.abnormalStatusList = [{
                         code:'',
                         value:'全部',
-                        count:data.allCounts
+                        count:data.abnormalAllOrderCount
+                    }];
+                    data.orderStateList.forEach(function(item){
+                        if(item.name == '订单状态'){
+                            that.orderStatusList.push({
+                                code:item.code,
+                                value:item.value,
+                                count:item.count
+                            })
+                        }else{
+                            that.abnormalStatusList.push({
+                                code:item.code,
+                                value:item.value,
+                                count:item.count
+                            })
+                        }
                     })
                 } else {
-                    
+                    this.$message.error(data.msg)
                 }
             })
         },
@@ -666,31 +682,6 @@
                 })
             }).catch(() => {})
         },
-        // 原创第一步
-        toProduct(){
-            const loading = this.$loading({
-                lock: true,
-                text: 'Loading',
-                spinner: 'el-icon-loading',
-                background: 'rgba(0, 0, 0, 0.7)'
-            });
-            this.$http({
-                url: this.$http.adornUrl('/product/product/getproductid'),
-                method: 'get',
-                params: this.$http.adornParams()
-            }).then(({data}) => {
-                if (data && data.code === 0) {
-                    console.log(data);
-                    this.productD = data.product;
-                    this.showList = false;
-
-                    // this.dataForm = data.product;
-                    loading.close();
-                }else{
-                    this.$message.error(data.msg)
-                }
-            })
-        },
         // 退款
         returnM(){
             // this.returnMoney  退款金额
@@ -707,7 +698,7 @@
                     background: 'rgba(0, 0, 0, 0.7)'
                 });
                 this.$http({
-                    url: this.$http.adornUrl('/product/product/mylist'),
+                    url: this.$http.adornUrl('/order/order/getReturnCost'),
                     method: 'get',
                     params: this.$http.adornParams({
                         'amazonOrderId': this.orderId,
@@ -743,7 +734,7 @@
                 background: 'rgba(0, 0, 0, 0.7)'
             });
             this.$http({
-                url: this.$http.adornUrl('/product/product/mylist'),
+                url: this.$http.adornUrl('/order/order/getOneselfOrder'),
                 method: 'get',
                 params: this.$http.adornParams()
             }).then(({data}) => {

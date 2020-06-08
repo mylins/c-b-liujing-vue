@@ -3,15 +3,14 @@
       <!-- 列表页 -->
       <div>
         <!-- 搜索 -->
-        <div class="sous">
+        <div class="sous sous1">
             <el-row :gutter="20">
                 
-                <el-col :span="6">
+                <el-col :span="12">
                     <el-row>
-                        <el-col :span="8">
-                            <label class="labelSS">订单ID：</label>
-                        </el-col>
-                        <el-col :span="16">
+                        <label class="labelSS">订单ID：</label>
+                        
+                        <el-col :span="18">
                             <el-input
                                 size="medium"
                                 placeholder="请输入内容"
@@ -20,12 +19,10 @@
                         </el-col>
                     </el-row>
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="12">
                     <el-row>
-                        <el-col :span="8">
-                            <label class="labelSS">亚马逊订单ID：</label>
-                        </el-col>
-                        <el-col :span="16">
+                        <label class="labelSS">亚马逊订单ID：</label>
+                        <el-col :span="18">
                             <el-input
                                 size="medium"
                                 placeholder="请输入内容"
@@ -34,12 +31,10 @@
                         </el-col>
                     </el-row>
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="12">
                     <el-row>
-                        <el-col :span="8">
-                            <label class="labelSS">国内物流单号：</label>
-                        </el-col>
-                        <el-col :span="16">
+                        <label class="labelSS">国内物流单号：</label>
+                        <el-col :span="18">
                             <el-input
                                 size="medium"
                                 placeholder="请输入内容"
@@ -48,12 +43,10 @@
                         </el-col>
                     </el-row>
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="12">
                     <el-row>
-                        <el-col :span="8">
-                            <label class="labelSS">国际物流单号：</label>
-                        </el-col>
-                        <el-col :span="16">
+                        <label class="labelSS">国际物流单号：</label>
+                        <el-col :span="18">
                             <el-input
                                 size="medium"
                                 placeholder="请输入内容"
@@ -93,12 +86,13 @@
                 <el-table-column
                 prop="productId"
                 label="订单号"
-                width="150">
+                width="100">
                 <template slot-scope="scope">
                     <span>{{scope.row.orderId}}</span>
+                    <br>
                     <el-image
                         style="width: 25px; height: 13px"
-                        :src="'http://'+scope.row.mainImageUrl"></el-image>
+                        :src="'src/assets/img/'+scope.row.countryCode+'.jpg'"></el-image>
                     <span>{{comObj[scope.row.countryCode]}}</span>
                 </template>
                 </el-table-column>
@@ -119,24 +113,24 @@
                 <el-table-column
                 prop=""
                 label="图片"
-                width="160">
+                width="70">
                     <template slot-scope="scope">
                         <el-tooltip placement="right-start" effect="light">
                             <div slot="content">
                                 <el-image
                                 style="width: 300px; height: 300px"
-                                :src="'http://'+scope.row.productImageUrl"></el-image>
+                                :src="scope.row.productImageUrl"></el-image>
                             </div>
                                 <el-image
                                 style="width: 60px; height: 60px"
-                                :src="'http://'+scope.row.productImageUrl"></el-image>
+                                :src="scope.row.productImageUrl"></el-image>
                         </el-tooltip>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="productId"
                 label="亚马逊单号"
-                width="150">
+                width="200">
                     <template slot-scope="scope">
                         <el-tooltip v-if="scope.row.abroadRemark" :content="scope.row.abroadRemark" placement="bottom" effect="light">
                             <i class="el-icon-s-opportunity" style="color:#F56C6C"></i>
@@ -147,7 +141,7 @@
                         <open-tab size="medium" type="text" icon="" :dec='scope.row.amazonOrderId' urlName='productAddUpdate' :opt='{"orderId":scope.row.orderId}'></open-tab>
                         <el-image
                             style="width: 15px; height: 15px"
-                            :src="'http://'+scope.row.productImageUrl"></el-image>
+                            src="src/assets/img/yamaxun.jpg"></el-image>
                         <span>{{scope.shopName}}</span>
                     </template>
                 </el-table-column>
@@ -164,12 +158,24 @@
                 <el-table-column
                 prop="domesticWaybill"
                 label="国内物流单号"
-                width="100">
+                width="150">
+                    <template slot-scope="scope">
+                        <div v-for="item in scope.domesticWaybill" :key="item.domesticLogisticsId">
+                            <span>{{item.waybill}}</span>
+                            <el-button type="text" icon="" @click="rukuClick1(scope.row.orderId)">入库</el-button>
+                        </div>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="abroadWaybill"
                 label="国际物流单号"
-                width="100">
+                width="150">
+                    <template slot-scope="scope">
+                        <div v-for="item in scope.abroadWaybill" :key="item.abroadLogisticsId">
+                            <span>{{item.abroadWaybill}}</span>
+                            <!-- <el-button type="text" icon="" @click="rukuClick1(scope.row.orderId)">入库</el-button> -->
+                        </div>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop=""
@@ -178,7 +184,7 @@
                     <template slot-scope="scope">
                         <span 
                             class="el-tag el-tag--medium" 
-                            :style="{'color':color[stateList.indexOf(scope.row.orderState)],'background':'#fff','border':'1px solid '+color[stateList.indexOf(scope.row.orderState)]}">
+                            :style="{'color':color[states.indexOf(scope.row.orderState)],'background':'#fff','border':'1px solid '+color[states.indexOf(scope.row.orderState)]}">
                             {{ scope.row.orderState }}</span>
                     </template>
                 </el-table-column>
@@ -190,7 +196,7 @@
                         <span 
                             v-if="scope.row.abnormalStatus"
                             class="el-tag el-tag--medium" 
-                            :style="{'color':color1[stateList.indexOf(scope.row.abnormalStatus)],'background':'#fff','border':'1px solid '+color1[stateList.indexOf(scope.row.abnormalStatus)]}">
+                            :style="{'color':color1[states1.indexOf(scope.row.abnormalStatus)],'background':'#fff','border':'1px solid '+color1[states1.indexOf(scope.row.abnormalStatus)]}">
                             {{ scope.row.abnormalStatus }}</span>
                     </template>
                 </el-table-column>
@@ -216,62 +222,7 @@
             </el-pagination>
         </div>
       </div>
-       <!-- 退款弹框 -->
-      <el-dialog
-        title="退款"
-        :visible.sync="returnMVisible"
-        width="400px">
-        <div>
-            <el-row style="margin-bottom:10px">
-                <el-col :span="4">
-                    <label style="display:inline-block;line-height:36px">退款金额</label>
-                </el-col>
-                <el-col :span="20">
-                    <el-input
-                        placeholder="请输入内容"
-                        v-model="returnMoney"
-                        clearable>
-                    </el-input>
-                </el-col>
-            </el-row>
-            <div style="color:#F56C6C;margin-top:10px;font-size:13px">
-            已核算利润的单：退款金额=损失费<br><br>
-            无核算利润的单：退款金额=订单金额*0.03（虚发货的订单需计算此项）+到账金额+采购费+平台佣金+其他损失费
-            </div>
-        </div>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="returnMVisible = false">取 消</el-button>
-            <el-button type="primary" @click="returnM">确 定</el-button>
-        </span>
-    </el-dialog>
-
-    <!-- 选中标记状态 -->
-      <el-dialog
-        title="标记订单状态"
-        :visible.sync="yichangVisible"
-        width="450px">
-        <div>
-            <el-row style="margin-bottom:10px">
-                <el-col :span="6">
-                    <label style="display:inline-block;line-height:36px">选择标记状态</label>
-                </el-col>
-                <el-col :span="18">
-                    <el-select v-model="yichangValue" placeholder="请选择">
-                        <el-option
-                        v-for="item in yichangList"
-                        :key="item.dataNumber"
-                        :label="item.dataContent"
-                        :value="item.dataNumber">
-                        </el-option>
-                    </el-select>
-                </el-col>
-            </el-row>
-        </div>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="yichangVisible = false">取 消</el-button>
-            <el-button type="primary" @click="rluruClick">确 定</el-button>
-        </span>
-    </el-dialog>
+       
   </div>
 </template>
 
@@ -299,7 +250,9 @@
             stateList:[],
             statisticsProfit:{},
             color:['#409EFF','#fb4f4f','#f7915f','#eaa729','#a8de06','#45e63c','#4bd2ba','#07dbf3','#2592f1','#9d7bec'],
-            color:['#409EFF','#fb4f4f','#f7915f','#eaa729','#a8de06','#45e63c','#4bd2ba','#07dbf3','#2592f1','#9d7bec'],
+            color1:['#409EFF','#f7915f','#eaa729','#fb4f4f','#c552f3','#ea6320','#f97171'],
+            states:['','已付款','虚发货','已采购','已发货','仓库已入库','仓库已出库','国际已发货','已完成'],
+            states1:['','缺货','补发','问题','退款','国际物流异常','国内物流异常'],
             q:{
                 startDate:'',
                 endDate:'',
@@ -690,6 +643,15 @@
     }
     .el-tag{
         margin-left: 6px;
+    }
+    .sous1 .el-input__inner{
+        height: 50px;
+        font-size: 18px;
+    }
+    .sous1 .labelSS{
+        width: 100px;
+        float: left;
+        line-height: 50px;
     }
 
 </style>

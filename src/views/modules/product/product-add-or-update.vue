@@ -25,11 +25,17 @@
             <!-- <el-button type="text">{{dataForm.productType == '002' ? '原创' : ''}}</el-button> -->
           </el-form-item>
           <el-form-item label="内部SKU" prop="productSku">
-              <span class="decVal">{{dataForm.productSku}}</span>
-            <!-- <el-button type="text">{{dataForm.productSku}}</el-button> &nbsp;&nbsp; -->
-            <div style="display:inline-block">
-                <el-input v-model="dataForm.correction" placeholder="SKU修正,建议两位英文字母"></el-input>
-            </div>
+              <div style="display:inline-block">
+                  <el-input v-model="dataForm.productSku" placeholder="SKU"></el-input>
+              </div>
+              
+                <div style="display:inline-block">
+                    <el-input v-model="dataForm.correction" placeholder="SKU修正,建议两位英文字母"></el-input>
+                </div>
+          </el-form-item>
+
+          <el-form-item label="UPC/EAN" prop="productSku">
+              <el-input v-model="dataForm.eanCode" placeholder="UPC/EAN"></el-input>
           </el-form-item>
           <br>
           <el-form-item label="产品分类" prop="categoryId">
@@ -71,7 +77,7 @@
                                 <el-image
                                 style="width: 142px; height: 142px"
                                 :preview-src-list="imgList"
-                                :src="'http://'+item.imageUrl"></el-image>
+                                :src="item.imageUrl"></el-image>
                             </li>
                         </transition-group>
                     </draggable>
@@ -775,7 +781,7 @@
                                 <span class="close"><el-button type="text" icon="el-icon-error" @click="delImageVB(scope.$index,index)"></el-button></span>
                                 <el-image
                                     style="width: 50px; height: 50px"
-                                    :src="'http://'+item"></el-image>
+                                    :src="item"></el-image>
                             </div>
                         </div>
                     </template>
@@ -972,7 +978,7 @@
                         </span>
                         <el-image
                         style="width: 142px; height: 142px"
-                        :src="'http://'+item.imageUrl"></el-image>
+                        :src="item.imageUrl"></el-image>
                     </li>
                 </ul>
             </el-checkbox-group>
@@ -1251,7 +1257,7 @@
               if (data && data.code === 0) {
                 this.dataForm = data.product;
                 this.imgList = this.dataForm.imageList.map((item) => {
-                    return 'http://'+item.imageUrl
+                    return item.imageUrl
                 })
                 // console.log(this.imgList)
               }else{
@@ -1759,7 +1765,7 @@
                     console.log(data);
                     this.dataForm.imageList = data.imageInfo;
                     this.imgList = this.dataForm.imageList.map((item) => {
-                        return 'http://'+item.imageUrl
+                        return item.imageUrl
                     })
                     this.uploadImageVisible = false;
                 } else {

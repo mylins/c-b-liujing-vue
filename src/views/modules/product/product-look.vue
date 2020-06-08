@@ -29,6 +29,10 @@
               <span class="decVal">{{dataForm.productSku}}</span>
             <!-- <el-button type="text">{{dataForm.productSku}}</el-button> -->
           </el-form-item>
+          <el-form-item label="UPC/EAN" prop="productSku">
+              <span class="decVal">{{dataForm.eanCode}}</span>
+            <!-- <el-button type="text">{{dataForm.productSku}}</el-button> -->
+          </el-form-item>
           <el-form-item label="产品分类" prop="">
               <span class="decVal">{{dataForm.categoryName}}</span>
               <!-- <el-button type="text">{{dataForm.categoryName}}</el-button> -->

@@ -5,7 +5,23 @@
             <!-- 搜索 -->
         <div class="sous">
             <el-row :gutter="20">
-
+                <el-col :span="6">
+                    <el-row>
+                        <el-col :span="6">
+                            <label class="labelSS">选择区域:</label>
+                        </el-col>
+                        <el-col :span="18">
+                            <el-select v-model="q.areaId" filterable clearable placeholder="请选择">
+                                <el-option
+                                    v-for="item in $store.state.dept.areaList"
+                                    :key="item.deptId"
+                                    :label="item.name"
+                                    :value="item.deptId">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+                    </el-row>
+                </el-col>
                 <el-col :span="6">
                     <el-row>
                         <el-col :span="6">
@@ -205,7 +221,7 @@
                 <template slot-scope="scope">
                     
                     <!-- <open-tab type="text" icon="" :dec='scope.row.productTitle' urlName='productLook' :opt='{"productId":scope.row.productId}'></open-tab> -->
-                    <open-tab :isMore="true" size="medium" type="text" icon="" :dec='scope.row.productTitle' urlName='productLook' :opt='{"productId":scope.row.productId}'></open-tab>
+                    <open-tab :isMoreL="true" size="medium" type="text" icon="" :dec='scope.row.productTitle' urlName='productLook' :opt='{"productId":scope.row.productId}'></open-tab>
                     <div v-if="scope.row.productSku"><span style="color:#999">SKU：</span>{{scope.row.productSku}}</div>
                     <div v-if="scope.row.categoryName"><span style="color:#999">分类：</span>{{scope.row.categoryName}}</div>
                 </template>
@@ -250,7 +266,8 @@
                 sku:'',
                 deptId:null,
                 userId:null,
-                groupId:null
+                groupId:null,
+                areaId:null,
             },
             groupList:[],
             userList:[],
@@ -371,7 +388,8 @@
                     'uploadNumber':this.uploadValue,
                     'deptId':this.q.deptId,
                     'groupId':this.q.groupId,
-                    'userId':this.q.userId
+                    'userId':this.q.userId,
+                    'areaId':this.q.areaId
                 })
             }).then(({data}) => {
                 if (data && data.code === 0) {
@@ -395,7 +413,8 @@
                 sku:'',
                 deptId:null,
                 userId:null,
-                groupId:null
+                groupId:null,
+                areaId:null,
             }
         },
         // 每页数

@@ -379,7 +379,8 @@
                 endDate:'',
                 title:'',
                 sku:'',
-            }
+            };
+            this.nowProTypeId = [];
         },
         // 每页数
         sizeChangeHandle (val) {
@@ -457,6 +458,10 @@
                 this.ids = this.dataListSelections.map(item => {
                     return item.productId
                 })
+                this.$nextTick(() => {
+                    this.$refs.addOrUpdate.init(this.ids)
+                })
+                
             }
             
         },

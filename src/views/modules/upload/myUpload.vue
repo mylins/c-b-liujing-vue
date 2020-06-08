@@ -99,7 +99,7 @@
                             <el-dropdown-item icon="el-icon-tickets">
                                 <open-tab size="medium" type="text" icon="" dec='报告列表' urlName='productAddUpdate' :opt='{"productId":scope.row.productId}'></open-tab>
                             </el-dropdown-item>
-                            <el-dropdown-item icon="el-icon-refresh-right">重新上传</el-dropdown-item>
+                            <el-dropdown-item icon="el-icon-refresh-right" @click="againUploadClick">重新上传</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                 </template>
@@ -176,7 +176,7 @@
                 })
             },
             // 删除
-            del(index){
+            del(id){
                 this.$confirm('确定删除该条数据?', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -189,9 +189,11 @@
                         background: 'rgba(0, 0, 0, 0.7)'
                         });
                     this.$http({
-                        url: this.$http.adornUrl('/product/product/falsedeletion'),
+                        url: this.$http.adornUrl('/upload/upload/delete'),
                         method: 'post',
-                        data: this.$http.adornData(productIds, false)
+                        data: this.$http.adornData({
+                            uploadId:id
+                        })
                     }).then(({data}) => {
                         if (data && data.code === 0) {
                         this.$message({
@@ -200,7 +202,42 @@
                             duration: 1000,
                             onClose: () => {
                                 this.getDataList()
-                                this.getMyStatusList();
+                                loading.close()
+                            }
+                        })
+                        } else {
+                            this.$message.error(data.msg)
+                        }
+                    })
+                }).catch(() => {})
+            },
+            // 重新上传
+            againUploadClick(id){
+                this.$confirm('确定重新上传?', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    const loading = this.$loading({
+                        lock: true,
+                        text: 'Loading',
+                        spinner: 'el-icon-loading',
+                        background: 'rgba(0, 0, 0, 0.7)'
+                    });
+                    this.$http({
+                        url: this.$http.adornUrl('/upload/upload/againUploadByButton'),
+                        method: 'post',
+                        data: this.$http.adornData({
+                            uploadId:id
+                        })
+                    }).then(({data}) => {
+                        if (data && data.code === 0) {
+                        this.$message({
+                            message: '操作成功',
+                            type: 'success',
+                            duration: 1000,
+                            onClose: () => {
+                                this.getDataList()
                                 loading.close()
                             }
                         })
