@@ -152,7 +152,7 @@
   export default {
     data () {
       var id = (rule, value, callback) => {
-        if (this.dataForm.uploadIds == '') {
+        if (this.dataForm.uploadIds == '' && this.dataForm.startId == '' && dataForm.endId == '') {
           callback(new Error('上传ID和开始结束ID必须要有一个有效值'))
         } else {
           callback()
