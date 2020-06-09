@@ -62,7 +62,7 @@
                       <el-input v-model="dataForm.amazonCategoryNodeId" placeholder="分类节点ID" :disabled="true"></el-input>
                   </div>
                   <div>
-                      <el-button type="primary" plain>历史选择</el-button>
+                      <el-button type="primary" plain @click="history">历史选择</el-button>
                   </div>
               </div>
               
@@ -517,54 +517,6 @@
                 regionOptionInUI.children = res.data  //后台返回数据
                 })
         },
-        // visibleChangeTwo(val){
-        //     this.$http({
-        //         url: this.$http.adornUrl('/upload/amazoncategory/childCategoryList'),
-        //         method: 'post',
-        //         data: this.$http.adornData({
-        //             amazonCategoryId:val[0],
-        //         })
-        //     }).then(({data}) => {
-        //         if (data && data.code === 0) {
-        //             console.log(data);
-        //             var that = this;
-        //             if(data.amazonCategoryEntityChildList.length != 0){
-        //                 data.amazonCategoryEntityChildList.forEach(function(item){
-        //                     that.options1.push({
-        //                         value:item.id,
-        //                         label:item.displayName,
-        //                         labelId:item.nodeId,
-        //                         parentId:item.parentId
-        //                     })
-        //                 })
-        //                 this.options = this.processingData(this.options)
-        //             }
-                    
-        //             // this.options1 = this.options1.concat(data.amazonCategoryEntityChildList);
-        //             // var that = this;
-        //             // var obj = {};
-        //             // val.forEach(function(m,i){
-        //             //     if(i == 0){
-        //             //         obj = that.options.find(item => item.value == m)
-        //             //     }else{
-        //             //         obj = obj.find(item => item.value == m)
-        //             //     }
-        //             //     if(i == val.length-1){
-        //                     // data.amazonCategoryEntityChildList.forEach(function(item){
-        //                     //     obj.children.push({
-        //                     //         value:item.id,
-        //                     //         label:item.displayName,
-        //                     //         labelId:item.nodeId
-        //                     //     })
-        //                     // })
-        //             //     }
-        //             // })
-                
-        //         } else {
-        //             this.$message.error(data.msg)
-        //         }
-        //     })
-        // },
         // 选择模版
         getTemplate(){
             if(this.dataForm.amazonCategoryId){
