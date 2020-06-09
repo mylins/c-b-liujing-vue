@@ -11,14 +11,6 @@
               <!-- <span>{{dataForm.categoryName}}</span> -->
             <el-cascader ref="aaa" v-model="dataForm.categoryId" :options="options" :props="props" clearable @change="productCategorChange" @visible-change="visibleChange"></el-cascader>
           </el-form-item>
-          <el-form-item label="审核状态" prop="">
-            <el-radio-group v-model="dataForm.auditStatus">
-                <el-radio label="001">通过</el-radio>
-                <el-radio label="002">待审核</el-radio>
-                <el-radio label="003">失效</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <br>
           <el-form-item label="产品类型" prop="">
             <el-radio-group v-model="dataForm.productType">
                 <el-radio label="001">重点</el-radio>
@@ -34,37 +26,37 @@
         <div class="blockDivForm">
           <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;产品信息</h3>
           <el-form-item label="厂商名称" prop="">
-            <el-input v-model="dataForm.info.producerName" placeholder="厂商名称"></el-input>
+            <el-input v-model="dataForm.producerName" placeholder="厂商名称"></el-input>
           </el-form-item>
           <el-form-item label="品牌名称" prop="">
-            <el-input v-model="dataForm.info.brandName" placeholder="品牌名称"></el-input>
+            <el-input v-model="dataForm.brandName" placeholder="品牌名称"></el-input>
           </el-form-item>
           <el-form-item label="厂商编号" prop="">
-            <el-input v-model="dataForm.info.manufacturerNumber" placeholder="厂商编号"></el-input>
+            <el-input v-model="dataForm.manufacturerNumber" placeholder="厂商编号"></el-input>
           </el-form-item>
-          <el-form-item label="包装毛重(kg)" prop="property.productWeight" :rules="dataRule.productWeight">
-            <el-input v-model="dataForm.property.productWeight" placeholder="包装毛重(kg)"></el-input>
+          <el-form-item label="包装毛重(kg)" prop="productWeight">
+            <el-input v-model="dataForm.productWeight" placeholder="包装毛重(kg)"></el-input>
           </el-form-item>
-          <el-form-item label="包装尺寸" prop="" required>
+          <el-form-item label="包装尺寸" prop="">
               <el-col :span="6">
-                  <el-form-item prop="property.productLength" :rules="dataRule.productLength">
-                    <el-input v-model="dataForm.property.productLength" placeholder="长"></el-input>
+                  <el-form-item prop="productLength">
+                    <el-input v-model="dataForm.productLength" placeholder="长"></el-input>
                   </el-form-item>
               </el-col>
               <el-col :span="3">
                 *
               </el-col>
               <el-col :span="6">
-                  <el-form-item prop="property.productWide" :rules="dataRule.productWide">
-                    <el-input v-model="dataForm.property.productWide" placeholder="宽"></el-input>
+                  <el-form-item prop="productWide">
+                    <el-input v-model="dataForm.productWide" placeholder="宽"></el-input>
                   </el-form-item>
               </el-col>
               <el-col :span="3">
                 *
               </el-col>
               <el-col :span="6">
-                  <el-form-item prop="property.productHeight" :rules="dataRule.productHeight">
-                    <el-input v-model="dataForm.property.productHeight" placeholder="高"></el-input>
+                  <el-form-item prop="productHeight">
+                    <el-input v-model="dataForm.productHeight" placeholder="高"></el-input>
                   </el-form-item>
               </el-col>
             
@@ -73,71 +65,18 @@
         <div class="blockDivForm">
           <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;产品介绍</h3>
           <el-tabs type="border-card">
-            <el-tab-pane label="中文">
-                <div class="intrDiv">
-                    <label>
-                        <span>产品标题</span>  <br>
-                        <el-button type="primary" size="mini" plain @click="fanyi(dataForm.introductionList[0].productTitle,0)">一键翻译</el-button>
-                    </label>
-                    <div>
-                        <el-input
-                        type="textarea"
-                        placeholder="请输入内容"
-                        v-model="dataForm.introductionList[0].productTitle"
-                        show-word-limit></el-input>
-                    </div>
-                </div>
-                <div class="intrDiv">
-                    <label>
-                        <span>关键字</span>  <br>
-                        <el-button type="primary" size="mini" plain @click="fanyi(dataForm.introductionList[0].keyWord,1)">一键翻译</el-button>
-                    </label>
-                    <div>
-                        <el-input
-                        type="textarea"
-                        placeholder="请输入内容"
-                        v-model="dataForm.introductionList[0].keyWord"
-                        show-word-limit></el-input>
-                    </div>
-                </div>
-                <div class="intrDiv">
-                    <label>
-                        <span>重点说明</span>  <br>
-                        <el-button type="primary" size="mini" plain @click="fanyi(dataForm.introductionList[0].keyPoints,2)">一键翻译</el-button>
-                    </label>
-                    <div>
-                        <el-input
-                        type="textarea"
-                        placeholder="请输入内容"
-                        v-model="dataForm.introductionList[0].keyPoints"
-                        show-word-limit></el-input>
-                    </div>
-                </div>
-                <div class="intrDiv">
-                    <label>
-                        <span>产品描述</span>  <br>
-                        <el-button type="primary" size="mini" plain @click="fanyi(dataForm.introductionList[0].productDescription,3)">一键翻译</el-button>
-                    </label>
-                    <div>
-                        <el-input
-                        type="textarea"
-                        placeholder="请输入内容"
-                        v-model="dataForm.introductionList[0].productDescription"
-                        show-word-limit></el-input>
-                    </div>
-                </div>
-            </el-tab-pane>
             <el-tab-pane label="英语">
                 <div class="intrDiv">
                     <label>
                         <span>产品标题</span>  <br>
-                        <el-button type="primary" size="mini" plain @click="fanyi(dataForm.introductionList[1].productTitle,0)">一键翻译</el-button>
+                        <el-button type="primary" size="mini" plain @click="fanyi(dataForm.britainIntroduction.productTitle,0)">一键翻译</el-button>
+                        <el-checkbox v-model="dataForm.britainIntroduction.isProductTitle" @change="istitle">是否追加</el-checkbox>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
                         placeholder="请输入内容"
-                        v-model="dataForm.introductionList[1].productTitle"
+                        v-model="dataForm.britainIntroduction.productTitle"
                         maxlength="200"
                         show-word-limit></el-input>
                     </div>
@@ -145,13 +84,14 @@
                 <div class="intrDiv">
                     <label>
                         <span>关键字</span>  <br>
-                        <el-button type="primary" size="mini" plain @click="fanyi(dataForm.introductionList[1].keyWord,1)">一键翻译</el-button>
+                        <el-button type="primary" size="mini" plain @click="fanyi(dataForm.britainIntroduction.keyWord,1)">一键翻译</el-button>
+                        <el-checkbox v-model="dataForm.britainIntroduction.isKeyWord">是否追加</el-checkbox>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
                         placeholder="请输入内容"
-                        v-model="dataForm.introductionList[1].keyWord"
+                        v-model="dataForm.britainIntroduction.keyWord"
                         maxlength="250"
                         show-word-limit></el-input>
                     </div>
@@ -159,13 +99,14 @@
                 <div class="intrDiv">
                     <label>
                         <span>重点说明</span>  <br>
-                        <el-button type="primary" size="mini" plain @click="fanyi(dataForm.introductionList[1].keyPoints,2)">一键翻译</el-button>
+                        <el-button type="primary" size="mini" plain @click="fanyi(dataForm.britainIntroduction.keyPoints,2)">一键翻译</el-button>
+                        <el-checkbox v-model="dataForm.britainIntroduction.isKeyPoints">是否追加</el-checkbox>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
                         placeholder="请输入内容"
-                        v-model="dataForm.introductionList[1].keyPoints"
+                        v-model="dataForm.britainIntroduction.keyPoints"
                         maxlength="500"
                         show-word-limit></el-input>
                     </div>
@@ -173,13 +114,14 @@
                 <div class="intrDiv">
                     <label>
                         <span>产品描述</span>  <br>
-                        <el-button type="primary" size="mini" plain @click="fanyi(dataForm.introductionList[1].productDescription,3)">一键翻译</el-button>
+                        <el-button type="primary" size="mini" plain @click="fanyi(dataForm.britainIntroduction.productDescription,3)">一键翻译</el-button>
+                        <el-checkbox v-model="dataForm.britainIntroduction.isProductDescription">是否追加</el-checkbox>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
                         placeholder="请输入内容"
-                        v-model="dataForm.introductionList[1].productDescription"
+                        v-model="dataForm.britainIntroduction.productDescription"
                         maxlength="2000"
                         show-word-limit></el-input>
                     </div>
@@ -189,12 +131,13 @@
                 <div class="intrDiv">
                     <label>
                         <span>产品标题</span>  <br>
+                        <el-checkbox v-model="dataForm.franceIntroduction.isProductTitle">是否追加</el-checkbox>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
                         placeholder="请输入内容"
-                        v-model="dataForm.introductionList[2].productTitle"
+                        v-model="dataForm.franceIntroduction.productTitle"
                         maxlength="200"
                         show-word-limit></el-input>
                     </div>
@@ -202,12 +145,13 @@
                 <div class="intrDiv">
                     <label>
                         <span>关键字</span>  <br>
+                        <el-checkbox v-model="dataForm.franceIntroduction.isKeyWord">是否追加</el-checkbox>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
                         placeholder="请输入内容"
-                        v-model="dataForm.introductionList[2].keyWord"
+                        v-model="dataForm.franceIntroduction.keyWord"
                         maxlength="250"
                         show-word-limit></el-input>
                     </div>
@@ -215,12 +159,13 @@
                 <div class="intrDiv">
                     <label>
                         <span>重点说明</span>  <br>
+                        <el-checkbox v-model="dataForm.franceIntroduction.isKeyPoints">是否追加</el-checkbox>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
                         placeholder="请输入内容"
-                        v-model="dataForm.introductionList[2].keyPoints"
+                        v-model="dataForm.franceIntroduction.keyPoints"
                         maxlength="500"
                         show-word-limit></el-input>
                     </div>
@@ -228,12 +173,13 @@
                 <div class="intrDiv">
                     <label>
                         <span>产品描述</span>  <br>
+                        <el-checkbox v-model="dataForm.franceIntroduction.isProductDescription">是否追加</el-checkbox>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
                         placeholder="请输入内容"
-                        v-model="dataForm.introductionList[2].productDescription"
+                        v-model="dataForm.franceIntroduction.productDescription"
                         maxlength="2000"
                         show-word-limit></el-input>
                     </div>
@@ -243,12 +189,13 @@
                 <div class="intrDiv">
                     <label>
                         <span>产品标题</span>  <br>
+                        <el-checkbox v-model="dataForm.italyIntroduction.isProductTitle">是否追加</el-checkbox>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
                         placeholder="请输入内容"
-                        v-model="dataForm.introductionList[3].productTitle"
+                        v-model="dataForm.italyIntroduction.productTitle"
                         maxlength="200"
                         show-word-limit></el-input>
                     </div>
@@ -256,12 +203,13 @@
                 <div class="intrDiv">
                     <label>
                         <span>关键字</span>  <br>
+                        <el-checkbox v-model="dataForm.italyIntroduction.isKeyWord">是否追加</el-checkbox>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
                         placeholder="请输入内容"
-                        v-model="dataForm.introductionList[3].keyWord"
+                        v-model="dataForm.italyIntroduction.keyWord"
                         maxlength="250"
                         show-word-limit></el-input>
                     </div>
@@ -269,12 +217,13 @@
                 <div class="intrDiv">
                     <label>
                         <span>重点说明</span>  <br>
+                        <el-checkbox v-model="dataForm.italyIntroduction.isKeyPoints">是否追加</el-checkbox>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
                         placeholder="请输入内容"
-                        v-model="dataForm.introductionList[3].keyPoints"
+                        v-model="dataForm.italyIntroduction.keyPoints"
                         maxlength="500"
                         show-word-limit></el-input>
                     </div>
@@ -282,12 +231,13 @@
                 <div class="intrDiv">
                     <label>
                         <span>产品描述</span>  <br>
+                        <el-checkbox v-model="dataForm.italyIntroduction.isProductDescription">是否追加</el-checkbox>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
                         placeholder="请输入内容"
-                        v-model="dataForm.introductionList[3].productDescription"
+                        v-model="dataForm.italyIntroduction.productDescription"
                         maxlength="2000"
                         show-word-limit></el-input>
                     </div>
@@ -297,12 +247,13 @@
                 <div class="intrDiv">
                     <label>
                         <span>产品标题</span>  <br>
+                        <el-checkbox v-model="dataForm.spainIntroduction.isProductTitle">是否追加</el-checkbox>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
                         placeholder="请输入内容"
-                        v-model="dataForm.introductionList[4].productTitle"
+                        v-model="dataForm.spainIntroduction.productTitle"
                         maxlength="200"
                         show-word-limit></el-input>
                     </div>
@@ -310,12 +261,13 @@
                 <div class="intrDiv">
                     <label>
                         <span>关键字</span>  <br>
+                        <el-checkbox v-model="dataForm.spainIntroduction.isKeyWord">是否追加</el-checkbox>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
                         placeholder="请输入内容"
-                        v-model="dataForm.introductionList[4].keyWord"
+                        v-model="dataForm.spainIntroduction.keyWord"
                         maxlength="250"
                         show-word-limit></el-input>
                     </div>
@@ -323,12 +275,13 @@
                 <div class="intrDiv">
                     <label>
                         <span>重点说明</span>  <br>
+                        <el-checkbox v-model="dataForm.spainIntroduction.isKeyPoints">是否追加</el-checkbox>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
                         placeholder="请输入内容"
-                        v-model="dataForm.introductionList[4].keyPoints"
+                        v-model="dataForm.spainIntroduction.keyPoints"
                         maxlength="500"
                         show-word-limit></el-input>
                     </div>
@@ -336,12 +289,13 @@
                 <div class="intrDiv">
                     <label>
                         <span>产品描述</span>  <br>
+                        <el-checkbox v-model="dataForm.spainIntroduction.isProductDescription">是否追加</el-checkbox>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
                         placeholder="请输入内容"
-                        v-model="dataForm.introductionList[4].productDescription"
+                        v-model="dataForm.spainIntroduction.productDescription"
                         maxlength="2000"
                         show-word-limit></el-input>
                     </div>
@@ -351,12 +305,13 @@
                 <div class="intrDiv">
                     <label>
                         <span>产品标题</span>  <br>
+                        <el-checkbox v-model="dataForm.germanyIntroduction.isProductTitle">是否追加</el-checkbox>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
                         placeholder="请输入内容"
-                        v-model="dataForm.introductionList[5].productTitle"
+                        v-model="dataForm.germanyIntroduction.productTitle"
                         maxlength="200"
                         show-word-limit></el-input>
                     </div>
@@ -364,12 +319,13 @@
                 <div class="intrDiv">
                     <label>
                         <span>关键字</span>  <br>
+                        <el-checkbox v-model="dataForm.germanyIntroduction.isKeyWord">是否追加</el-checkbox>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
                         placeholder="请输入内容"
-                        v-model="dataForm.introductionList[5].keyWord"
+                        v-model="dataForm.germanyIntroduction.keyWord"
                         maxlength="250"
                         show-word-limit></el-input>
                     </div>
@@ -377,12 +333,13 @@
                 <div class="intrDiv">
                     <label>
                         <span>重点说明</span>  <br>
+                        <el-checkbox v-model="dataForm.germanyIntroduction.isKeyPoints">是否追加</el-checkbox>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
                         placeholder="请输入内容"
-                        v-model="dataForm.introductionList[5].keyPoints"
+                        v-model="dataForm.germanyIntroduction.keyPoints"
                         maxlength="500"
                         show-word-limit></el-input>
                     </div>
@@ -390,12 +347,13 @@
                 <div class="intrDiv">
                     <label>
                         <span>产品描述</span>  <br>
+                        <el-checkbox v-model="dataForm.germanyIntroduction.isProductDescription">是否追加</el-checkbox>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
                         placeholder="请输入内容"
-                        v-model="dataForm.introductionList[5].productDescription"
+                        v-model="dataForm.germanyIntroduction.productDescription"
                         maxlength="2000"
                         show-word-limit></el-input>
                     </div>
@@ -405,12 +363,13 @@
                 <div class="intrDiv">
                     <label>
                         <span>产品标题</span>  <br>
+                        <el-checkbox v-model="dataForm.japanIntroduction.isProductTitle">是否追加</el-checkbox>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
                         placeholder="请输入内容"
-                        v-model="dataForm.introductionList[6].productTitle"
+                        v-model="dataForm.japanIntroduction.productTitle"
                         maxlength="200"
                         show-word-limit></el-input>
                     </div>
@@ -418,12 +377,13 @@
                 <div class="intrDiv">
                     <label>
                         <span>关键字</span>  <br>
+                        <el-checkbox v-model="dataForm.japanIntroduction.isKeyWord">是否追加</el-checkbox>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
                         placeholder="请输入内容"
-                        v-model="dataForm.introductionList[6].keyWord"
+                        v-model="dataForm.japanIntroduction.keyWord"
                         maxlength="250"
                         show-word-limit></el-input>
                     </div>
@@ -431,12 +391,13 @@
                 <div class="intrDiv">
                     <label>
                         <span>重点说明</span>  <br>
+                        <el-checkbox v-model="dataForm.japanIntroduction.isKeyPoints">是否追加</el-checkbox>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
                         placeholder="请输入内容"
-                        v-model="dataForm.introductionList[6].keyPoints"
+                        v-model="dataForm.japanIntroduction.keyPoints"
                         maxlength="500"
                         show-word-limit></el-input>
                     </div>
@@ -444,12 +405,13 @@
                 <div class="intrDiv">
                     <label>
                         <span>产品描述</span>  <br>
+                        <el-checkbox v-model="dataForm.japanIntroduction.isProductDescription">是否追加</el-checkbox>
                     </label>
                     <div>
                         <el-input
                         type="textarea"
                         placeholder="请输入内容"
-                        v-model="dataForm.introductionList[6].productDescription"
+                        v-model="dataForm.japanIntroduction.productDescription"
                         maxlength="2000"
                         show-word-limit></el-input>
                     </div>
@@ -487,47 +449,26 @@
       }
       return {
         visible: false,
-        imgSVList:[],
-        addVisible:false,
-        addVMoneyVisible:false,
-        addItemVVisible:false,
-        stockVisible:false,
-        uploadImageVisible:false,
-        selectImageVisible:false,
-        selectImageIndex:null,
-        selectImageList:[],
-        stock:null,
-        addVMoneyList:[],
-        itemV:{color:'',size:''},
         roleList: [],
         productId:null,
         freightLoading:false,
         dataForm: {
-          productId: null,
-          auditStatus:'',
+          productIds: [],
           productType:'',
-          productCategor:null,
-          productSku:'',
-          imageList:[],
-          freightCostList:[],
-          introductionList:[{countryCode:'ZH'},
-            {countryCode: "GB"},
-            {countryCode: "FR"},
-            {countryCode: "IT"},
-            {countryCode: "ES"},
-            {countryCode: "DE"},
-            {countryCode: "JP"}],
-          
-          productTitle:'',
-          property:{
-              purchasePrice:0,
-              domesticFreight:0
-          },
-          info:{},
-          variantsInfoList:[],
-          variantsParameterList:[],
-          viFlag:0,
-          vpFlag:0
+          categoryName:'',
+          producerName:'',
+          brandName:'',
+          manufacturerNumber:'',
+          productWeight:'',
+          productLength:'',
+          productWide:'',
+          productHeight:'',
+          britainIntroduction:{},
+          franceIntroduction:{},
+          germanyIntroduction:{},
+          italyIntroduction:{},
+          spainIntroduction:{},
+          japanIntroduction:{}
         },
         options:[],
         props:{
@@ -570,20 +511,40 @@
             ],
             productHeight: [
                 { validator: number, trigger: 'blur' }
-            ]
+            ],
         }
       }
     },
     computed: {
     },
     methods: {
-        init(){
+        init(ids){
             this.visible = true;
+            this.dataForm = {
+                productIds: [],
+                productType:'',
+                categoryName:'',
+                producerName:'',
+                brandName:'',
+                manufacturerNumber:'',
+                productWeight:'',
+                productLength:'',
+                productWide:'',
+                productHeight:'',
+                britainIntroduction:{},
+                franceIntroduction:{},
+                germanyIntroduction:{},
+                italyIntroduction:{},
+                spainIntroduction:{},
+                japanIntroduction:{}
+            }
+            this.dataForm.productIds = ids;
             this.$nextTick(() => {
                 this.$refs['dataForm'].resetFields();
             })
+            
         },
-      // 产品分类下拉列表(一级)
+        // 产品分类下拉列表(一级)
         visibleChange(bol){
             if(bol){
                 this.$http({
@@ -609,47 +570,54 @@
             
         },
         productCategorChange(val){
-            var arr = this.$refs['aaa'].getCheckedNodes()[0].pathLabels;
-            this.dataForm.categoryName = arr.join('/')
+            if(val.length != 0){
+                var arr = this.$refs['aaa'].getCheckedNodes()[0].pathLabels;
+                var arr1 = arr.map((item) => {
+                    return item.split('(')[0]
+                })
+                this.dataForm.categoryName = arr1.join('/');
+            }else{
+                this.dataForm.categoryName = '';
+            }
         },
-      // 表单提交
-      dataFormSubmit () {
-        this.$refs['dataForm'].validate((valid) => {
-          if (valid) {
-              this.dataForm.categoryId = this.dataForm.categoryId[this.dataForm.categoryId.length-1]
-            const loading = this.$loading({
-              lock: true,
-              text: 'Loading',
-              spinner: 'el-icon-loading',
-              background: 'rgba(0, 0, 0, 0.7)'
-            });
-            this.$http({
-                url: this.$http.adornUrl(`/product/product/${!this.productId ? 'originalproduct' : 'modifyproduct'}`),
-                method: 'post',
-                data: this.$http.adornData(this.dataForm)
-            }).then(({data}) => {
-                if (data && data.code === 0) {
-                    this.$message({
-                        message: '操作成功',
-                        type: 'success',
-                        duration: 1000,
-                        onClose: () => {
-                            this.visible = false
+        // 表单提交
+        dataFormSubmit () {
+            this.$refs['dataForm'].validate((valid) => {
+                if (valid) {
+                    this.dataForm.categoryId = this.dataForm.categoryId[this.dataForm.categoryId.length-1]
+                    const loading = this.$loading({
+                        lock: true,
+                        text: 'Loading',
+                        spinner: 'el-icon-loading',
+                        background: 'rgba(0, 0, 0, 0.7)'
+                    });
+                    this.$http({
+                        url: this.$http.adornUrl('/product/product/batchmodify'),
+                        method: 'post',
+                        data: this.$http.adornData(this.dataForm)
+                    }).then(({data}) => {
+                        if (data && data.code === 0) {
+                            this.$message({
+                                message: '操作成功',
+                                type: 'success',
+                                duration: 1000,
+                                onClose: () => {
+                                    this.visible = false
+                                    loading.close();
+                                    this.$emit('refreshDataList')
+                                }
+                            })
+                        
+                        } else {
+                            this.$message.error(data.msg)
                             loading.close();
-                            this.$emit('refreshDataList')
                         }
                     })
-                
-                } else {
-                    this.$message.error(data.msg)
-                    loading.close();
+                    
                 }
             })
-            
-          }
-        })
-      },
-    //   翻译
+        },
+        //   翻译
         fanyi(text,num){
             const loading = this.$loading({
                 lock: true,
@@ -675,6 +643,17 @@
                 }
             })
         },
+        // 追加
+        istitle(val){
+            console.log(val);
+            if(val){
+                this.dataForm.franceIntroduction.isProductTitle = true;
+                this.dataForm.germanyIntroduction.isProductTitle = true;
+                this.dataForm.italyIntroduction.isProductTitle = true;
+                this.dataForm.spainIntroduction.isProductTitle = true;
+                this.dataForm.japanIntroduction.isProductTitle = true;
+            }
+        }
     }
   }
 </script>

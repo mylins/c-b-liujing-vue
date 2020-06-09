@@ -8,6 +8,8 @@ const dept = {
     user:{
       areaId:'',
       deptId:'',
+      groupId:'',
+      type:3,
 
     }
   },
@@ -64,7 +66,7 @@ const dept = {
           })
       })
     },
-    getUser(commit){
+    getUser({ commit }){
       return new Promise((resolve, reject) => {
         httpRequest({
             url: httpRequest.adornUrl('/sys/user/getShow'),
@@ -72,7 +74,25 @@ const dept = {
             params: httpRequest.adornParams()
           }).then(({data}) => {
             if (data.code == 0) {
-              // commit('updateAreaList', data.deptList)
+              let obj = {
+                areaId:'',
+                deptId:'',
+                groupId:'',
+                type:3,
+              };
+              if(data.type){
+                obj.type = data.type;
+              }
+              if(data.areaId){
+                obj.areaId = data.areaId;
+              }
+              if(data.deptId){
+                obj.deptId = data.deptId;
+              }
+              if(data.groupId){
+                obj.groupId = data.groupId;
+              }
+              commit('updateUser', obj)
               // this.totalPage = data.page.totalCount
             } else {
               this.$notify.error({

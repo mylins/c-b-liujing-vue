@@ -1379,7 +1379,15 @@
                     loading.close();
                     if (data && data.code === 0) {
                         console.log(data);
-                        this.dataForm.freightCostList = data.freightCostList
+                        this.$message({
+                            message: '操作成功',
+                            type: 'success',
+                            duration: 1000,
+                            onClose: () => {
+                                this.dataForm.freightCostList = data.freightCostList
+                            }
+                        })
+                        
                     } else {
                         this.$message.error(data.msg)
                     }
@@ -1405,9 +1413,17 @@
             }).then(({data}) => {
                 loading.close();
                 if (data && data.code === 0) {
-                    row.finalPrice = data.freightCost.finalPrice;
-                    row.profit = data.freightCost.profit;
-                    row.profitRate =data.freightCost.profitRate;
+                    this.$message({
+                        message: '操作成功',
+                        type: 'success',
+                        duration: 1000,
+                        onClose: () => {
+                            row.finalPrice = data.freightCost.finalPrice;
+                            row.profit = data.freightCost.profit;
+                            row.profitRate =data.freightCost.profitRate;
+                        }
+                    })
+                    
                 } else {
                     this.$message.error(data.msg)
                 }
@@ -1617,7 +1633,15 @@
             }).then(({data}) => {
                 loading.close();
                 if (data && data.code === 0) {
-                    this.dataForm.introductionList = data.introductionList
+                    this.$message({
+                        message: '操作成功',
+                        type: 'success',
+                        duration: 1000,
+                        onClose: () => {
+                            this.dataForm.introductionList = data.introductionList
+                        }
+                    })
+                    
                     
                 } else {
                     this.$message.error(data.msg)
@@ -1799,7 +1823,15 @@
                     loading.close();
                     if (data && data.code === 0) {
                         console.log(data);
-                        this.getImage();
+                        this.$message({
+                            message: '操作成功',
+                            type: 'success',
+                            duration: 1000,
+                            onClose: () => {
+                                this.getImage();
+                            }
+                        })
+                        
                     } else {
                         this.$message.error(data.msg)
                     }
@@ -1828,8 +1860,15 @@
                 }).then(({data}) => {
                     loading.close();
                     if (data && data.code === 0) {
-                        console.log(data);
-                        this.getImage();
+                        this.$message({
+                            message: '操作成功',
+                            type: 'success',
+                            duration: 1000,
+                            onClose: () => {
+                                this.getImage();
+                            }
+                        })
+                        
                     } else {
                         
                     }
