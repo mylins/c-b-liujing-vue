@@ -244,7 +244,7 @@
       init (id) {
         this.dataForm.userId = id || 0
         this.$http({
-          url: this.$http.adornUrl('/sys/role/list'),
+          url: this.$http.adornUrl('/sys/role/select'),
           method: 'get',
           params: this.$http.adornParams()
         }).then(({data}) => {

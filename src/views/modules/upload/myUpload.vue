@@ -89,7 +89,7 @@
                 width="150">
                 <template slot-scope="scope">
                     <open-tab size="medium" type="text" icon="el-icon-edit" dec='' urlName='uploadAddUpdate' :opt='{"uploadId":scope.row.uploadId}'></open-tab>
-                    <el-button type="text" icon="el-icon-delete" @click="del"></el-button>
+                    <el-button type="text" icon="el-icon-delete" @click="del(scope.row.uploadId)"></el-button>
                     &nbsp;&nbsp;&nbsp;
                     <el-dropdown trigger="click" v-if="scope.row.uploadState == 3 || scope.row.uploadState == 4">
                         <span class="el-dropdown-link spanDown">

@@ -11,7 +11,7 @@
                 <el-table-column
                 prop="resultId"
                 label="ID"
-                width="60">
+                width="100">
                 </el-table-column>
                 <el-table-column
                 prop="uploadId"
@@ -92,7 +92,11 @@
 </template>
 
 <script>
+  import OpenTab from '../../common/open'
   export default {
+      components: {
+        OpenTab
+    },
       data(){
           return{
             id:'',
