@@ -44,6 +44,7 @@ const mainRoutes = {
     { path: '/productLook', component: _import('modules/product/product-look'), name: 'productLook', meta: { title: '产品详情', isTab: true } },
     { path: '/uploadAddUpdate', component: _import('modules/upload/upload-add-or-update'), name: 'uploadAddUpdate', meta: { title: '上传表单', isTab: true } },
     { path: '/orderAddUpdate', component: _import('modules/order/order-update'), name: 'orderAddUpdate', meta: { title: '订单表单', isTab: true } },
+    { path: '/baogaoList', component: _import('modules/upload/baogaoList'), name: 'baogaoList', meta: { title: '报告列表', isTab: true } },
   ],
   beforeEnter (to, from, next) {
     let token = Vue.cookie.get('token')

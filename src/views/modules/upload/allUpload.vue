@@ -24,12 +24,6 @@
                 </el-col>
             </el-row>
         </div>
-        <!-- 操作 -->
-        <div class="divM">
-            <!-- <el-button type="primary" icon="el-icon-plus" size="small" @click="toProduct">原创产品</el-button> -->
-            <open-tab type="primary" icon="el-icon-plus" dec='添加上传' urlName='uploadAddUpdate' :opt='{"uploadId":null}'></open-tab>
-            
-        </div>
         <!-- 列表 -->
         <div class="divM">
             <el-table
@@ -88,20 +82,7 @@
                 label="操作"
                 width="150">
                 <template slot-scope="scope">
-                    <open-tab size="medium" type="text" icon="el-icon-edit" dec='' urlName='uploadAddUpdate' :opt='{"uploadId":scope.row.uploadId}'></open-tab>
-                    <el-button type="text" icon="el-icon-delete" @click="del"></el-button>
-                    &nbsp;&nbsp;&nbsp;
-                    <el-dropdown trigger="click" v-if="scope.row.uploadState == 3 || scope.row.uploadState == 4">
-                        <span class="el-dropdown-link spanDown">
-                            更多<i class="el-icon-arrow-down el-icon--right"></i>
-                        </span>
-                        <el-dropdown-menu slot="dropdown" class="tableDown">
-                            <el-dropdown-item icon="el-icon-tickets">
-                                <open-tab size="medium" type="text" icon="" dec='报告列表' urlName='baogaoList' :opt='{"uploadId":scope.row.uploadId}'></open-tab>
-                            </el-dropdown-item>
-                            <el-dropdown-item icon="el-icon-refresh-right" @click="againUploadClick">重新上传</el-dropdown-item>
-                        </el-dropdown-menu>
-                    </el-dropdown>
+                    <open-tab v-if="scope.row.uploadState == 3 || scope.row.uploadState == 4" size="medium" type="text" icon="" dec='报告列表' urlName='baogaoList' :opt='{"uploadId":scope.row.uploadId}'></open-tab>
                 </template>
                 </el-table-column>
             </el-table>
@@ -155,7 +136,7 @@
                 // console.log(this.nowProTypeId);
                 this.dataListLoading = true
                 this.$http({
-                    url: this.$http.adornUrl('/upload/upload/getMyUploadList'),
+                    url: this.$http.adornUrl('/upload/upload/getAllUploadList'),
                     method: 'get',
                     params: this.$http.adornParams({
                         'page': this.pageIndex,

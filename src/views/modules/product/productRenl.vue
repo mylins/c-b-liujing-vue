@@ -5,7 +5,24 @@
           <!-- 操作 -->
         <div class="divM" style="border-bottom:2px solid #f0f0f0;padding-bottom:16px;margin-bottom:20px">
             <el-row :gutter="20">
-                <el-col :span="6">
+                <el-col :span="6" v-if="$store.state.dept.user.type == 0">
+                    <el-row>
+                        <el-col :span="6">
+                            <label class="labelSS">选择区域:</label>
+                        </el-col>
+                        <el-col :span="18">
+                            <el-select v-model="q.toAreaId" filterable clearable placeholder="请选择">
+                                <el-option
+                                    v-for="item in $store.state.dept.areaList"
+                                    :key="item.deptId"
+                                    :label="item.name"
+                                    :value="item.deptId">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+                    </el-row>
+                </el-col>
+                <el-col :span="6" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1">
                     <el-row>
                         <el-col :span="9">
                             <label class="labelSS">选择认领到的公司:</label>
@@ -22,7 +39,7 @@
                         </el-col>
                     </el-row>
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="6" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1 || $store.state.dept.user.type == 2">
                     <el-row>
                         <el-col :span="9">
                             <label class="labelSS">选择认领到的小组:</label>
@@ -65,7 +82,7 @@
             <!-- 搜索 -->
         <div class="sous">
             <el-row :gutter="20">
-                <el-col :span="6">
+                <el-col :span="6" v-if="$store.state.dept.user.type == 0">
                     <el-row>
                         <el-col :span="6">
                             <label class="labelSS">选择区域:</label>
@@ -82,7 +99,7 @@
                         </el-col>
                     </el-row>
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="6" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1">
                     <el-row>
                         <el-col :span="6">
                             <label class="labelSS">选择公司:</label>
@@ -99,7 +116,7 @@
                         </el-col>
                     </el-row>
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="6" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1 || $store.state.dept.user.type == 2">
                     <el-row>
                         <el-col :span="6">
                             <label class="labelSS">选择小组:</label>
@@ -237,11 +254,11 @@
                         <div slot="content">
                             <el-image
                             style="width: 300px; height: 300px"
-                            :src="'http://'+scope.row.mainImageUrl"></el-image>
+                            :src="scope.row.mainImageUrl"></el-image>
                         </div>
                             <el-image
                             style="width: 100px; height: 100px"
-                            :src="'http://'+scope.row.mainImageUrl"></el-image>
+                            :src="scope.row.mainImageUrl"></el-image>
                     </el-tooltip>
                 </template>
                 </el-table-column>
@@ -320,7 +337,9 @@
                 groupId:'',
                 toDeptId:'',
                 toGroupId:'',
-                toUserId:''
+                toUserId:'',
+                areaId:'',
+                toAreaId:''
             },
             groupList:[],
             userList:[],
@@ -365,6 +384,24 @@
           }
       },
       created(){
+          if(this.$store.state.dept.user.type == 1){
+              this.q.areaId = this.$store.state.dept.user.areaId
+              this.q.toAreaId = this.$store.state.dept.user.areaId
+          }
+          if(this.$store.state.dept.user.type == 2){
+              this.q.areaId = this.$store.state.dept.user.areaId
+              this.q.toAreaId = this.$store.state.dept.user.areaId
+              this.q.deptId = this.$store.state.dept.user.deptId
+              this.q.toDeptId = this.$store.state.dept.user.deptId
+          }
+          if(this.$store.state.dept.user.type == 3){
+              this.q.areaId = this.$store.state.dept.user.areaId
+              this.q.toAreaId = this.$store.state.dept.user.areaId
+              this.q.deptId = this.$store.state.dept.user.deptId
+              this.q.toDeptId = this.$store.state.dept.user.deptId
+              this.q.groupId = this.$store.state.dept.user.groupId
+              this.q.toGroupId = this.$store.state.dept.user.groupId
+          }
           this.getDataList();
         //   this.visibleChange();
       },
@@ -392,7 +429,9 @@
                     'userId':this.q.userId,
                     'toDeptId':this.q.toDeptId,
                     'toGroupId':this.q.toGroupId,
-                    'toUserId':this.q.toUserId
+                    'toUserId':this.q.toUserId,
+                    'toAreaId':this.q.toAreaId,
+                    'areaId':this.q.areaId
                 })
             }).then(({data}) => {
                 if (data && data.code === 0) {
@@ -428,8 +467,23 @@
                 groupId:'',
                 toDeptId:'',
                 toGroupId:'',
-                toUserId:''
+                toUserId:'',
+                areaId:'',
+                toAreaId:''
+            };
+            if(this.$store.state.dept.user.type == 1){
+                this.q.areaId = this.$store.state.dept.user.areaId
             }
+            if(this.$store.state.dept.user.type == 2){
+                this.q.areaId = this.$store.state.dept.user.areaId
+                this.q.deptId = this.$store.state.dept.user.deptId
+            }
+            if(this.$store.state.dept.user.type == 3){
+                this.q.areaId = this.$store.state.dept.user.areaId
+                this.q.deptId = this.$store.state.dept.user.deptId
+                this.q.groupId = this.$store.state.dept.user.groupId
+            }
+            this.nowProTypeId = [];
         },
         // 每页数
         sizeChangeHandle (val) {

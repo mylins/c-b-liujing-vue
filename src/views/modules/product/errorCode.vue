@@ -27,7 +27,7 @@
         </div>
         <!-- 操作 -->
         <div class="divM">
-            <el-button type="primary" icon="el-icon-plus" size="small" @click="id = '';addUpVisible = true">新增</el-button>
+            <el-button type="primary" icon="el-icon-plus" size="small" @click="add">新增</el-button>
             <el-button type="primary" icon="el-icon-delete" size="small" @click="del">删除</el-button>
         </div>
         <!-- 统计 -->
@@ -56,7 +56,7 @@
                 </el-table-column>
                 <el-table-column
                 prop="errorCode"
-                label="时间"
+                label="错误代码"
                 width="150">
                 </el-table-column>
                 <el-table-column
@@ -69,7 +69,7 @@
                 label="操作"
                 width="100">
                     <template slot-scope="scope">
-                        <el-button type="text" icon="el-icon-edit" @click="id = scope.row.id;addUpVisible = true"></el-button>
+                        <el-button type="text" icon="el-icon-edit" @click="up(scope.row)"></el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -109,7 +109,7 @@
                 <el-col :span="18">
                     <el-input
                         type="textarea"
-                        :rows="2"
+                        :rows="8"
                         placeholder="请输入内容"
                         v-model="obj.errorExplanation"
                         clearable>
@@ -131,6 +131,7 @@
           return{
             id:'',
             obj:{
+                id:null,
                 errorCode:'',
                 errorExplanation:''
             },
@@ -160,19 +161,12 @@
             // console.log(this.nowProTypeId);
             this.dataListLoading = true
             this.$http({
-                url: this.$http.adornUrl('/product/product/recyclelist'),
+                url: this.$http.adornUrl('/upload/errorcode/list'),
                 method: 'get',
                 params: this.$http.adornParams({
                     'page': this.pageIndex,
                     'limit': this.pageSize,
-                    'category': this.nowProTypeId[this.nowProTypeId.length-1],
-                    'title': this.q.title,
-                    'sku': this.q.sku,
-                    'startDate':this.q.startDate,
-                    'endDate': this.q.endDate,
-                    'auditNumber': this.auditValue,
-                    'productNumber': this.productTypeValue,
-                    'uploadNumber':this.uploadValue,
+                    'errorCode': this.q.errorCode
                 })
             }).then(({data}) => {
                 if (data && data.code === 0) {
@@ -181,8 +175,7 @@
                     this.totalPage = data.page.totalCount
                     console.log(this.$store.state.dept)
                 } else {
-                    this.dataList = []
-                    this.totalPage = 0
+                    this.$message.error(data.msg)
                 }
                 this.dataListLoading = false
             })
@@ -204,12 +197,10 @@
         },
         // 删除
         del(){
-            console.log(this.dataListSelections);
-            var productIds = this.dataListSelections.map(item => {
-                return item.productId
+            var ids = this.dataListSelections.map(item => {
+                return item.id
             })
-            console.log(productIds)
-            if(productIds.length == 0){
+            if(ids.length == 0){
                 this.$message({
                     message: '请选择一条数据',
                     type: 'warning'
@@ -228,9 +219,9 @@
                     background: 'rgba(0, 0, 0, 0.7)'
                     });
                 this.$http({
-                    url: this.$http.adornUrl('/product/product/restore'),
+                    url: this.$http.adornUrl('/upload/errorcode/delete'),
                     method: 'post',
-                    data: this.$http.adornData(productIds, false)
+                    data: this.$http.adornData(ids, false)
                 }).then(({data}) => {
                     if (data && data.code === 0) {
                     this.$message({
@@ -248,6 +239,20 @@
                 })
             }).catch(() => {})
         },
+         // 新增
+        add(){
+            this.obj.id = null;
+            this.obj.errorCode = '';
+            this.obj.errorExplanation = '';
+            this.addUpVisible = true;
+        },
+        // 修改
+        up(row){
+            this.obj.id = row.id;
+            this.obj.errorCode = row.errorCode;
+            this.obj.errorExplanation = row.errorExplanation;
+            this.addUpVisible = true;
+        },
         addUp(){
             this.$confirm('确定提交表单内容?', {
                 confirmButtonText: '确定',
@@ -261,7 +266,7 @@
                     background: 'rgba(0, 0, 0, 0.7)'
                     });
                 this.$http({
-                    url: this.$http.adornUrl(`/product/product/${this.id ? 'update' :'save'}`),
+                    url: this.$http.adornUrl(`/upload/errorcode/${this.obj.id ? 'update' :'save'}`),
                     method: 'post',
                     data: this.$http.adornData(this.obj)
                 }).then(({data}) => {
@@ -281,7 +286,8 @@
                     }
                 })
             }).catch(() => {})
-        }
+        },
+
       }
   }
 </script>

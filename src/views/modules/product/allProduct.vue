@@ -5,7 +5,7 @@
             <!-- 搜索 -->
         <div class="sous">
             <el-row :gutter="20">
-                <el-col :span="6">
+                <el-col :span="6" v-if="$store.state.dept.user.type == 0">
                     <el-row>
                         <el-col :span="6">
                             <label class="labelSS">选择区域:</label>
@@ -22,7 +22,7 @@
                         </el-col>
                     </el-row>
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="6" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1">
                     <el-row>
                         <el-col :span="6">
                             <label class="labelSS">选择公司:</label>
@@ -39,7 +39,7 @@
                         </el-col>
                     </el-row>
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="6" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1 || $store.state.dept.user.type == 2">
                     <el-row>
                         <el-col :span="6">
                             <label class="labelSS">选择小组:</label>
@@ -201,11 +201,11 @@
                         <div slot="content">
                             <el-image
                             style="width: 300px; height: 300px"
-                            :src="'http://'+scope.row.mainImageUrl"></el-image>
+                            :src="scope.row.mainImageUrl"></el-image>
                         </div>
                             <el-image
                             style="width: 100px; height: 100px"
-                            :src="'http://'+scope.row.mainImageUrl"></el-image>
+                            :src="scope.row.mainImageUrl"></el-image>
                     </el-tooltip>
                 </template>
                 </el-table-column>
@@ -318,6 +318,18 @@
           }
       },
       created(){
+          if(this.$store.state.dept.user.type == 1){
+              this.q.areaId = this.$store.state.dept.user.areaId
+          }
+          if(this.$store.state.dept.user.type == 2){
+              this.q.areaId = this.$store.state.dept.user.areaId
+              this.q.deptId = this.$store.state.dept.user.deptId
+          }
+          if(this.$store.state.dept.user.type == 3){
+              this.q.areaId = this.$store.state.dept.user.areaId
+              this.q.deptId = this.$store.state.dept.user.deptId
+              this.q.groupId = this.$store.state.dept.user.groupId
+          }
           this.getMyStatusList();
           this.getDataList();
         //   this.visibleChange();
@@ -415,7 +427,20 @@
                 userId:null,
                 groupId:null,
                 areaId:null,
+            };
+            if(this.$store.state.dept.updateUser.type == 1){
+                this.q.areaId = this.$store.state.dept.updateUser.areaId
             }
+            if(this.$store.state.dept.updateUser.type == 2){
+                this.q.areaId = this.$store.state.dept.updateUser.areaId
+                this.q.deptId = this.$store.state.dept.updateUser.deptId
+            }
+            if(this.$store.state.dept.updateUser.type == 3){
+                this.q.areaId = this.$store.state.dept.updateUser.areaId
+                this.q.deptId = this.$store.state.dept.updateUser.deptId
+                this.q.groupId = this.$store.state.dept.updateUser.groupId
+            }
+            this.nowProTypeId = [];
         },
         // 每页数
         sizeChangeHandle (val) {
@@ -587,7 +612,7 @@
                 if (data && data.code === 0) {
                 this.groupList = data.groupList
                 } else {
-                this.groupList = []
+                this.$message.error(data.msg)
                 }
             })
             }else{
@@ -612,7 +637,7 @@
                 if (data && data.code === 0) {
                     this.userList = data.userList
                 } else {
-                    this.userList = []
+                    this.$message.error(data.msg)
                 }
             })
             }else{

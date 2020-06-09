@@ -9,7 +9,7 @@ const dept = {
       areaId:'',
       deptId:'',
       groupId:'',
-      type:3,
+      type:4,
 
     }
   },
@@ -78,9 +78,9 @@ const dept = {
                 areaId:'',
                 deptId:'',
                 groupId:'',
-                type:3,
+                type:4,
               };
-              if(data.type){
+              if(data.type || data.type == 0){
                 obj.type = data.type;
               }
               if(data.areaId){

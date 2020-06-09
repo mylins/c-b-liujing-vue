@@ -37,7 +37,7 @@
                 <template slot-scope="scope">
                     <el-image
                         style="width: 120px; height: 120px"
-                        :src="'http://'+scope.row.mainImageUrl"></el-image>
+                        :src="scope.row.mainImageUrl"></el-image>
                 </template>
                 </el-table-column>
                 <el-table-column

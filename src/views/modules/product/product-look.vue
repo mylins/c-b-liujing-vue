@@ -47,7 +47,7 @@
                         <el-image
                             style="width: 142px; height: 142px"
                             :preview-src-list="imgList"
-                            :src="'http://'+item.imageUrl"></el-image>
+                            :src="item.imageUrl"></el-image>
                     </li>
                 </ul>
             </div>
@@ -647,7 +647,7 @@
                                 <!-- <span class="close"><el-button type="text" icon="el-icon-error" @click="delImageVB(scope.$index,index)"></el-button></span> -->
                                 <el-image
                                     style="width: 50px; height: 50px"
-                                    :src="'http://'+item"></el-image>
+                                    :src="item"></el-image>
                             </div>
                         </div>
                     </template>
@@ -909,7 +909,7 @@
               if (data && data.code === 0) {
                 this.dataForm = data.product;
                 this.imgList = this.dataForm.imageList.map((item) => {
-                    return 'http://'+item.imageUrl
+                    return item.imageUrl
                 })
               }
             })

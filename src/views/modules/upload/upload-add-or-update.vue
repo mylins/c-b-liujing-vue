@@ -303,7 +303,7 @@
                 if (data && data.code === 0) {
                     this.dataForm = data.product;
                     this.imgList = this.dataForm.imageList.map((item) => {
-                        return 'http://'+item.imageUrl
+                        return item.imageUrl
                     })
                     // console.log(this.imgList)
                 }else{

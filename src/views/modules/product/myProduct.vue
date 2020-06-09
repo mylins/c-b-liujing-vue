@@ -165,11 +165,11 @@
                         <div slot="content">
                             <el-image
                             style="width: 300px; height: 300px"
-                            :src="'http://'+scope.row.mainImageUrl"></el-image>
+                            :src="scope.row.mainImageUrl"></el-image>
                         </div>
                             <el-image
                             style="width: 100px; height: 100px"
-                            :src="'http://'+scope.row.mainImageUrl"></el-image>
+                            :src="scope.row.mainImageUrl"></el-image>
                     </el-tooltip>
                     
                 </template>
