@@ -181,7 +181,6 @@
             amazonTemplate:'',
             operateItem:[],
             fieldsEntityList:[],
-            amazonNodeId:null,
         },
         templateList:[],
         options:[],
@@ -262,12 +261,6 @@
         this.init(this.$route.params);
         this.getShopList();
     },
-    watch:{
-        // amazonCategoryId(val){
-        //     console.log(val);
-        //     this.loadRegionChild(val);
-        // }
-    },
     computed: {
       mainTabs: {
         get () { return this.$store.state.common.mainTabs },
@@ -277,10 +270,6 @@
         get () { return this.$store.state.common.mainTabsActiveName },
         set (val) { this.$store.commit('common/updateMainTabsActiveName', val) }
       },
-    //   options(){
-    //       return this.processingData(this.options1)
-    //   }
-      
     },
     methods: {
         init (obj) {
@@ -301,11 +290,21 @@
                 }).then(({data}) => {
                     loading.close();
                 if (data && data.code === 0) {
-                    this.dataForm = data.product;
-                    this.imgList = this.dataForm.imageList.map((item) => {
-                        return item.imageUrl
-                    })
-                    // console.log(this.imgList)
+                    this.dataForm = {
+                        startId:data.data.uploadEntity.startId,
+                        endId:data.data.uploadEntity.endId,
+                        uploadIds:data.data.uploadEntity.uploadIds,
+                        uploadId: data.data.uploadEntity.uploadId,
+                        grantShop:data.data.uploadEntity.grantShop,
+                        grantShopId:data.data.uploadEntity.grantShopId,
+                        amazonCategoryId:data.data.uploadEntity.amazonCategoryId,
+                        amazonCategory:data.data.allCategories,
+                        amazonCategoryNodeId:data.data.uploadEntity.amazonCategoryNodeId,
+                        amazonTemplateId:data.data.uploadEntity.amazonTemplate,
+                        amazonTemplate:data.data.uploadEntity.amazonTemplate,
+                        operateItem:data.data.uploadEntity.operateItem.split(','),
+                        fieldsEntityList:data.data.middleEntitys,
+                    };
                 }else{
                     this.$message.error(data.msg)
                 }
