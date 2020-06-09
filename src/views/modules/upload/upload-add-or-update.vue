@@ -300,11 +300,15 @@
                         amazonCategoryId:data.data.uploadEntity.amazonCategoryId,
                         amazonCategory:data.data.allCategories,
                         amazonCategoryNodeId:data.data.uploadEntity.amazonCategoryNodeId,
-                        amazonTemplateId:data.data.uploadEntity.amazonTemplate,
+                        amazonTemplateId:data.data.uploadEntity.amazonTemplateId,
                         amazonTemplate:data.data.uploadEntity.amazonTemplate,
                         operateItem:data.data.uploadEntity.operateItem.split(','),
                         fieldsEntityList:data.data.middleEntitys,
                     };
+                    this.templateList.push({
+                        templateId:data.data.uploadEntity.amazonTemplateId,
+                        templateDisplayName:data.data.uploadEntity.amazonTemplate
+                    })
                 }else{
                     this.$message.error(data.msg)
                 }
