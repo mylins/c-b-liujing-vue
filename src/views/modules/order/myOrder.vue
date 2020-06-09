@@ -518,6 +518,7 @@
       },
       created(){
           this.getMyStatusList();
+          this.getStatis();
           this.getDataList();
         //   this.visibleChange();
       },
@@ -603,6 +604,21 @@
                     this.$message.error(data.msg)
                 }
                 this.dataListLoading = false
+            })
+        },
+        // 获取统计
+        getStatis(){
+            this.$http({
+                url: this.$http.adornUrl('/order/order/myOrderCount'),
+                method: 'get',
+                params: this.$http.adornParams()
+            }).then(({data}) => {
+                if (data && data.code === 0) {
+                    console.log(data);
+                    
+                } else {
+                    this.$message.error(data.msg)
+                }
             })
         },
         // 重置
