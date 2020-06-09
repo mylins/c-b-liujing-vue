@@ -168,7 +168,6 @@
             <el-button type="primary" icon="el-icon-bottom" size="small" @click="getOrder">获取订单</el-button>
             <el-button type="primary" icon="el-icon-edit-outline" size="small" @click="luruVisible = true">手工录入订单</el-button>
             <el-button type="primary" icon="el-icon-star-off" size="small" @click="biaojiClick">标记订单状态</el-button>
-            <open-tab size="medium" type="text" icon="" dec='订单表单' urlName='orderAddUpdate' :opt='{"orderId":null}'></open-tab>
             <!-- <div style="float:right;">
                 <el-button type="primary" icon="el-icon-download" size="small">插件下载</el-button>
                 <el-button type="text">采集手册</el-button>
@@ -182,10 +181,10 @@
             <div class="right">
                 订单数&nbsp;<a style="font-weight: 600">{{ statisticsProfit.addOrderCounts }}</a>&nbsp;&nbsp;&nbsp;
                 销售额&nbsp;<a style="font-weight: 600">{{ statisticsProfit.salesVolume }}</a>&nbsp;&nbsp;&nbsp;
-                订单到账金额&nbsp;<a style="font-weight: 600">{{ statisticsProfit.accountSales }}</a>&nbsp;&nbsp;&nbsp;
+                <!-- 订单到账金额&nbsp;<a style="font-weight: 600">{{ statisticsProfit.accountSales }}</a>&nbsp;&nbsp;&nbsp; -->
                 核算订单数&nbsp;<a style="font-weight: 600">{{ statisticsProfit.checkOrderCounts }}</a>&nbsp;&nbsp;&nbsp;
                 核算订单金额&nbsp;<a style="font-weight: 600">{{ statisticsProfit.checkSalesVolume }}</a>&nbsp;&nbsp;&nbsp;
-                核算订单到账金额&nbsp;<a style="font-weight: 600">{{ statisticsProfit.checkAccountSales }}</a><br>
+                <!-- 核算订单到账金额&nbsp;<a style="font-weight: 600">{{ statisticsProfit.checkAccountSales }}</a><br> -->
                 采购价&nbsp;<a style="font-weight: 600">{{ statisticsProfit.cost }}</a>&nbsp;&nbsp;&nbsp;
                 佣金&nbsp;<a style="font-weight: 600">{{ statisticsProfit.servicePrice }}</a>&nbsp;&nbsp;&nbsp;
                 运费&nbsp;<a style="font-weight: 600">{{ statisticsProfit.orderFreight }}</a>&nbsp;&nbsp;&nbsp;
@@ -615,6 +614,7 @@
             }).then(({data}) => {
                 if (data && data.code === 0) {
                     console.log(data);
+                    this.statisticsProfit = data.orderCountDTO
                     
                 } else {
                     this.$message.error(data.msg)

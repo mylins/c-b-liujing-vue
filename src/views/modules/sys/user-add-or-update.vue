@@ -18,10 +18,10 @@
             <el-input v-model="dataForm.username" placeholder="账号长度必须在6到20个字符之间"></el-input>
           </el-form-item>
           <el-form-item v-if="!dataForm.userId" label="密码" prop="password">
-            <el-input v-model="dataForm.password" type="password" placeholder="密码"></el-input>
+            <el-input v-model="dataForm.password" type="password" placeholder="密码" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item v-if="!dataForm.userId" label="确认密码" prop="password1">
-            <el-input v-model="dataForm.password1" type="password" placeholder="确认密码"></el-input>
+            <el-input v-model="dataForm.password1" type="password" placeholder="确认密码" autocomplete="off"></el-input>
           </el-form-item>
         </div>
         

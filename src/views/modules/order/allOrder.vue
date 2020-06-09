@@ -249,10 +249,10 @@
             <div class="right">
                 订单数&nbsp;<a style="font-weight: 600">{{ statisticsProfit.addOrderCounts }}</a>&nbsp;&nbsp;&nbsp;
                 销售额&nbsp;<a style="font-weight: 600">{{ statisticsProfit.salesVolume }}</a>&nbsp;&nbsp;&nbsp;
-                订单到账金额&nbsp;<a style="font-weight: 600">{{ statisticsProfit.accountSales }}</a>&nbsp;&nbsp;&nbsp;
+                <!-- 订单到账金额&nbsp;<a style="font-weight: 600">{{ statisticsProfit.accountSales }}</a>&nbsp;&nbsp;&nbsp; -->
                 核算订单数&nbsp;<a style="font-weight: 600">{{ statisticsProfit.checkOrderCounts }}</a>&nbsp;&nbsp;&nbsp;
                 核算订单金额&nbsp;<a style="font-weight: 600">{{ statisticsProfit.checkSalesVolume }}</a>&nbsp;&nbsp;&nbsp;
-                核算订单到账金额&nbsp;<a style="font-weight: 600">{{ statisticsProfit.checkAccountSales }}</a><br>
+                <!-- 核算订单到账金额&nbsp;<a style="font-weight: 600">{{ statisticsProfit.checkAccountSales }}</a><br> -->
                 采购价&nbsp;<a style="font-weight: 600">{{ statisticsProfit.cost }}</a>&nbsp;&nbsp;&nbsp;
                 佣金&nbsp;<a style="font-weight: 600">{{ statisticsProfit.servicePrice }}</a>&nbsp;&nbsp;&nbsp;
                 运费&nbsp;<a style="font-weight: 600">{{ statisticsProfit.orderFreight }}</a>&nbsp;&nbsp;&nbsp;
@@ -342,7 +342,7 @@
                 width="">
                     <template slot-scope="scope">
                         <div>{{scope.row.orderMoney}}<span v-if="scope.row.rateCode">({{scope.row.rateCode}})</span></div>
-                        <div v-if="scope.row.orderMoneyCny"><span style="color:#999">{{scope.row.orderMoneyCny}}</span>}</div>
+                        <div v-if="scope.row.orderMoneyCny"><span style="color:#999">{{scope.row.orderMoneyCny}}</span></div>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -351,7 +351,7 @@
                 width="">
                     <template slot-scope="scope">
                         <div>{{scope.row.amazonCommission}}<span v-if="scope.row.rateCode">({{scope.row.rateCode}})</span></div>
-                        <div v-if="scope.row.amazonCommissionCny"><span style="color:#999">¥{{scope.row.amazonCommissionCny}}</span>}</div>
+                        <div v-if="scope.row.amazonCommissionCny"><span style="color:#999">¥{{scope.row.amazonCommissionCny}}</span></div>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -360,7 +360,7 @@
                 width="">
                     <template slot-scope="scope">
                         <div>{{scope.row.accountMoney}}<span v-if="scope.row.rateCode">({{scope.row.rateCode}})</span></div>
-                        <div v-if="scope.row.accountMoneyCny"><span style="color:#999">¥{{scope.row.accountMoneyCny}}</span>}</div>
+                        <div v-if="scope.row.accountMoneyCny"><span style="color:#999">¥{{scope.row.accountMoneyCny}}</span></div>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -550,6 +550,7 @@
               this.q.groupId = this.$store.state.dept.user.groupId
           }
           this.getMyStatusList();
+          this.getStatis();
           this.getDataList();
         //   this.visibleChange();
       },
@@ -622,6 +623,22 @@
                     this.$message.error(data.msg)
                 }
                 this.dataListLoading = false
+            })
+        },
+        // 获取统计
+        getStatis(){
+            this.$http({
+                url: this.$http.adornUrl('/order/order/allOrderCount'),
+                method: 'get',
+                params: this.$http.adornParams()
+            }).then(({data}) => {
+                if (data && data.code === 0) {
+                    console.log(data);
+                    this.statisticsProfit = data.orderCountDTO
+                    
+                } else {
+                    this.$message.error(data.msg)
+                }
             })
         },
         // 重置

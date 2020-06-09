@@ -475,6 +475,8 @@
             ids:[],
             yichangValue:'',
             yichangList:[],
+            userList:[],
+            groupList:[],
             yichangVisible:false,
             productD:{},
             luruId:'',
@@ -804,6 +806,54 @@
                 })
             }).catch(() => {})
 
+        },
+        // 获取小组下拉
+        getGroupList(){
+            if(this.q.deptId){
+                this.$http({
+                url: this.$http.adornUrl('/sys/sysgroup/select'),
+                method: 'get',
+                params: this.$http.adornParams({
+                    'deptId':this.q.deptId,
+                })
+            }).then(({data}) => {
+                if (data && data.code === 0) {
+                    this.groupList = data.groupList
+                } else {
+                    this.$message.error(data.msg)
+                }
+            })
+            }else{
+                this.$message({
+                    message: '请先选择公司',
+                    type: 'warning'
+                });
+            }
+            
+        },
+        // 获取人员下拉
+        getuserList(){
+            if(this.q.deptId){
+                this.$http({
+                url: this.$http.adornUrl('/sys/user/getUserList'),
+                method: 'get',
+                params: this.$http.adornParams({
+                    'deptId':this.q.deptId,
+                    'groupId':this.q.groupId
+                })
+            }).then(({data}) => {
+                if (data && data.code === 0) {
+                    this.userList = data.userList
+                } else {
+                    this.$message.error(data.msg)
+                }
+            })
+            }else{
+                this.$message({
+                    message: '请先选择公司',
+                    type: 'warning'
+                });
+            }
         }
       }
   }

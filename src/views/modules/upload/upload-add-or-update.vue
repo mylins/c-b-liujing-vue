@@ -128,7 +128,7 @@
                         <el-option
                         v-for="item in historyList"
                         :key="item.amazonCategoryId"
-                        :label="item.amazonAllCategory"
+                        :label="item.amazonCategory"
                         :value="item.amazonCategoryId">
                         </el-option>
                     </el-select>
@@ -596,10 +596,10 @@
             
         },
         // 历史分类选择
-        select(){
+        select(val){
             this.historyVisible = false;
             this.dataForm.amazonCategoryNodeId = this.historyObj.value;
-            this.dataForm.amazonCategoryNodeId = this.historyList.find(item => item.amazonCategoryId == this.historyObj.value).amazonAllCategory;
+            this.dataForm.amazonCategory = this.historyList.find(item => item.amazonCategoryId == this.historyObj.value).amazonAllCategory;
             this.historyObj.value = ''
         }
 

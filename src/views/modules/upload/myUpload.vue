@@ -137,7 +137,7 @@
                 dataListLoading:true,
             }
         },
-        activated(){
+        created(){
             this.getDataList();
         },
         methods:{

@@ -10,27 +10,42 @@
       <el-form :inline="true" :model="dataForm" :rules="dataRule" ref="dataForm" label-width="130px">
         <div class="blockDivForm">
           <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;基本信息</h3>
-          <el-form-item label="类型" size="mini" prop="deptType">
-            <el-radio-group v-model="dataForm.deptType">
-              <el-radio :label="1">区域代理商</el-radio>
-              <el-radio :label="2">加盟商</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <br>
-          <el-form-item label="公司名称" prop="name">
-            <el-input v-model="dataForm.name" placeholder="公司名称"></el-input>
-          </el-form-item>
-          <el-form-item label="上级公司" prop="parentId" @change="getDeptName">
-            <el-select v-model="dataForm.parentId" clearable placeholder="请选择" @focus="getComTopList">
-              <el-option
-                v-for="item in comTopList"
-                :key="item.deptId"
-                :label="item.name"
-                :value="item.deptId">
-              </el-option>
-            </el-select>
-            
-          </el-form-item>
+          <template v-if="this.dataForm.deptId">
+            <el-form-item label="类型" size="mini" prop="deptType">
+              <span v-if="dataForm.deptType == 1" style="color:#409EFF">区域代理商</span>
+              <span v-if="dataForm.deptType == 2" style="color:#409EFF">加盟商</span>
+            </el-form-item>
+            <el-form-item label="公司名称" size="mini" prop="name">
+              <span class="decVal">{{dataForm.name}}</span>
+            </el-form-item>
+            <el-form-item label="上级公司" size="mini" prop="deptType">
+              <span class="decVal">{{dataForm.parentName}}</span>
+            </el-form-item>
+            <br>
+          </template>
+          <template v-else>
+            <el-form-item label="类型" size="mini" prop="deptType">
+              <el-radio-group v-model="dataForm.deptType">
+                <el-radio v-if="$store.state.dept.user.type == 0" :label="1">区域代理商</el-radio>
+                <el-radio :label="2">加盟商</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <br>
+            <el-form-item label="公司名称" prop="name">
+              <el-input v-model="dataForm.name" placeholder="公司名称"></el-input>
+            </el-form-item>
+            <el-form-item label="上级公司" prop="parentId" @change="getDeptName">
+              <el-select v-model="dataForm.parentId" clearable placeholder="请选择" @focus="getComTopList">
+                <el-option
+                  v-for="item in comTopList"
+                  :key="item.deptId"
+                  :label="item.name"
+                  :value="item.deptId">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </template>
+          
           <el-form-item label="公司账户数" prop="accountCount">
             <el-input v-model="dataForm.accountCount" placeholder="公司账户数"></el-input>
           </el-form-item>
@@ -72,21 +87,17 @@
           </el-form-item> -->
         </div>
         
-        <div class="blockDivForm">
+        <div class="blockDivForm" v-if="this.dataForm.deptId">
           <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;金额信息</h3>
-          <el-form-item label="平台佣金点数" prop="companyPoints">
-            <el-button v-if="this.dataForm.companyPoints" type="text">{{dataForm.balance}}</el-button>
-            <el-input v-else v-model="dataForm.companyPoints" placeholder="平台佣金点数"></el-input>
-          </el-form-item>
-          <el-form-item label="最低物流限额" prop="limitMoney">
+          <!-- <el-form-item label="最低物流限额" prop="limitMoney">
             <el-button v-if="this.dataForm.limitMoney" type="text">{{dataForm.balance}}</el-button>
             <el-input v-else v-model="dataForm.limitMoney" placeholder="最低物流限额"></el-input>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item v-if="this.dataForm.deptId" label="余额" prop="">
-            <el-button type="text">{{dataForm.balance}}</el-button>
+            <span class="decVal">{{dataForm.balance}}</span>
           </el-form-item>
           <el-form-item v-if="this.dataForm.deptId" label="10天内物流消费" prop="">
-            <el-button type="text">{{dataForm.consum}}</el-button>
+            <span class="decVal">{{dataForm.consum}}</span>
           </el-form-item>
         </div>
         
@@ -193,7 +204,7 @@
     components: {
       PageH
     },
-    activated(){
+    created(){
       this.init(this.$route.params.deptId);
       this.comList = this.$store.state.dept.comList
     },
@@ -223,9 +234,9 @@
               this.dataForm = data.sysDept
               var that = this
               that.deptList = [];
-              this.dataForm.dataShareList.forEach(function(item){
-                that.deptList.push(item.deptId)
-              })
+              // this.dataForm.dataShareList.forEach(function(item){
+              //   that.deptList.push(item.deptId)
+              // })
             }
           })
         }else{
@@ -252,6 +263,9 @@
               parentId: null,
               parentName: null,
               updateTime: null,
+            }
+            if(this.$store.state.dept.user.type == 1){
+              this.dataForm.deptType = 2
             }
           })
         }

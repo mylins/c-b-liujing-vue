@@ -72,8 +72,8 @@
               <div class="domDiv">
                 <h4> 
                     <i class="el-icon-truck"></i> &nbsp;&nbsp;物流信息&nbsp;&nbsp;
-                    <el-button type="primary" icon="" size="small" plain @click="shipAddressVi = true">采购物流编辑</el-button>&nbsp;&nbsp;
-                    <el-button type="primary" icon="" size="small" plain @click="shipAddressVi = true">补发物流编辑</el-button>
+                    <el-button type="primary" icon="" size="small" plain @click="wuliuobj = item.domesticLogistics;wuliuObjVi = true">采购物流编辑</el-button>&nbsp;&nbsp;
+                    <el-button type="primary" icon="" size="small" plain @click="wuliuobj = item.domesticLogisticsReissue;wuliuObjVi = true">补发物流编辑</el-button>
                 </h4>
                 <div class="con">
                     <el-form-item label="采购价(￥)" prop="">
@@ -82,14 +82,14 @@
                     <el-form-item label="物流单号" prop="">
                         <span class="decVal">{{item.domesticLogistics.waybill ? item.domesticLogistics.waybill : '无'}}</span>
                     </el-form-item>
-                    <el-form-item label="物流更新" prop="">
+                    <el-form-item label="物流公司" prop="">
                         <span class="decVal">{{item.domesticLogistics.logisticsCompany ? item.domesticLogistics.logisticsCompany : '无'}}</span>
                     </el-form-item>
-                    <el-form-item label="更新日期" prop="">
+                    <el-form-item label="发货日期" prop="">
                         <span class="decVal">{{item.domesticLogistics.issuanceDate ? item.domesticLogistics.issuanceDate : '无'}}</span>
                     </el-form-item>
                 </div>
-                <!-- <div class="con">
+                <div class="con">
                     <el-form-item label="采购价(￥)" prop="">
                         <span class="decVal">{{item.domesticLogisticsReissue.price ? item.domesticLogisticsReissue.price : '无'}}</span>
                     </el-form-item>
@@ -102,7 +102,7 @@
                     <el-form-item label="更新日期" prop="">
                         <span class="decVal">{{item.domesticLogisticsReissue.issuanceDate ? item.domesticLogisticsReissue.issuanceDate : '无'}}</span>
                     </el-form-item>
-                </div> -->
+                </div>
               </div>
               
 
@@ -214,6 +214,9 @@
                 label="操作"
                 width="">
                 <template slot-scope="scope">
+                    <template v-if="scope.row.isSynchronization == 0">
+                        <el-button v-if="scope.row.orderState == '虚发货' || scope.row.orderState == '仓库已入库' || scope.row.orderState == '国际已发货'" type="text" icon="el-icon-bottom" size="small" @click="tongbu(scope.row.abroadLogisticsId)">同步</el-button>
+                    </template>
                     <el-button type="text" icon="el-icon-bottom" size="small" @click="dayin(scope.row.abroadLogisticsId)">打印</el-button>
                     <el-button type="text" icon="el-icon-bottom" size="small" @click="mingxi(scope.row)">明细</el-button>
                     <el-button v-if="scope.row.isDeleted == 0" type="text" icon="el-icon-bottom" size="small" @click="zuof(scope.row.abroadLogisticsId)">作废</el-button>
@@ -370,46 +373,46 @@
         </span>
       </el-dialog>
         <!-- 编辑寄件信息 -->
-      <el-dialog
-        title="寄件信息编辑"
-        :visible.sync="shipAddressVi"
-        width="600px">
-        <div>
-            <el-form :model="shipAddressObj" status-icon ref="shipAddressObjForm" label-width="120px" class="demo-ruleForm">
-                <el-form-item label="收件人" prop="">
-                    <el-input v-model="shipAddressObj.shipName" placeholder="请输入内容" clearable></el-input>
-                </el-form-item>
-                <el-form-item label="TEL" prop="">
-                    <el-input v-model="shipAddressObj.shipTel" placeholder="请输入内容" clearable></el-input>
-                </el-form-item>
-                <el-form-item label="收件人国家" prop="">
-                    <el-input v-model="shipAddressObj.shipCountry" placeholder="请输入内容" clearable></el-input>
-                </el-form-item>
-                <el-form-item label="收件人国家(中文)" prop="">
-                    <el-input v-model="shipAddressObj.shipCountryName" placeholder="请输入内容" clearable></el-input>
-                </el-form-item>
-                <el-form-item label="ZIP" prop="">
-                    <el-input v-model="shipAddressObj.shipZip" placeholder="请输入内容" clearable></el-input>
-                </el-form-item>
-                <el-form-item label="州" prop="">
-                    <el-input v-model="shipAddressObj.shipRegion" placeholder="请输入内容" clearable></el-input>
-                </el-form-item>
-                <el-form-item label="市" prop="">
-                    <el-input v-model="shipAddressObj.shipCity" placeholder="请输入内容" clearable></el-input>
-                </el-form-item>
-                <el-form-item label="街道" prop="">
-                    <el-input v-model="shipAddressObj.shipAddressLine1" placeholder="请输入内容" clearable></el-input>
-                </el-form-item>
-                <el-form-item label="详细地址" prop="">
-                    <el-input type="textarea" v-model="shipAddressObj.shipAddressDetail"></el-input>
-                </el-form-item>
-            </el-form>
-        </div>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="shipAddressVi = false">取 消</el-button>
-            <el-button type="primary" @click="shipAddressClick">确 定</el-button>
-        </span>
-      </el-dialog>
+        <el-dialog
+            title="寄件信息编辑"
+            :visible.sync="shipAddressVi"
+            width="600px">
+            <div>
+                <el-form :model="shipAddressObj" status-icon ref="shipAddressObjForm" label-width="120px" class="demo-ruleForm">
+                    <el-form-item label="收件人" prop="">
+                        <el-input v-model="shipAddressObj.shipName" placeholder="请输入内容" clearable></el-input>
+                    </el-form-item>
+                    <el-form-item label="TEL" prop="">
+                        <el-input v-model="shipAddressObj.shipTel" placeholder="请输入内容" clearable></el-input>
+                    </el-form-item>
+                    <el-form-item label="收件人国家" prop="">
+                        <el-input v-model="shipAddressObj.shipCountry" placeholder="请输入内容" clearable></el-input>
+                    </el-form-item>
+                    <el-form-item label="收件人国家(中文)" prop="">
+                        <el-input v-model="shipAddressObj.shipCountryName" placeholder="请输入内容" clearable></el-input>
+                    </el-form-item>
+                    <el-form-item label="ZIP" prop="">
+                        <el-input v-model="shipAddressObj.shipZip" placeholder="请输入内容" clearable></el-input>
+                    </el-form-item>
+                    <el-form-item label="州" prop="">
+                        <el-input v-model="shipAddressObj.shipRegion" placeholder="请输入内容" clearable></el-input>
+                    </el-form-item>
+                    <el-form-item label="市" prop="">
+                        <el-input v-model="shipAddressObj.shipCity" placeholder="请输入内容" clearable></el-input>
+                    </el-form-item>
+                    <el-form-item label="街道" prop="">
+                        <el-input v-model="shipAddressObj.shipAddressLine1" placeholder="请输入内容" clearable></el-input>
+                    </el-form-item>
+                    <el-form-item label="详细地址" prop="">
+                        <el-input type="textarea" v-model="shipAddressObj.shipAddressDetail"></el-input>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="shipAddressVi = false">取 消</el-button>
+                <el-button type="primary" @click="shipAddressClick">确 定</el-button>
+            </span>
+        </el-dialog>
         <!-- 添加国际物流 -->
         <el-dialog
             title="添加国际物流"
@@ -560,7 +563,35 @@
                     <el-button @click="abroadLogisticsListVi = false">确 定</el-button>
                 </span> -->
             </div>
-        </el-dialog>    
+        </el-dialog>  
+        
+
+        <!-- 国内物流编辑  -->
+        <el-dialog
+            title="寄件信息编辑"
+            :visible.sync="wuliuObjVi"
+            width="600px">
+            <div>
+                <el-form :model="shipAddressObj" status-icon ref="shipAddressObjForm" label-width="120px" class="demo-ruleForm">
+                    <el-form-item label="采购价（¥）" prop="">
+                        <el-input v-model="wuliuobj.price" placeholder="请输入内容" clearable></el-input>
+                    </el-form-item>
+                    <el-form-item label="物流单号" prop="">
+                        <el-input v-model="wuliuobj.waybill" placeholder="请输入内容" clearable></el-input>
+                    </el-form-item>
+                    <el-form-item label="物流公司" prop="">
+                        <el-input v-model="wuliuobj.logisticsCompany" placeholder="请输入内容" clearable></el-input>
+                    </el-form-item>
+                    <!-- <el-form-item label="发货日期" prop="">
+                        <el-input v-model="wuliuobj.issuanceDate" placeholder="请输入内容" clearable></el-input>
+                    </el-form-item> -->
+                </el-form>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="wuliuObjVi = false">取 消</el-button>
+                <el-button type="primary" @click="wuliuObjViClick">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
   </div>
 </template>
@@ -613,6 +644,8 @@
             wuliuType:'',
             itemCodeId:''
         },
+        wuliuobj:{},
+        wuliuObjVi:false,
         wuliuType:'',
         xianlu:'',
         guojilogistics:[],
@@ -1092,6 +1125,98 @@
         // 明细
         mingxi(row){
             this.wuliuDetails = row;
+        },
+        // 同步
+        tongbu(id){
+            this.$confirm('确定同步该运单?', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+                this.$http({
+                    url: this.$http.adornUrl('/order/order/synchronization'),
+                    method: 'get',
+                    params: this.$http.adornParams({
+                        abroadLogisticsId:id,
+                        orderId:this.dataForm.orderId
+                    })
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                    this.$message({
+                        message: '操作成功',
+                        type: 'success',
+                        duration: 1000,
+                        onClose: () => {
+                            this.init();
+                            loading.close()
+                        }
+                    })
+                    } else {
+                        this.$message.error(data.msg)
+                        loading.close()
+                    }
+                })
+            }).catch(() => {})
+        },
+        // 国内物流编辑
+        wuliuObjViUp(obj){
+            this.wuliuobj = {
+                color: obj.color,
+                createTime: obj.createTime,
+                domesticLogisticsId: obj.domesticLogisticsId,
+                isReissue: obj.isReissue,
+                issuanceDate: obj.issuanceDate,
+                itemId: obj.itemId,
+                logisticsCompany: obj.logisticsCompany,
+                orderId: obj.orderId,
+                price: obj.price,
+                size: obj.size,
+                state: obj.state,
+                waybill: obj.waybill,
+            }
+            this.wuliuObjVi = true;
+        },
+        // 国内物流编辑确定
+        wuliuObjViClick(){
+            this.$confirm('确定修改物流信息?', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+                this.$http({
+                    url: this.$http.adornUrl('/order/orderdomesticlogistics/addDomesticLogistics'),
+                    method: 'post',
+                    data: this.$http.adornData(this.wuliuobj)
+                }).then(({data}) => {
+                    loading.close()
+                    if (data && data.code === 0) {
+                        
+                        this.$message({
+                            message: '操作成功',
+                            type: 'success',
+                            duration: 1000,
+                            onClose: () => {
+                                this.init();
+                                this.wuliuObjVi = false;
+                            }
+                        })
+                    } else {
+                        this.$message.error(data.msg)
+                    }
+                })
+            }).catch(() => {})
         }
 
     }
