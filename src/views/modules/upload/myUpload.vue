@@ -99,7 +99,9 @@
                             <el-dropdown-item icon="el-icon-tickets">
                                 <open-tab size="medium" type="text" icon="" dec='报告列表' urlName='baogaoList' :opt='{"uploadId":scope.row.uploadId}'></open-tab>
                             </el-dropdown-item>
-                            <el-dropdown-item icon="el-icon-refresh-right" @click="againUploadClick">重新上传</el-dropdown-item>
+                            <el-dropdown-item icon="el-icon-refresh-right">
+                                <el-button type="text" size="small" @click="againUploadClick(scope.row.uploadId)">重新上传</el-button>
+                            </el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                 </template>
@@ -213,6 +215,7 @@
             },
             // 重新上传
             againUploadClick(id){
+                console.log(id);
                 this.$confirm('确定重新上传?', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
