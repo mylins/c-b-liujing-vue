@@ -238,7 +238,7 @@
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="rechargeListVisible = false">关 闭</el-button>
-          <el-button type="primary" @click="outVisible = true">导出Excel</el-button>
+          <el-button type="primary" @click="outVisible = true;startDate = '';endDate = '';">导出Excel</el-button>
         </span>
       </el-dialog>
       <!-- 导出时间 -->
@@ -553,7 +553,9 @@
       // 导出
       outExcel(){
         window.location.href = this.$http.adornUrl('/sys/companyrecharge/export?deptId='+this.deptId+'&startDate='+this.startDate+'&endDate='+this.endDate+'&token='+this.$cookie.get("token"))
+        
         this.outVisible = false;
+
         
       },
       

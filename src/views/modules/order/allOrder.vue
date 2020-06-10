@@ -452,11 +452,12 @@
                 </el-col>
                 <el-col :span="18">
                     <el-select v-model="yichangValue" placeholder="请选择">
+                        <el-option label="正常" value='Normal'></el-option>
                         <el-option
                         v-for="item in yichangList"
-                        :key="item.dataNumber"
-                        :label="item.dataContent"
-                        :value="item.dataNumber">
+                        :key="item.code"
+                        :label="item.value"
+                        :value="item.code">
                         </el-option>
                     </el-select>
                 </el-col>
@@ -578,6 +579,14 @@
             }).then(({data}) => {
                 if (data && data.code === 0) {
                     console.log(data);
+                    this.yichangList = [];
+                    var that=this;
+                    data.abnormalStateList.forEach(function(item){
+                        that.yichangList.push({
+                            value:item.value,
+                            code:item.code
+                        })
+                    })
                     this.orderStatusList = data.orderStateList;
                     this.abnormalStatusList = data.abnormalStateList;
                     this.orderStatusList.unshift({
@@ -757,9 +766,15 @@
         // 标记异常确定
         biaojiClickOk(){
             var orderIds = this.dataListSelections.map(item => {
-                return item.productId
+                return item.orderId
             })
-            let label = this.yichangList.find(item => item.dataNumber == this.yichangValue)
+            let label = '';
+            if(this.yichangValue == 'Normal'){
+                label = '正常';
+            }else{
+                label = this.yichangList.find(item => item.code == this.yichangValue).value;
+            }
+            console.log(this.yichangValue);
             this.$confirm('确定标记选中订单状态?', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -787,8 +802,10 @@
                         duration: 1000,
                         onClose: () => {
                             this.getDataList();
-                            this.yichangValue = '';
+                            this.getMyStatusList();
                             loading.close()
+                            this.yichangVisible = false;
+                            
                         }
                     })
                     } else {

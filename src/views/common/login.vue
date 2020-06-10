@@ -4,7 +4,7 @@
       <div class="login-img">
         <el-image
           style="width: 570px; height: 540px"
-          src="src/assets/img/login_img.jpg"></el-image>
+          :src="require('@/assets/img/login_img.jpg')"></el-image>
       </div>
       <div class="login-main">
         <h3 class="login-title">管理员登录</h3>

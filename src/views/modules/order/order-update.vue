@@ -506,16 +506,16 @@
                                             label="三态大包"
                                             value="1">
                                     </el-option>
-                                        <el-option
-                                                key="2"
-                                                label="燕文物流"
-                                                value="2">
+                                    <!-- <el-option
+                                            key="2"
+                                            label="燕文物流"
+                                            value="2">
                                     </el-option>
-                                        <el-option
-                                                key="3"
-                                                label="德邦物流"
-                                                value="3">
-                                    </el-option>
+                                    <el-option
+                                            key="3"
+                                            label="德邦物流"
+                                            value="3">
+                                    </el-option> -->
                                 </el-select>
                             </el-form-item>
                         </el-col>

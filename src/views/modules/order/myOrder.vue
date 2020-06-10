@@ -166,7 +166,7 @@
         <!-- 操作 -->
         <div class="divM">
             <el-button type="primary" icon="el-icon-bottom" size="small" @click="getOrder">获取订单</el-button>
-            <el-button type="primary" icon="el-icon-edit-outline" size="small" @click="luruVisible = true">手工录入订单</el-button>
+            <el-button type="primary" icon="el-icon-edit-outline" size="small" @click="luruVisible = true;luruId=''">手工录入订单</el-button>
             <el-button type="primary" icon="el-icon-star-off" size="small" @click="biaojiClick">标记订单状态</el-button>
             <!-- <div style="float:right;">
                 <el-button type="primary" icon="el-icon-download" size="small">插件下载</el-button>
@@ -430,11 +430,12 @@
                 </el-col>
                 <el-col :span="18">
                     <el-select v-model="yichangValue" placeholder="请选择">
+                        <el-option label="正常" value='Normal'></el-option>
                         <el-option
                         v-for="item in yichangList"
-                        :key="item.dataNumber"
-                        :label="item.dataContent"
-                        :value="item.dataNumber">
+                        :key="item.code"
+                        :label="item.value"
+                        :value="item.code">
                         </el-option>
                     </el-select>
                 </el-col>
@@ -539,7 +540,8 @@
             }).then(({data}) => {
                 if (data && data.code === 0) {
                     console.log(data);
-                    var that = this;
+                    this.yichangList = [];
+                    var that=this;
                     this.orderStatusList = [{
                         code:'',
                         value:'全部',
@@ -562,6 +564,10 @@
                                 code:item.code,
                                 value:item.value,
                                 count:item.count
+                            })
+                            that.yichangList.push({
+                                value:item.value,
+                                code:item.code
                             })
                         }
                     })
@@ -701,7 +707,7 @@
         // 退款
         returnM(){
             // this.returnMoney  退款金额
-            if(this.returnMoney = ''){
+            if(this.returnMoney == ''){
                 this.$message({
                     message: '请填写退款金额',
                     type: 'warning'
@@ -728,8 +734,9 @@
                             duration: 1000,
                             onClose: () => {
                                 this.getDataList();
-                                this.returnMoney = ''
-                                loading.close()
+                                this.getMyStatusList();
+                                loading.close();
+                                this.returnMVisible = false
                             }
                         })
                         
@@ -741,75 +748,8 @@
             }
             
         },
-        // 获取订单
-        getOrder(){
-            const loading = this.$loading({
-                lock: true,
-                text: 'Loading',
-                spinner: 'el-icon-loading',
-                background: 'rgba(0, 0, 0, 0.7)'
-            });
-            this.$http({
-                url: this.$http.adornUrl('/order/order/getOneselfOrder'),
-                method: 'get',
-                params: this.$http.adornParams()
-            }).then(({data}) => {
-                if (data && data.code === 0) {
-                    this.$message({
-                        message: '操作成功',
-                        type: 'success',
-                        duration: 1000,
-                        onClose: () => {
-                            this.getDataList();
-                            loading.close()
-                        }
-                    })
-                    
-                } else {
-                    this.$message.error(data.msg)
-                    loading.close();
-                }
-            })
-        },
-        // 手工录入订单
-        rluruClick(){
-            // this.luruId  录入订单id
-            const loading = this.$loading({
-                lock: true,
-                text: 'Loading',
-                spinner: 'el-icon-loading',
-                background: 'rgba(0, 0, 0, 0.7)'
-            });
-            this.$http({
-                url: this.$http.adornUrl('/order/order/downloadSingleOrder'),
-                method: 'get',
-                params: this.$http.adornParams({
-                    'amazonOrderId': this.luruId,
-                })
-            }).then(({data}) => {
-                if (data && data.code === 0) {
-                    this.$message({
-                        message: '操作成功',
-                        type: 'success',
-                        duration: 1000,
-                        onClose: () => {
-                            this.getDataList();
-                            this.luruId = ''
-                            loading.close()
-                        }
-                    })
-                    
-                } else {
-                    this.$message.error(data.msg)
-                    loading.close();
-                }
-            })
-        },
         // 标记异常
         biaojiClick(){
-            var orderIds = this.dataListSelections.map(item => {
-                return item.productId
-            })
             if(this.dataListSelections.length == 0){
                 this.$message({
                     message: '请选择一条数据',
@@ -817,14 +757,22 @@
                 });
                 return 
             }
+
             this.yichangVisible = true;
+            this.yichangValue = '';
         },
         // 标记异常确定
         biaojiClickOk(){
             var orderIds = this.dataListSelections.map(item => {
-                return item.productId
+                return item.orderId
             })
-            let label = this.yichangList.find(item => item.dataNumber == this.yichangValue)
+            let label = '';
+            if(this.yichangValue == 'Normal'){
+                label = '正常';
+            }else{
+                label = this.yichangList.find(item => item.code == this.yichangValue).value;
+            }
+            console.log(this.yichangValue);
             this.$confirm('确定标记选中订单状态?', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -852,8 +800,10 @@
                         duration: 1000,
                         onClose: () => {
                             this.getDataList();
-                            this.yichangValue = '';
+                            this.getMyStatusList();
                             loading.close()
+                            this.yichangVisible = false;
+                            
                         }
                     })
                     } else {
@@ -863,7 +813,81 @@
                 })
             }).catch(() => {})
 
-        }
+        },
+        // 获取订单
+        getOrder(){
+            const loading = this.$loading({
+                lock: true,
+                text: 'Loading',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
+            this.$http({
+                url: this.$http.adornUrl('/order/order/getOneselfOrder'),
+                method: 'get',
+                params: this.$http.adornParams()
+            }).then(({data}) => {
+                if (data && data.code === 0) {
+                    this.$message({
+                        message: '操作成功',
+                        type: 'success',
+                        duration: 1000,
+                        onClose: () => {
+                            this.getDataList();
+                            this.getMyStatusList();
+                            loading.close()
+                        }
+                    })
+                    
+                } else {
+                    this.$message.error(data.msg)
+                    loading.close();
+                }
+            })
+        },
+        // 手工录入订单
+        rluruClick(){
+            // this.luruId  录入订单id
+            const loading = this.$loading({
+                lock: true,
+                text: 'Loading',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
+            if(this.luruId != ''){
+                this.$http({
+                    url: this.$http.adornUrl('/order/order/downloadSingleOrder'),
+                    method: 'get',
+                    params: this.$http.adornParams({
+                        'amazonOrderId': this.luruId,
+                    })
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                        this.$message({
+                            message: '操作成功',
+                            type: 'success',
+                            duration: 1000,
+                            onClose: () => {
+                                this.getDataList();
+                                this.getMyStatusList();
+                                
+                                loading.close()
+                            }
+                        })
+                        
+                    } else {
+                        this.$message.error(data.msg)
+                        loading.close();
+                    }
+                })
+            }else{
+                this.$message({
+                    message: '请填写录入ID',
+                    type: 'warning'
+                });
+            }
+            
+        },
       }
   }
 </script>

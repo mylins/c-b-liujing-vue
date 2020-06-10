@@ -382,8 +382,8 @@
                         <span 
                             v-if="scope.row.abnormalStatus"
                             class="el-tag el-tag--medium" 
-                            :style="{'color':color1[states1.indexOf(scope.row.abnormalStatus)],'background':'#fff','border':'1px solid '+color1[states1.indexOf(scope.row.abnormalStatus)]}">
-                            {{ scope.row.abnormalStatus }}</span>
+                            :style="{'color':color1[states1.indexOf(scope.row.abnormalState)],'background':'#fff','border':'1px solid '+color1[states1.indexOf(scope.row.abnormalState)]}">
+                            {{ scope.row.abnormalState }}</span>
                     </template>
                 </el-table-column>
                 
@@ -392,7 +392,7 @@
                 label="操作"
                 width="100">
                     <template slot-scope="scope">
-                        <el-button type="text" icon="" @click="orderId = scope.row.orderId;returnMVisible = true">退款</el-button>
+                        <el-button type="text" icon="" @click="orderId = scope.row.amazonOrderId;returnMVisible = true;returnMoney = ''">退款</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -448,11 +448,12 @@
                 </el-col>
                 <el-col :span="18">
                     <el-select v-model="yichangValue" placeholder="请选择">
+                        <el-option label="正常" value='Normal'></el-option>
                         <el-option
                         v-for="item in yichangList"
-                        :key="item.dataNumber"
-                        :label="item.dataContent"
-                        :value="item.dataNumber">
+                        :key="item.code"
+                        :label="item.value"
+                        :value="item.code">
                         </el-option>
                     </el-select>
                 </el-col>
@@ -569,6 +570,14 @@
             }).then(({data}) => {
                 if (data && data.code === 0) {
                     console.log(data);
+                    this.yichangList = [];
+                    var that=this;
+                    data.abnormalStateList.forEach(function(item){
+                        that.yichangList.push({
+                            value:item.value,
+                            code:item.code
+                        })
+                    })
                     this.orderStatusList = data.orderStateList;
                     this.abnormalStatusList = data.abnormalStateList;
                     this.orderStatusList.unshift({
@@ -714,7 +723,7 @@
         // 退款
         returnM(){
             // this.returnMoney  退款金额
-            if(this.returnMoney = ''){
+            if(this.returnMoney == ''){
                 this.$message({
                     message: '请填写退款金额',
                     type: 'warning'
@@ -727,7 +736,7 @@
                     background: 'rgba(0, 0, 0, 0.7)'
                 });
                 this.$http({
-                    url: this.$http.adornUrl('/product/product/mylist'),
+                    url: this.$http.adornUrl('/order/order/getReturnCost'),
                     method: 'get',
                     params: this.$http.adornParams({
                         'amazonOrderId': this.orderId,
@@ -741,8 +750,9 @@
                             duration: 1000,
                             onClose: () => {
                                 this.getDataList();
-                                this.returnMoney = ''
-                                loading.close()
+                                this.getMyStatusList();
+                                loading.close();
+                                this.returnMVisible = false
                             }
                         })
                         
@@ -756,9 +766,6 @@
         },
         // 标记异常
         biaojiClick(){
-            var orderIds = this.dataListSelections.map(item => {
-                return item.productId
-            })
             if(this.dataListSelections.length == 0){
                 this.$message({
                     message: '请选择一条数据',
@@ -766,14 +773,22 @@
                 });
                 return 
             }
+
             this.yichangVisible = true;
+            this.yichangValue = '';
         },
         // 标记异常确定
         biaojiClickOk(){
             var orderIds = this.dataListSelections.map(item => {
-                return item.productId
+                return item.orderId
             })
-            let label = this.yichangList.find(item => item.dataNumber == this.yichangValue)
+            let label = '';
+            if(this.yichangValue == 'Normal'){
+                label = '正常';
+            }else{
+                label = this.yichangList.find(item => item.code == this.yichangValue).value;
+            }
+            console.log(this.yichangValue);
             this.$confirm('确定标记选中订单状态?', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -801,8 +816,10 @@
                         duration: 1000,
                         onClose: () => {
                             this.getDataList();
-                            this.yichangValue = '';
+                            this.getMyStatusList();
                             loading.close()
+                            this.yichangVisible = false;
+                            
                         }
                     })
                     } else {

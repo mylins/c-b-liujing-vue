@@ -130,8 +130,9 @@
             <el-button type="primary" size="small" @click="changeStats('002','AUDIT_STATE')">待审核</el-button>
             
             <div style="float:right;">
-                <el-button type="primary" icon="el-icon-download" size="small">插件下载</el-button>
-                <el-button type="text">采集手册</el-button>
+                <el-button type="primary" icon="el-icon-download" size="small" @click="downTemplate">插件下载</el-button>
+                <!-- <el-button type="text">采集手册</el-button> -->&nbsp;&nbsp;&nbsp;&nbsp;
+                <el-link href="http://liujing.obs.cn-north-4.myhuaweicloud.com/pdf/b.pdf" target="_blank" type="primary">采集手册</el-link>
             </div>
         </div>
         <!-- 统计 -->
@@ -562,6 +563,7 @@
                 }
             })
         },
+        // 复制产品
         copy(id){
             this.$confirm('确定复制该产品?', {
                 confirmButtonText: '确定',
@@ -598,6 +600,10 @@
                 })
             }).catch(() => {})
         },
+        // 插件下载
+        downTemplate(){
+            window.location.href = this.$http.adornUrl('/product/product/downTemplate?token='+this.$cookie.get("token"))
+        }
 
       }
   }

@@ -26,19 +26,14 @@
                     <el-col :span="18">
                       <el-select v-model="dataForm.type" filterable clearable placeholder="请选择">
                           <el-option
-                            key="1"
-                            label="全部"
-                            value="1">
-                          </el-option>
-                          <el-option
                             key="2"
                             label="服务费"
-                            value="2">
+                            value="服务费">
                           </el-option>
                           <el-option
                             key="3"
                             label="物流费"
-                            value="3">
+                            value="物流费">
                           </el-option>
                         </el-select>
                         
@@ -90,114 +85,113 @@
       </div>
     <!-- 操作 -->
       <div class="divM" style="margin-bottom:10px">
-        <el-button v-if="isAuth('sys:dept:export')" type="primary" icon="el-icon-upload2" size="small" @click="outVisible = true">导出Excel</el-button>
+        <el-button v-if="isAuth('sys:dept:export')" type="primary" icon="el-icon-upload2" size="small" @click="outVisible = true;startDate = '';endDate = '';">导出Excel</el-button>
       </div>
-    <el-table
-      :data="dataList"
-      border
-      v-loading="dataListLoading"
-      @selection-change="selectionChangeHandle"
-      style="width: 100%;">
-            <el-table-column
-					prop="companyRechargeId"
-          header-align="center"
-          align="center"
-					label="编号">
-			</el-table-column>
-			<el-table-column
-					prop="deptName"
-          header-align="center"
-          align="center"
-					label="公司"
-					width="120">
-			</el-table-column>
-			<el-table-column
-					prop="userName"
-          header-align="center"
-          align="center"
-					label="操作人"
-					width="120">
-			</el-table-column>
-			
-			<el-table-column
-					prop="type"
-          header-align="center"
-          align="center"
-					label="类型"
-					width="">
-			</el-table-column>
-            <el-table-column
-					prop="orderId"
-          header-align="center"
-          align="center"
-					label="订单ID"
-					width="120">
-			</el-table-column>
-			
-			<el-table-column
-					prop="money"
-          header-align="center"
-          align="center"
-					label="金额"
-					width="">
-			</el-table-column>
-            <el-table-column
-					prop="abroadWaybill"
-          header-align="center"
-          align="center"
-					label="运单号"
-					width="120">
-			</el-table-column>
-			
-			<el-table-column
-					prop="createTime"
-          header-align="center"
-          align="center"
-					label="创建时间"
-					width="">
-			</el-table-column>
-    </el-table>
-    <el-pagination
-      @size-change="sizeChangeHandle"
-      @current-change="currentChangeHandle"
-      :current-page="pageIndex"
-      :page-sizes="[10, 20, 50, 100]"
-      :page-size="pageSize"
-      :total="totalPage"
-      layout="total, sizes, prev, pager, next, jumper">
-    </el-pagination>
-    <!-- 弹窗, 新增 / 修改 -->
-    <!-- <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update> -->
-    <!-- 导出时间 -->
-    <el-dialog
-      title="充值"
-      :visible.sync="outVisible"
-      width="20%">
-      <div>
+      <el-table
+        :data="dataList"
+        border
+        v-loading="dataListLoading"
+        style="width: 100%;">
+              <el-table-column
+            prop="companyConsumeId"
+            header-align="center"
+            align="center"
+            label="编号">
+        </el-table-column>
+        <el-table-column
+            prop="deptName"
+            header-align="center"
+            align="center"
+            label="公司"
+            width="120">
+        </el-table-column>
+        <el-table-column
+            prop="userName"
+            header-align="center"
+            align="center"
+            label="操作人"
+            width="120">
+        </el-table-column>
+        
+        <el-table-column
+            prop="type"
+            header-align="center"
+            align="center"
+            label="类型"
+            width="">
+        </el-table-column>
+              <el-table-column
+            prop="orderId"
+            header-align="center"
+            align="center"
+            label="订单ID"
+            width="120">
+        </el-table-column>
+        
+        <el-table-column
+            prop="money"
+            header-align="center"
+            align="center"
+            label="金额"
+            width="">
+        </el-table-column>
+              <el-table-column
+            prop="abroadWaybill"
+            header-align="center"
+            align="center"
+            label="运单号"
+            width="120">
+        </el-table-column>
+        
+        <el-table-column
+            prop="createTime"
+            header-align="center"
+            align="center"
+            label="创建时间"
+            width="">
+        </el-table-column>
+      </el-table>
+      <el-pagination
+        @size-change="sizeChangeHandle"
+        @current-change="currentChangeHandle"
+        :current-page="pageIndex"
+        :page-sizes="[10, 20, 50, 100]"
+        :page-size="pageSize"
+        :total="totalPage"
+        layout="total, sizes, prev, pager, next, jumper">
+      </el-pagination>
+      <!-- 弹窗, 新增 / 修改 -->
+      <!-- <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update> -->
+      <!-- 导出时间 -->
+      <el-dialog
+        title="充值"
+        :visible.sync="outVisible"
+        width="20%">
         <div>
-          <label style="display:inline-block;margin:10px 0 10px 0;font-weight:600">开始时间</label>
-          <el-date-picker
-            v-model="startDate"
-            value-format="yyyy-MM-dd"
-            type="date"
-            placeholder="选择日期">
-          </el-date-picker>
+          <div>
+            <label style="display:inline-block;margin:10px 0 10px 0;font-weight:600">开始时间</label>
+            <el-date-picker
+              v-model="startDate"
+              value-format="yyyy-MM-dd"
+              type="date"
+              placeholder="选择日期">
+            </el-date-picker>
+          </div>
+          <div>
+            <label style="display:inline-block;margin:20px 0 10px 0;font-weight:600">结束时间</label>
+            <el-date-picker
+              v-model="endDate"
+              value-format="yyyy-MM-dd"
+              type="date"
+              placeholder="选择日期">
+            </el-date-picker>
+          </div>
         </div>
-        <div>
-          <label style="display:inline-block;margin:20px 0 10px 0;font-weight:600">结束时间</label>
-          <el-date-picker
-            v-model="endDate"
-            value-format="yyyy-MM-dd"
-            type="date"
-            placeholder="选择日期">
-          </el-date-picker>
-        </div>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="outVisible = false">取 消</el-button>
-        <el-button type="primary" @click="outExcel">导 出</el-button>
-      </span>
-    </el-dialog>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="outVisible = false">取 消</el-button>
+          <el-button type="primary" @click="outExcel">导 出</el-button>
+        </span>
+      </el-dialog>
   </div>
 </template>
 
@@ -228,7 +222,7 @@
     },
     components: {
     },
-    activated () {
+    created () {
       
       console.log(this.$route.params.deptId)
       this.dataForm.deptId = this.$route.params.deptId
@@ -262,17 +256,13 @@
           this.dataListLoading = false
         })
       },
-    //   导出
-    outExcel(){
-
-    },
       // 重置
       clean(){
         this.dataForm = {
-          userName: '',
-          displayName:'',
-          deptId:null,
-          groupId:null
+          type: '',
+          orderId:'',
+          groupId:'',
+          userId:''
         }
       },
       // 获取小组下拉
@@ -334,91 +324,13 @@
         this.pageIndex = val
         this.getDataList()
       },
-      // 多选
-      selectionChangeHandle (val) {
-        this.dataListSelections = val
+      // 导出
+      outExcel(){
+        window.location.href = this.$http.adornUrl('/sys/companyconsume/export?deptId='+this.deptId+'&startDate='+this.startDate+'&endDate='+this.endDate+'&token='+this.$cookie.get("token"))
+      
+        this.outVisible = false;
+        
       },
-      // 新增 / 修改
-      addOrUpdateHandle (id) {
-        this.addOrUpdateVisible = true
-        this.$nextTick(() => {
-          this.$refs.addOrUpdate.init(id)
-        })
-      },
-      // 删除
-      deleteHandle (id) {
-        var userIds = id ? [id] : this.dataListSelections.map(item => {
-          return item.userId
-        })
-        this.$confirm(`确定对[id=${userIds.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          const loading = this.$loading({
-              lock: true,
-              text: 'Loading',
-              spinner: 'el-icon-loading',
-              background: 'rgba(0, 0, 0, 0.7)'
-            });
-          this.$http({
-            url: this.$http.adornUrl('/sys/user/delete'),
-            method: 'post',
-            data: this.$http.adornData(userIds, false)
-          }).then(({data}) => {
-            if (data && data.code === 0) {
-              this.$message({
-                message: '操作成功',
-                type: 'success',
-                duration: 1500,
-                onClose: () => {
-                  this.getDataList()
-                  loading.close()
-                }
-              })
-            } else {
-              this.$message.error(data.msg)
-            }
-          })
-        }).catch(() => {})
-      },
-      // 重置密码
-      resetPassword(){
-        var userIds = this.dataListSelections.map(item => {
-          return item.userId
-        })
-        this.$confirm(`确定对[id=${userIds.join(',')}]进行['重置密码']操作?`, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          const loading = this.$loading({
-              lock: true,
-              text: 'Loading',
-              spinner: 'el-icon-loading',
-              background: 'rgba(0, 0, 0, 0.7)'
-            });
-          this.$http({
-            url: this.$http.adornUrl('/sys/user/resetPassword'),
-            method: 'post',
-            data: this.$http.adornData(userIds, false)
-          }).then(({data}) => {
-            if (data && data.code === 0) {
-              this.$message({
-                message: '操作成功',
-                type: 'success',
-                duration: 1000,
-                onClose: () => {
-                  this.getDataList()
-                  loading.close();
-                }
-              })
-            } else {
-              this.$message.error(data.msg)
-            }
-          })
-        }).catch(() => {})
-      }
     }
   }
 </script>

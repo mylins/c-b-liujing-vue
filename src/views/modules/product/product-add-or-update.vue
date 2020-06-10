@@ -260,6 +260,7 @@
                         <el-input
                         type="textarea"
                         placeholder="请输入内容"
+                        :rows="4"
                         v-model="dataForm.introductionList[0].keyPoints"
                         show-word-limit></el-input>
                     </div>
@@ -272,6 +273,7 @@
                     <div>
                         <el-input
                         type="textarea"
+                        :rows="4"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[0].productDescription"
                         show-word-limit></el-input>
@@ -321,6 +323,7 @@
                             <el-input
                             type="textarea"
                             placeholder="请输入内容"
+                            :rows="4"
                             v-model="dataForm.introductionList[1].keyPoints"
                             maxlength="500"
                             show-word-limit></el-input>
@@ -337,6 +340,7 @@
                             <el-input
                             type="textarea"
                             placeholder="请输入内容"
+                            :rows="4"
                             v-model="dataForm.introductionList[1].productDescription"
                             maxlength="2000"
                             show-word-limit></el-input>
@@ -386,6 +390,7 @@
                             placeholder="请输入内容"
                             v-model="dataForm.introductionList[2].keyPoints"
                             maxlength="500"
+                            :rows="4"
                             show-word-limit></el-input>
                         </el-form-item>
                     </div>
@@ -401,6 +406,7 @@
                             placeholder="请输入内容"
                             v-model="dataForm.introductionList[2].productDescription"
                             maxlength="2000"
+                            :rows="4"
                             show-word-limit></el-input>
                         </el-form-item>
                     </div>
@@ -446,6 +452,7 @@
                             <el-input
                             type="textarea"
                             placeholder="请输入内容"
+                            :rows="4"
                             v-model="dataForm.introductionList[3].keyPoints"
                             maxlength="500"
                             show-word-limit></el-input>
@@ -461,6 +468,7 @@
                             <el-input
                             type="textarea"
                             placeholder="请输入内容"
+                            :rows="4"
                             v-model="dataForm.introductionList[3].productDescription"
                             maxlength="2000"
                             show-word-limit></el-input>
@@ -510,6 +518,7 @@
                             placeholder="请输入内容"
                             v-model="dataForm.introductionList[4].keyPoints"
                             maxlength="500"
+                            :rows="4"
                             show-word-limit></el-input>
                         </el-form-item>
                     </div>
@@ -525,6 +534,7 @@
                             placeholder="请输入内容"
                             v-model="dataForm.introductionList[4].productDescription"
                             maxlength="2000"
+                            :rows="4"
                             show-word-limit></el-input>
                         </el-form-item>
                     </div>
@@ -572,6 +582,7 @@
                             placeholder="请输入内容"
                             v-model="dataForm.introductionList[5].keyPoints"
                             maxlength="500"
+                            :rows="4"
                             show-word-limit></el-input>
                         </el-form-item>
                     </div>
@@ -587,6 +598,7 @@
                             placeholder="请输入内容"
                             v-model="dataForm.introductionList[5].productDescription"
                             maxlength="2000"
+                            :rows="4"
                             show-word-limit></el-input>
                         </el-form-item>
                     </div>
@@ -634,6 +646,7 @@
                             placeholder="请输入内容"
                             v-model="dataForm.introductionList[6].keyPoints"
                             maxlength="500"
+                            :rows="4"
                             show-word-limit></el-input>
                          </el-form-item>
                     </div>
@@ -649,6 +662,7 @@
                             placeholder="请输入内容"
                             v-model="dataForm.introductionList[6].productDescription"
                             maxlength="2000"
+                            :rows="4"
                             show-word-limit></el-input>
                         </el-form-item>
                     </div>
@@ -1238,6 +1252,8 @@
                 this.imgList = this.dataForm.imageList.map((item) => {
                     return item.imageUrl
                 })
+                this.dataForm.categoryId = [this.dataForm.categoryId];
+                console.log(this.dataForm.categoryId);
                 // console.log(this.imgList)
               }else{
                   this.$message.error(data.msg)
@@ -1282,16 +1298,13 @@
         },
         productCategorChange(val){
             console.log(val);
-            if(val.length != 0){
+            if(val.length == 3){
                 var arr = this.$refs['aaa'].getCheckedNodes()[0].pathLabels;
                 var arr1 = arr.map((item) => {
                     return item.split('(')[0]
                 })
                 this.dataForm.categoryName = arr1.join('/');
-                this.categoryIds = val;
-            }else{
-                this.dataForm.categoryName = '';
-                this.categoryIds = val;
+                // this.categoryIds = val;
             }
             
         },
@@ -1299,7 +1312,7 @@
       dataFormSubmit () {
         this.$refs['dataForm'].validate((valid,pro) => {
           if (valid) {
-            this.dataForm.categoryId = this.categoryIds[this.categoryIds.length-1]
+            this.dataForm.categoryId = this.dataForm.categoryId[this.dataForm.categoryId.length-1]
             const loading = this.$loading({
               lock: true,
               text: 'Loading',
@@ -1349,7 +1362,7 @@
       getcostFreight(str){
           this.$refs['dataForm'].validateField(str,(valid) => {
               if(!valid){
-                  this.dataForm.categoryId = this.categoryIds[this.categoryIds.length-1]
+                  this.dataForm.categoryId = this.dataForm.categoryId[this.dataForm.categoryId.length-1]
                   const loading = this.$loading({
                     lock: true,
                     text: 'Loading',
@@ -1364,14 +1377,7 @@
                     loading.close();
                     if (data && data.code === 0) {
                         console.log(data);
-                        this.$message({
-                            message: '操作成功',
-                            type: 'success',
-                            duration: 1000,
-                            onClose: () => {
-                                this.dataForm.freightCostList = data.freightCostList
-                            }
-                        })
+                        this.dataForm.freightCostList = data.freightCostList
                         
                     } else {
                         this.$message.error(data.msg)
@@ -1398,16 +1404,9 @@
             }).then(({data}) => {
                 loading.close();
                 if (data && data.code === 0) {
-                    this.$message({
-                        message: '操作成功',
-                        type: 'success',
-                        duration: 1000,
-                        onClose: () => {
-                            row.finalPrice = data.freightCost.finalPrice;
-                            row.profit = data.freightCost.profit;
-                            row.profitRate =data.freightCost.profitRate;
-                        }
-                    })
+                    row.finalPrice = data.freightCost.finalPrice;
+                    row.profit = data.freightCost.profit;
+                    row.profitRate =data.freightCost.profitRate;
                     
                 } else {
                     this.$message.error(data.msg)

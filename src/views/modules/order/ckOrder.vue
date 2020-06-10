@@ -156,20 +156,20 @@
                 width="100">
                 </el-table-column>
                 <el-table-column
-                prop="domesticWaybill"
+                prop=""
                 label="国内物流单号"
-                width="150">
+                width="">
                     <template slot-scope="scope">
-                        <div v-for="item in scope.domesticWaybill" :key="item.domesticLogisticsId">
+                        <div v-for="item in scope.row.domesticWaybillList" :key="item.domesticLogisticsId">
                             <span>{{item.waybill}}</span>
-                            <el-button type="text" icon="" @click="rukuClick1(scope.row.domesticLogisticsId)">入库</el-button>
+                            <el-button type="text" icon="" @click="rukuClick1(item.domesticLogisticsId)">入库</el-button>
                         </div>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop="abroadWaybill"
                 label="国际物流单号"
-                width="150">
+                width="">
                     <template slot-scope="scope">
                         <div v-for="item in scope.abroadWaybill" :key="item.abroadLogisticsId">
                             <span>{{item.abroadWaybill}}</span>
@@ -553,37 +553,44 @@
         },
         // 入库
         rukuClick(id){
-            const loading = this.$loading({
-                lock: true,
-                text: 'Loading',
-                spinner: 'el-icon-loading',
-                background: 'rgba(0, 0, 0, 0.7)'
-            });
-            this.$http({
-                url: this.$http.adornUrl('/order/order/allruku'),
-                method: 'get',
-                params: this.$http.adornParams({
-                    'orderId': id
-                })
-            }).then(({data}) => {
-                if (data && data.code === 0) {
-                    this.$message({
-                        message: '操作成功',
-                        type: 'success',
-                        duration: 1000,
-                        onClose: () => {
-                            this.getDataList();
-                            loading.close()
-                        }
+            this.$confirm('该订单确定入库?', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+                this.$http({
+                    url: this.$http.adornUrl('/order/order/allruku'),
+                    method: 'get',
+                    params: this.$http.adornParams({
+                        'orderId': id
                     })
-                } else {
-                    this.$message.error(data.msg)
-                    loading.close()
-                }
-            })
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                        this.$message({
+                            message: '操作成功',
+                            type: 'success',
+                            duration: 1000,
+                            onClose: () => {
+                                this.getDataList();
+                                loading.close()
+                            }
+                        })
+                    } else {
+                        this.$message.error(data.msg)
+                        loading.close()
+                    }
+                })
+            }).catch(() => {})
+            
         },
         // 物流入库
-        rukuClick(id){
+        rukuClick1(id){
             const loading = this.$loading({
                 lock: true,
                 text: 'Loading',
@@ -615,34 +622,41 @@
         },
         // 出库
         chukuClick(id){
-            const loading = this.$loading({
-                lock: true,
-                text: 'Loading',
-                spinner: 'el-icon-loading',
-                background: 'rgba(0, 0, 0, 0.7)'
-            });
-            this.$http({
-                url: this.$http.adornUrl('/order/order/listchuku'),
-                method: 'get',
-                params: this.$http.adornParams({
-                    'orderId': id
-                })
-            }).then(({data}) => {
-                if (data && data.code === 0) {
-                    this.$message({
-                        message: '操作成功',
-                        type: 'success',
-                        duration: 1000,
-                        onClose: () => {
-                            this.getDataList();
-                            loading.close()
-                        }
+            this.$confirm('该订单确定出库?', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                    const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+                this.$http({
+                    url: this.$http.adornUrl('/order/order/listchuku'),
+                    method: 'get',
+                    params: this.$http.adornParams({
+                        'orderId': id
                     })
-                } else {
-                    this.$message.error(data.msg)
-                    loading.close()
-                }
-            })
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                        this.$message({
+                            message: '操作成功',
+                            type: 'success',
+                            duration: 1000,
+                            onClose: () => {
+                                this.getDataList();
+                                loading.close()
+                            }
+                        })
+                    } else {
+                        this.$message.error(data.msg)
+                        loading.close()
+                    }
+                })
+            }).catch(() => {})
+            
         }
       }
   }
