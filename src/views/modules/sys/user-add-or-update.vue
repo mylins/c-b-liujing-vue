@@ -126,6 +126,7 @@
   import PageH from '../../common/pageH'
   export default {
     data () {
+
       var validatePassword = (rule, value, callback) => {
         var reg = /^(?![0-9\x21-\x2f\x3a-\x40\x5b-\x60\x7B-\x7F]+$)(?![0-9]+$)(?![0-90-9A-Za-z]+$)(?![\x21-\x2f\x3a-\x40\x5b-\x60\x7B-\x7F]+$)(?![A-Za-z]+$)(?![a-zA-Z\x21-\x2f\x3a-\x40\x5b-\x60\x7B-\x7F]+$)[0-9A-Za-z\x21-\x2f\x3a-\x40\x5b-\x60\x7B-\x7F]{8,}$/;
         var reg1 = /^[\x21-\x2f\x3a-\x40\x5b-\x60\x7B-\x7F]/;
@@ -166,6 +167,25 @@
           callback()
         }
       }
+      var nameR = (rule, value, callback) => {
+        if(this.dataForm.deptId){
+          callback()
+        }else{
+          this.$http({
+            url: this.$http.adornUrl('/sys/user/check'),
+            method: 'get',
+            params: this.$http.adornParams({
+              'username':value
+            })
+          }).then(({data}) => {
+            if (data.code == 0) {
+              callback()
+            } else {
+              callback(new Error('该名称已被使用'))
+            }
+          })
+        }
+      }
       return {
         visible: false,
         roleList: [],
@@ -183,12 +203,14 @@
           status: 1,
           information:{},
           enName:'',
-          enBrand:''
+          enBrand:'',
+          orderFetch:1
         },
         dataRule: {
           username: [
             { required: true, message: '账号不能为空', trigger: 'blur' },
-            { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' }
+            { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' },
+            { validator: nameR, trigger: 'blur' }
           ],
           password: [
             { required: true, message: '密码不能为空', trigger: 'blur' },
@@ -256,11 +278,18 @@
           })
         }).then(() => {
           if (this.dataForm.userId) {
+            const loading = this.$loading({
+              lock: true,
+              text: 'Loading',
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0.7)'
+            });
             this.$http({
               url: this.$http.adornUrl(`/sys/user/info/${this.dataForm.userId}`),
               method: 'get',
               params: this.$http.adornParams()
             }).then(({data}) => {
+              loading.close();
               if (data && data.code === 0) {
                 this.dataForm.deptId = data.user.deptId;
                 this.dataForm.deptName = data.user.deptName;
@@ -278,6 +307,8 @@
                 this.dataForm.mobile = data.user.mobile;
                 this.dataForm.aliexpress = data.user.aliexpress;
                 this.dataForm.orderFetch =data.user.orderFetch;
+              }else{
+                this.$message.error(data.msg)
               }
             })
           }

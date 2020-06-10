@@ -88,10 +88,10 @@
             收款网址
         </div>
         <div>
-            <a target="_blank" href="https://global.lianlianpay.com/register?invitecode=3BYUG5">连连跨境支付</a>
-            <a target="_blank" href="https://www.payoneer.com/zh/">P卡</a>
+            <a target="_blank" href="">连连跨境支付</a>
+            <a target="_blank" href="">P卡</a>
             <a target="_blank"
-               href="https://us.pingpongx.com/external/inviteReg.htm?inviteCode=Fv6bMj202">PingPong</a>
+               href="">PingPong</a>
         </div>
     </div>
 

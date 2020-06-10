@@ -64,20 +64,32 @@
           method: 'get',
           params: this.$http.adornParams()
         }).then(({data}) => {
+          if(data && data.code === 0){
+            this.userList = data.userList;
+          }else{
+            this.$message.error(data.msg)
+          }
           this.userList = data && data.code === 0 ? data.userList : []
         }).then(() => {
           this.visible = true
           this.$nextTick(() => {
+            this.userListS = [];
             this.$refs['dataForm'].resetFields();
-            
           })
         }).then(() => {
           if (this.dataForm.groupId) {
+            const loading = this.$loading({
+              lock: true,
+              text: 'Loading',
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0.7)'
+            });
             this.$http({
               url: this.$http.adornUrl(`/sys/sysgroup/info/${this.dataForm.groupId}`),
               method: 'get',
               params: this.$http.adornParams()
             }).then(({data}) => {
+              loading.close();
               if (data && data.code === 0) {
                 this.dataForm = data.sysGroup;
                 this.userList = this.userList.concat(this.dataForm.userList)
@@ -86,6 +98,8 @@
                 this.dataForm.userList.forEach(function(item){
                   that.userListS.push(item.userId);
                 })
+              }else{
+                this.$message.error(data.msg)
               }
             })
           }else{

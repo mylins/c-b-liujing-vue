@@ -128,6 +128,12 @@
     methods: {
       init (id) {
         this.dataForm.id = id || 0
+        const loading = this.$loading({
+          lock: true,
+          text: 'Loading',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
         this.$http({
           url: this.$http.adornUrl('/sys/menu/select'),
           method: 'get',
@@ -141,6 +147,7 @@
           })
         }).then(() => {
           if (!this.dataForm.id) {
+            loading.close();
             // 新增
             this.menuListTreeSetCurrentNode()
           } else {
@@ -150,6 +157,7 @@
               method: 'get',
               params: this.$http.adornParams()
             }).then(({data}) => {
+              loading.close();
               this.dataForm.id = data.menu.menuId
               this.dataForm.type = data.menu.type
               this.dataForm.name = data.menu.name
@@ -181,6 +189,12 @@
       dataFormSubmit () {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
+            const loading = this.$loading({
+              lock: true,
+              text: 'Loading',
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0.7)'
+            });
             this.$http({
               url: this.$http.adornUrl(`/sys/menu/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
@@ -195,6 +209,7 @@
                 'icon': this.dataForm.icon
               })
             }).then(({data}) => {
+              loading.close();
               if (data && data.code === 0) {
                 this.$message({
                   message: '操作成功',

@@ -142,7 +142,14 @@
                     </el-row>
                 </el-col>
                 
-                <el-col :span="6">
+                
+                <el-col v-if="$store.state.dept.user.type == 2" :span="24">
+                    <span style="float:right">
+                        <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList">查询</el-button>
+                        <el-button type="" icon="el-icon-refresh" size="medium" @click="clean">重置</el-button>
+                    </span>
+                </el-col>
+                <el-col v-else :span="6">
                     <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList">查询</el-button>
                     <el-button type="" icon="el-icon-refresh" size="medium" @click="clean">重置</el-button>
                 </el-col>

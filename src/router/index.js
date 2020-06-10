@@ -40,7 +40,7 @@ const mainRoutes = {
     { path: '/xiaof', component: _import('modules/sys/xiaof'), name: 'xiaof', meta: { title: '消费记录', isTab: true } },
     { path: '/deptAddUpdate', component: _import('modules/sys/dept-add-or-update'), name: 'deptAddUpdate', meta: { title: '公司表单', isTab: true } },
     { path: '/userAddUpdate', component: _import('modules/sys/user-add-or-update'), name: 'userAddUpdate', meta: { title: '用户表单', isTab: true } },
-    { path: '/productAddUpdate', component: _import('modules/product/product-add-or-update'), name: 'productAddUpdate', meta: { title: '产品表单', isTab: true } },
+    { path: '/productAddUpdate', component: _import('modules/product/product-add-or-update'), name: 'productAddUpdate', meta: { title: '产品新建', isTab: true } },
     { path: '/productLook', component: _import('modules/product/product-look'), name: 'productLook', meta: { title: '产品详情', isTab: true } },
     { path: '/uploadAddUpdate', component: _import('modules/upload/upload-add-or-update'), name: 'uploadAddUpdate', meta: { title: '上传表单', isTab: true } },
     { path: '/orderAddUpdate', component: _import('modules/order/order-update'), name: 'orderAddUpdate', meta: { title: '订单表单', isTab: true } },

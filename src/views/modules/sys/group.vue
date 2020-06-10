@@ -3,38 +3,7 @@
     <!-- 搜索 -->
       <div>
         <el-row :gutter="20">
-            <!-- <el-col :span="6">
-                <el-row>
-                    <el-col :span="6">
-                        <label class="labelSS">用户姓名：</label>
-                    </el-col>
-                    <el-col :span="18">
-                        <el-input
-                            size="medium"
-                            placeholder="请输入用户姓名"
-                            v-model="dataForm.displayName"
-                            clearable>
-                        </el-input>
-                    </el-col>
-                </el-row>
-            </el-col> -->
-            <!-- <el-col :span="6">
-                <el-row>
-                    <el-col :span="6">
-                        <label class="labelSS">账户名称：</label>
-                    </el-col>
-                    <el-col :span="18">
-                      <el-input
-                            size="medium"
-                            placeholder="请输入账户名称"
-                            v-model="dataForm.username"
-                            clearable>
-                        </el-input>
-                        
-                    </el-col>
-                </el-row>
-            </el-col> -->
-            <el-col :span="6">
+            <el-col :span="6" v-if="$store.state.dept.user.type != 2">
                 <el-row>
                     <el-col :span="6">
                         <label class="labelSS">公司名称：</label>
@@ -119,7 +88,7 @@
 					prop="deptId"
           header-align="center"
           align="center"
-					label="所属公司"
+					label="所属公司ID"
 					width="120">
 			</el-table-column>
 			<el-table-column
@@ -184,7 +153,10 @@
     components: {
       AddOrUpdate
     },
-    activated () {
+    created () {
+      if(this.$store.state.dept.user.type == 2){
+        this.dataForm.deptId = this.$store.state.dept.user.deptId;
+      }
       this.getDataList()
     },
     methods: {

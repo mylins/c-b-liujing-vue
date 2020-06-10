@@ -87,12 +87,14 @@
           </el-form-item> -->
         </div>
         
-        <div class="blockDivForm" v-if="this.dataForm.deptId">
+        <div class="blockDivForm">
           <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;金额信息</h3>
-          <!-- <el-form-item label="最低物流限额" prop="limitMoney">
-            <el-button v-if="this.dataForm.limitMoney" type="text">{{dataForm.balance}}</el-button>
-            <el-input v-else v-model="dataForm.limitMoney" placeholder="最低物流限额"></el-input>
-          </el-form-item> -->
+          <el-form-item label="平台佣金点数" prop="companyPoints">
+            <el-input v-model="dataForm.companyPoints" placeholder="平台佣金点数"></el-input>
+          </el-form-item>
+          <el-form-item label="最低物流限额" prop="limitMoney">
+            <el-input v-model="dataForm.limitMoney" placeholder="最低物流限额"></el-input>
+          </el-form-item>
           <el-form-item v-if="this.dataForm.deptId" label="余额" prop="">
             <span class="decVal">{{dataForm.balance}}</span>
           </el-form-item>
@@ -114,19 +116,24 @@
     // props:['comList','dataList'],
     data () {
       var nameR = (rule, value, callback) => {
-        this.$http({
-          url: this.$http.adornUrl('/sys/dept/check'),
-          method: 'get',
-          params: this.$http.adornParams({
-            'name':value
+        if(this.dataForm.deptId){
+          callback()
+        }else{
+          this.$http({
+            url: this.$http.adornUrl('/sys/dept/check'),
+            method: 'get',
+            params: this.$http.adornParams({
+              'name':value
+            })
+          }).then(({data}) => {
+            if (data.code == 0) {
+              callback()
+            } else {
+              callback(new Error('该名称已被使用'))
+            }
           })
-        }).then(({data}) => {
-          if (data.code == 0) {
-            callback()
-          } else {
-            callback(new Error('该名称已被使用'))
-          }
-        })
+        }
+        
         
       }
       return {
@@ -224,11 +231,18 @@
         this.dataForm.deptId = id || 0
         this.visible = true
         if (this.dataForm.deptId) {
+          const loading = this.$loading({
+            lock: true,
+            text: 'Loading',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          });
           this.$http({
             url: this.$http.adornUrl(`/sys/dept/info/${this.dataForm.deptId}`),
             method: 'get',
             params: this.$http.adornParams()
           }).then(({data}) => {
+            loading.close();
             if (data && data.code === 0) {
               console.log(data);
               this.dataForm = data.sysDept
@@ -237,10 +251,13 @@
               // this.dataForm.dataShareList.forEach(function(item){
               //   that.deptList.push(item.deptId)
               // })
+            }else{
+              this.$message.error(data.msg)
             }
           })
         }else{
           this.$nextTick(() => {
+            this.$refs['dataForm'].resetFields()
             this.dataForm = {
               accountCount: 0,
               balance: 0,

@@ -39,10 +39,9 @@ const dept = {
               commit('updateComList', data.deptList)
               // this.totalPage = data.page.totalCount
             } else {
-              this.$notify.error({
-                  title: '错误',
-                  message: data.msg
-              });
+              if(data.code != 401){
+                alert(data.msg)
+              }
             }
           })
       })
@@ -58,10 +57,9 @@ const dept = {
             if (data.code == 0) {
               commit('updateAreaList', data.deptList)
             } else {
-              this.$notify.error({
-                  title: '错误',
-                  message: data.msg
-              });
+              if(data.code != 401){
+                alert(data.msg)
+              }
             }
           })
       })
@@ -95,10 +93,10 @@ const dept = {
               commit('updateUser', obj)
               // this.totalPage = data.page.totalCount
             } else {
-              this.$notify.error({
-                  title: '错误',
-                  message: data.msg
-              });
+              if(data.code != 401){
+                alert(data.msg)
+              }
+              
             }
           })
       })

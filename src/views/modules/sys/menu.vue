@@ -10,6 +10,7 @@
       :data="dataList"
       row-key="menuId"
       border
+      v-loading="dataListLoading"
       style="width: 100%; ">
       <el-table-column
         prop="name"

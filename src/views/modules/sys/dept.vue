@@ -49,31 +49,32 @@
         </el-row>
       </div>
     <!-- 操作 -->
-      <div class="divM">
-        <open-tab type="primary" icon="el-icon-plus" v-if="isAuth('sys:user:save')" dec='新增' urlName='deptAddUpdate' :opt='{"deptId":null}'></open-tab>
+      <div class="divM" style="margin-bottom:10px">
+        <template v-if="$store.state.dept.user.type != 2">
+          <open-tab type="primary" icon="el-icon-plus" v-if="isAuth('sys:user:save')" dec='新增' urlName='deptAddUpdate' :opt='{"deptId":null}'></open-tab>
+        </template>
         <el-button v-if="$store.state.dept.user.type == 0" type="primary" icon="el-icon-setting" size="small" @click="getDept">设置公司参数</el-button>
         
       </div>
     <!-- 统计 -->
-      <div class="statics divM">
+      <!-- <div class="statics divM">
           <div class="left">
               <i class="el-icon-info" style="color:#409EFF"></i>&nbsp;&nbsp;已选择&nbsp;<a style="font-weight: 600">{{ dataListSelections.length }}</a>&nbsp;项&nbsp;&nbsp;
           </div>
-      </div>
+      </div> -->
 
       <el-table
         :data="dataList"
         border
         row-key="deptId"
         v-loading="dataListLoading"
-        @selection-change="selectionChangeHandle"
         style="width: 100%;">
-        <el-table-column
+        <!-- <el-table-column
           type="selection"
           header-align="center"
           align="center"
-          width="50">
-        </el-table-column>
+          width="50"> @selection-change="selectionChangeHandle"
+        </el-table-column> -->
         <el-table-column
           prop="name"
           header-align="center"
@@ -414,7 +415,7 @@
             console.log(this.dataList);
             // this.totalPage = data.page.totalCount
           } else {
-            that.$message.error(data.msg)
+            this.$message.error(data.msg)
           }
           this.dataListLoading = false
         })
@@ -566,12 +567,12 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-            const loading = this.$loading({
-              lock: true,
-              text: 'Loading',
-              spinner: 'el-icon-loading',
-              background: 'rgba(0, 0, 0, 0.7)'
-            });
+          const loading = this.$loading({
+            lock: true,
+            text: 'Loading',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          });
           that.$http({
             url: that.$http.adornUrl('/sys/dept/delete'),
             method: 'get',
@@ -637,7 +638,6 @@
             }).then(({data}) => {
               loading.close();
               if (data && data.code === 0) {
-                loading.close();
                 this.$message({
                   message: '操作成功',
                   type: 'success',

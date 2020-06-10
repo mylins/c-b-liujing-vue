@@ -162,7 +162,7 @@
                     <template slot-scope="scope">
                         <div v-for="item in scope.domesticWaybill" :key="item.domesticLogisticsId">
                             <span>{{item.waybill}}</span>
-                            <el-button type="text" icon="" @click="rukuClick1(scope.row.orderId)">入库</el-button>
+                            <el-button type="text" icon="" @click="rukuClick1(scope.row.domesticLogisticsId)">入库</el-button>
                         </div>
                     </template>
                 </el-table-column>
@@ -579,6 +579,37 @@
                 } else {
                     this.$message.error(data.msg)
                     loading.close()
+                }
+            })
+        },
+        // 物流入库
+        rukuClick(id){
+            const loading = this.$loading({
+                lock: true,
+                text: 'Loading',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
+            this.$http({
+                url: this.$http.adornUrl('/order/order/singleruku'),
+                method: 'get',
+                params: this.$http.adornParams({
+                    'domesticLogisticsId': id
+                })
+            }).then(({data}) => {
+                loading.close()
+                if (data && data.code === 0) {
+                    this.$message({
+                        message: '操作成功',
+                        type: 'success',
+                        duration: 1000,
+                        onClose: () => {
+                            this.getDataList();
+                            
+                        }
+                    })
+                } else {
+                    this.$message.error(data.msg)
                 }
             })
         },

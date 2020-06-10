@@ -152,11 +152,18 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
+          const loading = this.$loading({
+            lock: true,
+            text: 'Loading',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          });
           this.$http({
             url: this.$http.adornUrl('/sys/role/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {
+            loading.close();
             if (data && data.code === 0) {
               this.$message({
                 message: '操作成功',

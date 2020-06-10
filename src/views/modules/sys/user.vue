@@ -34,7 +34,7 @@
                     </el-col>
                 </el-row>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="6" v-if="$store.state.dept.user.type != 2">
                 <el-row>
                     <el-col :span="6">
                         <label class="labelSS">公司名称：</label>
@@ -199,7 +199,10 @@
     components: {
       AddOrUpdate,OpenTab
     },
-    activated () {
+    created () {
+      if(this.$store.state.dept.user.type == 2){
+        this.dataForm.deptId = this.$store.state.dept.user.deptId;
+      }
       this.getDataList()
     },
     methods: {
