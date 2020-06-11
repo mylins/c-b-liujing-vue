@@ -39,7 +39,7 @@
           </el-form-item>
           <br>
           <el-form-item label="产品分类" prop="categoryId">
-            <el-cascader ref="aaa" v-model="dataForm.categoryId" :options="options" :props="props" clearable @change="productCategorChange" @visible-change="visibleChange"></el-cascader>
+            <el-cascader ref="aaa" v-model="categoryIds" :options="options" :props="props" clearable @change="productCategorChange" @visible-change="visibleChange"></el-cascader>
             <br>
             <span class="decVal">{{dataForm.categoryName}}</span>
           </el-form-item>
@@ -694,7 +694,7 @@
             </div>
             
             <el-table
-                class="freTable"
+                class="freTable tableVi"
                 :data="dataForm.variantsInfoList"
                 style="width: 90%;margin-left:5%;margin-top:16px">
                 <el-table-column
@@ -712,33 +712,33 @@
                 <el-table-column
                     prop=""
                     label="SKU修正"
-                    width="160">
+                    width="120">
                     <template slot-scope="scope">
-                        <el-input placeholder="请输入内容" size="small" v-model="scope.row.variantSku" clearable></el-input>
+                        <el-input placeholder="请输入" size="small" v-model="scope.row.variantSku"></el-input>
                     </template>
                 </el-table-column>
                 <el-table-column
                     prop=""
                     label="加价（¥）"
-                    width="100">
+                    width="90">
                     <template slot-scope="scope">
-                        <el-input placeholder="请输入内容" size="small" v-model="scope.row.variantAddPrice" clearable></el-input>
+                        <el-input placeholder="请输入" size="small" v-model="scope.row.variantAddPrice"></el-input>
                     </template>
                 </el-table-column>
                 <el-table-column
                     prop=""
                     label="库存"
-                    width="100">
+                    width="80">
                     <template slot-scope="scope">
-                        <el-input placeholder="请输入内容" size="small" v-model="scope.row.variantStock" clearable></el-input>
+                        <el-input placeholder="请输入" size="small" v-model="scope.row.variantStock"></el-input>
                     </template>
                 </el-table-column>
                 <el-table-column
                     prop=""
                     label="UPC／EAN"
-                    width="100">
+                    width="120">
                     <template slot-scope="scope">
-                        <el-input placeholder="请输入内容" size="small" v-model="scope.row.eanCode" clearable></el-input>
+                        <el-input placeholder="请输入" size="small" v-model="scope.row.eanCode"></el-input>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -937,23 +937,32 @@
       <el-dialog
         title="上传图片"
         :visible.sync="uploadImageVisible"
+        :show-close="false"
         width="500px">
-        <div>
+        <div class="upDivDia">
             <el-upload
                 class="upload-demo"
                 drag
+                ref="upload"
                 :action="$http.adornUrl('/product/productimage/upload')"
                 :data="{'productId':dataForm.productId}"
                 :headers="{'token':$cookie.get('token')}"
+                list-type="picture"
+                :on-success="upOk"
+                :auto-upload="false"
                 multiple>
                 <i class="el-icon-upload"></i>
-                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+                <div class="el-upload__text">将文件拖到此处，或<em>选择图片</em></div>
+                <div class="el-upload__tip" slot="tip" style="display:flex">
+                    <span style="flex:1;">只能上传jpg/png文件，且不超过500kb</span>
+
+                    <el-button size="mini" type="primary" @click="submitUpload">开始上传</el-button>
+                </div>
             </el-upload>
         </div>
         <span slot="footer" class="dialog-footer">
             <!-- <el-button @click="uploadImageVisible = false">取 消</el-button> -->
-            <el-button type="primary" @click="getImage">确 定</el-button>
+            <el-button type="primary" @click="getImage">完 成</el-button>
         </span>
     </el-dialog>
 
@@ -1004,7 +1013,7 @@
       }
       return {
         visible: false,
-        categoryIds:[],
+        categoryIds:null,
         imgSVList:[],
         auditStatusList:[],
         productTypeList:[],
@@ -1139,7 +1148,7 @@
           vpFlag:0
         },
         addObj:{type:null,value:''},
-        nowProTypeId:[],
+        nowProTypeId:null,
         options:[],
         props:{
             lazy:true,
@@ -1230,48 +1239,47 @@
             console.log(this.dataForm.imageList[newIndex]);
             console.log(this.dataForm.imageList[oldIndex]);
         },
-      init (obj) {
-        this.productId = obj.productId || 0;
-        if(this.productId){
-            const loading = this.$loading({
-              lock: true,
-              text: 'Loading',
-              spinner: 'el-icon-loading',
-              background: 'rgba(0, 0, 0, 0.7)'
-            });
-            this.$http({
-              url: this.$http.adornUrl('/product/product/productdetails'),
-              method: 'get',
-              params: this.$http.adornParams({
-                  productId:this.productId
-              })
-            }).then(({data}) => {
-                loading.close();
-              if (data && data.code === 0) {
-                this.dataForm = data.product;
-                this.imgList = this.dataForm.imageList.map((item) => {
-                    return item.imageUrl
+        init (obj) {
+            this.productId = obj.productId || 0;
+            if(this.productId){
+                const loading = this.$loading({
+                lock: true,
+                text: 'Loading',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+                });
+                this.$http({
+                url: this.$http.adornUrl('/product/product/productdetails'),
+                method: 'get',
+                params: this.$http.adornParams({
+                    productId:this.productId
                 })
-                this.dataForm.categoryId = [this.dataForm.categoryId];
-                console.log(this.dataForm.categoryId);
-                // console.log(this.imgList)
-              }else{
-                  this.$message.error(data.msg)
-              }
-            })
-            this.dict('审核状态');
-            this.dict('产品类型');
-        }else{
-            this.$nextTick(() => {
-                this.$refs['dataForm'].resetFields();
-                this.dataForm = obj.obj;
-            })
-        }
-      },
-      checkGroup(val){
-          console.log(val)
-      },
-      // 产品分类下拉列表(一级)
+                }).then(({data}) => {
+                    loading.close();
+                if (data && data.code === 0) {
+                    this.dataForm = data.product;
+                    this.imgList = this.dataForm.imageList.map((item) => {
+                        return item.imageUrl
+                    })
+                    this.categoryIds = this.dataForm.categoryName;
+                    console.log(this.dataForm.categoryId);
+                }else{
+                    this.$message.error(data.msg)
+                }
+                })
+                this.dict('审核状态');
+                this.dict('产品类型');
+            }else{
+                this.$nextTick(() => {
+                    this.$refs['dataForm'].resetFields();
+                    this.dataForm = obj.obj;
+                })
+            }
+        },
+        checkGroup(val){
+            console.log(val)
+        },
+        // 产品分类下拉列表(一级)
         visibleChange(bol){
             if(bol){
                 this.$http({
@@ -1304,173 +1312,90 @@
                     return item.split('(')[0]
                 })
                 this.dataForm.categoryName = arr1.join('/');
-                // this.categoryIds = val;
+                this.dataForm.categoryId = val[val.length-1];
             }
             
         },
-      // 表单提交
-      dataFormSubmit () {
-        this.$refs['dataForm'].validate((valid,pro) => {
-          if (valid) {
-            this.dataForm.categoryId = this.dataForm.categoryId[this.dataForm.categoryId.length-1]
-            const loading = this.$loading({
-              lock: true,
-              text: 'Loading',
-              spinner: 'el-icon-loading',
-              background: 'rgba(0, 0, 0, 0.7)'
-            });
-            this.$http({
-                url: this.$http.adornUrl(`/product/product/${!this.productId ? 'originalproduct' : 'modifyproduct'}`),
-                method: 'post',
-                data: this.$http.adornData(this.dataForm)
-            }).then(({data}) => {
-                if (data && data.code === 0) {
-                    this.$message({
-                        message: '操作成功',
-                        type: 'success',
-                        duration: 1000,
-                        onClose: () => {
-                            this.$refs.back.removeTabHandle(this.mainTabsActiveName);
-                            loading.close();
-                        }
-                    })
-                } else {
-                    this.$message.error(data.msg)
-                    loading.close();
-                }
-            })
-          }else{
-              let str = '';
-              for (let key in pro){
-                  pro[key].forEach(function(item){
-                      if(str.length == 0){
-                          str+=item.message
-                      }else{
-                          str+='、\t'+item.message
-                      }
-                  })
-              }
-              console.log(pro);
-              this.$message({
-                    message: str,
-                    type: 'warning'
-                });
-          }
-        })
-      },
-    //   运费改变
-      getcostFreight(str){
-          this.$refs['dataForm'].validateField(str,(valid) => {
-              if(!valid){
-                  this.dataForm.categoryId = this.dataForm.categoryId[this.dataForm.categoryId.length-1]
-                  const loading = this.$loading({
-                    lock: true,
-                    text: 'Loading',
-                    spinner: 'el-icon-loading',
-                    background: 'rgba(0, 0, 0, 0.7)'
-                    });
-                  this.$http({
-                    url: this.$http.adornUrl('/product/productfreightcost/costFreight'),
-                    method: 'post',
-                    data: this.$http.adornData(this.dataForm)
-                }).then(({data}) => {
-                    loading.close();
-                    if (data && data.code === 0) {
-                        console.log(data);
-                        this.dataForm.freightCostList = data.freightCostList
-                        
-                    } else {
-                        this.$message.error(data.msg)
-                    }
-                })
-              }
-          })
-      },
-      //   售价改变
-      refreshProfitRate(row){
-            const loading = this.$loading({
+        // 表单提交
+        dataFormSubmit () {
+            this.$refs['dataForm'].validate((valid,pro) => {
+            if (valid) {
+                // this.dataForm.categoryId = this.dataForm.categoryId[this.dataForm.categoryId.length-1]
+                const loading = this.$loading({
                 lock: true,
                 text: 'Loading',
                 spinner: 'el-icon-loading',
                 background: 'rgba(0, 0, 0, 0.7)'
                 });
-            this.$http({
-                url: this.$http.adornUrl('/product/productfreightcost/refreshProfitRate'),
-                method: 'post',
-                data: this.$http.adornData({
-                    productProperty:this.dataForm.property,
-                    productFreightCost:row
+                this.$http({
+                    url: this.$http.adornUrl(`/product/product/${!this.productId ? 'originalproduct' : 'modifyproduct'}`),
+                    method: 'post',
+                    data: this.$http.adornData(this.dataForm)
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                        this.$message({
+                            message: '操作成功',
+                            type: 'success',
+                            duration: 1000,
+                            onClose: () => {
+                                this.$refs.back.removeTabHandle(this.mainTabsActiveName);
+                                loading.close();
+                            }
+                        })
+                    } else {
+                        this.$message.error(data.msg)
+                        loading.close();
+                    }
                 })
-            }).then(({data}) => {
-                loading.close();
-                if (data && data.code === 0) {
-                    row.finalPrice = data.freightCost.finalPrice;
-                    row.profit = data.freightCost.profit;
-                    row.profitRate =data.freightCost.profitRate;
-                    
-                } else {
-                    this.$message.error(data.msg)
+            }else{
+                let str = '';
+                for (let key in pro){
+                    pro[key].forEach(function(item){
+                        if(str.length == 0){
+                            str+=item.message
+                        }else{
+                            str+='、\t'+item.message
+                        }
+                    })
+                }
+                console.log(pro);
+                this.$message({
+                        message: str,
+                        type: 'warning'
+                    });
+            }
+            })
+        },
+        //   运费改变
+        getcostFreight(str){
+            this.$refs['dataForm'].validateField(str,(valid) => {
+                if(!valid){
+                    //   this.dataForm.categoryId = this.dataForm.categoryId[this.dataForm.categoryId.length-1]
+                    const loading = this.$loading({
+                        lock: true,
+                        text: 'Loading',
+                        spinner: 'el-icon-loading',
+                        background: 'rgba(0, 0, 0, 0.7)'
+                        });
+                    this.$http({
+                        url: this.$http.adornUrl('/product/productfreightcost/costFreight'),
+                        method: 'post',
+                        data: this.$http.adornData(this.dataForm)
+                    }).then(({data}) => {
+                        loading.close();
+                        if (data && data.code === 0) {
+                            console.log(data);
+                            this.dataForm.freightCostList = data.freightCostList
+                            
+                        } else {
+                            this.$message.error(data.msg)
+                        }
+                    })
                 }
             })
-      },
-      deptChange(opt){
-            this.dataForm.deptName = (this.$store.state.dept.comList.find(item => item.deptId == opt)).name;
-            console.log(this.dataForm);
-      },
-    //   添加变体参数
-      add(){
-          console.log(this.addObj.value);
-          if(this.dataForm.variantsParameterList.length == 0){
-              this.dataForm.variantsParameterList.push({
-                  paramsType:this.addObj.type,
-                  paramsValue:this.addObj.value
-              })
-          }else if(this.dataForm.variantsParameterList.length == 1){
-              if(this.dataForm.variantsParameterList[0].paramsType == this.addObj.type){
-                  this.dataForm.variantsParameterList.splice(0,1);
-                  this.dataForm.variantsParameterList.push({
-                    paramsType:this.addObj.type,
-                    paramsValue:this.addObj.value
-                  })
-                //   this.dataForm.variantsParameterList.type = this.addObj.value
-              }else{
-                  this.dataForm.variantsParameterList.push({
-                        paramsType:this.addObj.type,
-                        paramsValue:this.addObj.value
-                    })
-              }
-          }else{
-              var that = this;
-              this.dataForm.variantsParameterList.forEach(function(item,index){
-                  if(item.paramsType == that.addObj.type){
-                    that.dataForm.variantsParameterList.splice(index,1);
-                    that.dataForm.variantsParameterList.push({
-                        paramsType:that.addObj.type,
-                        paramsValue:that.addObj.value
-                    })
-                    // item.type = that.addObj.value
-                  }
-              })
-          }
-          this.getVList();
-
-          this.addVisible = false;
-          this.dataForm.vpFlag = 1;
-      },
-    //   修改变体参数
-      editV(index){
-          this.addVisible = true;
-          this.addObj.type = this.dataForm.variantsParameterList[index].paramsType;
-          this.addObj.value = this.dataForm.variantsParameterList[index].paramsValue;
-      },
-    //   删除变体
-      del(index){
-        this.$confirm('确定删除该变体属性?', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-        }).then(() => {
-            if(this.productId){
+        },
+        //   售价改变
+        refreshProfitRate(row){
                 const loading = this.$loading({
                     lock: true,
                     text: 'Loading',
@@ -1478,126 +1403,209 @@
                     background: 'rgba(0, 0, 0, 0.7)'
                     });
                 this.$http({
-                    url: this.$http.adornUrl('/product/productvariantparameter/delete'),
+                    url: this.$http.adornUrl('/product/productfreightcost/refreshProfitRate'),
                     method: 'post',
                     data: this.$http.adornData({
-                        paramsId:this.dataForm.variantsParameterList[index].paramsId
+                        productProperty:this.dataForm.property,
+                        productFreightCost:row
                     })
                 }).then(({data}) => {
+                    loading.close();
                     if (data && data.code === 0) {
-                    this.$message({
-                        message: '操作成功',
-                        type: 'success',
-                        duration: 1000,
-                        onClose: () => {
-                            this.dataForm.variantsParameterList.splice(index,1);
-                            this.getVList();
-                            this.dataForm.vpFlag = 1;
-                            loading.close()
-                        }
-                    })
+                        row.finalPrice = data.freightCost.finalPrice;
+                        row.profit = data.freightCost.profit;
+                        row.profitRate =data.freightCost.profitRate;
+                        
                     } else {
-                    this.$message.error(data.msg)
+                        this.$message.error(data.msg)
                     }
                 })
+        },
+        deptChange(opt){
+                this.dataForm.deptName = (this.$store.state.dept.comList.find(item => item.deptId == opt)).name;
+                console.log(this.dataForm);
+        },
+        //   添加变体参数
+        add(){
+            console.log(this.addObj.value);
+            if(this.dataForm.variantsParameterList.length == 0){
+                this.dataForm.variantsParameterList.push({
+                    paramsType:this.addObj.type,
+                    paramsValue:this.addObj.value
+                })
+            }else if(this.dataForm.variantsParameterList.length == 1){
+                if(this.dataForm.variantsParameterList[0].paramsType == this.addObj.type){
+                    this.dataForm.variantsParameterList.splice(0,1);
+                    this.dataForm.variantsParameterList.push({
+                        paramsType:this.addObj.type,
+                        paramsValue:this.addObj.value
+                    })
+                    //   this.dataForm.variantsParameterList.type = this.addObj.value
+                }else{
+                    this.dataForm.variantsParameterList.push({
+                            paramsType:this.addObj.type,
+                            paramsValue:this.addObj.value
+                        })
+                }
             }else{
-                this.dataForm.variantsParameterList.splice(index,1);
-                this.getVList();
-                this.dataForm.vpFlag = 1;
+                var that = this;
+                this.dataForm.variantsParameterList.forEach(function(item,index){
+                    if(item.paramsType == that.addObj.type){
+                        that.dataForm.variantsParameterList.splice(index,1);
+                        that.dataForm.variantsParameterList.push({
+                            paramsType:that.addObj.type,
+                            paramsValue:that.addObj.value
+                        })
+                        // item.type = that.addObj.value
+                    }
+                })
+            }
+            this.getVList();
+
+            this.addVisible = false;
+            this.dataForm.vpFlag = 1;
+        },
+        //   修改变体参数
+        editV(index){
+            this.addVisible = true;
+            this.addObj.type = this.dataForm.variantsParameterList[index].paramsType;
+            this.addObj.value = this.dataForm.variantsParameterList[index].paramsValue;
+        },
+        //   删除变体
+        del(index){
+            this.$confirm('确定删除该变体属性?', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                if(this.productId){
+                    const loading = this.$loading({
+                        lock: true,
+                        text: 'Loading',
+                        spinner: 'el-icon-loading',
+                        background: 'rgba(0, 0, 0, 0.7)'
+                        });
+                    this.$http({
+                        url: this.$http.adornUrl('/product/productvariantparameter/delete'),
+                        method: 'post',
+                        data: this.$http.adornData({
+                            paramsId:this.dataForm.variantsParameterList[index].paramsId
+                        })
+                    }).then(({data}) => {
+                        if (data && data.code === 0) {
+                        this.$message({
+                            message: '操作成功',
+                            type: 'success',
+                            duration: 1000,
+                            onClose: () => {
+                                this.dataForm.variantsParameterList.splice(index,1);
+                                this.getVList();
+                                this.dataForm.vpFlag = 1;
+                                loading.close()
+                            }
+                        })
+                        } else {
+                        this.$message.error(data.msg)
+                        }
+                    })
+                }else{
+                    this.dataForm.variantsParameterList.splice(index,1);
+                    this.getVList();
+                    this.dataForm.vpFlag = 1;
+                }
+                
+            })
+            
+        },
+        //   点击推荐添加参数值
+        pushValue(index){
+            var arr = [];
+            console.log(this.addObj.value);
+            if(this.addObj.value != ''){
+                arr = this.addObj.value.split(',');
+            }
+            if(this.addObj.type == '颜色（color）'){
+                if(arr.indexOf(this.recommendE[index]) == -1){
+                    arr.push(this.recommendE[index]);
+                }else{
+                    console.log(arr.indexOf(this.recommendE[index]));
+                    arr.splice(arr.indexOf(this.recommendE[index]),1)
+                }
+            }else{
+                if(arr.indexOf(this.recommend1E[index]) == -1){
+                    arr.push(this.recommend1E[index]);
+                }else{
+                    console.log(arr.indexOf(this.recommend1E[index]));
+                    arr.splice(arr.indexOf(this.recommend1E[index]),1)
+                }
             }
             
-        })
-        
-      },
-    //   点击推荐添加参数值
-      pushValue(index){
-          var arr = [];
-          console.log(this.addObj.value);
-          if(this.addObj.value != ''){
-              arr = this.addObj.value.split(',');
-          }
-          if(this.addObj.type == '颜色（color）'){
-            if(arr.indexOf(this.recommendE[index]) == -1){
-                arr.push(this.recommendE[index]);
-            }else{
-                console.log(arr.indexOf(this.recommendE[index]));
-                arr.splice(arr.indexOf(this.recommendE[index]),1)
-            }
-          }else{
-            if(arr.indexOf(this.recommend1E[index]) == -1){
-                arr.push(this.recommend1E[index]);
-            }else{
-                console.log(arr.indexOf(this.recommend1E[index]));
-                arr.splice(arr.indexOf(this.recommend1E[index]),1)
-            }
-          }
-          
-          
-          this.addObj.value = arr.join(',');
-          
-      },
-    //   变体列表
-      getVList(){
-          var that = this;
-          if(this.dataForm.variantsParameterList.length == 1){
-              that.dataForm.variantsInfoList = [];
-              this.dataForm.variantsParameterList[0].paramsValue.split(',').forEach(function(item){
-                  that.dataForm.variantsInfoList.push({
-                      variantCombination:item,
-                      variantSku:'',
-                      eanCode:'',
-                      variantAddPrice:'',
-                      variantStock:(Math.round(Math.random()*10) + 60),
-                      imageUrl:'',
-                  })
-              })
-              
-          }else if(this.dataForm.variantsParameterList.length == 2){
-              that.dataForm.variantsInfoList = [];
-              if(this.dataForm.variantsParameterList[0].paramsType == '颜色（color）'){
+            
+            this.addObj.value = arr.join(',');
+            
+        },
+        //   变体列表
+        getVList(){
+            var that = this;
+            if(this.dataForm.variantsParameterList.length == 1){
+                that.dataForm.variantsInfoList = [];
                 this.dataForm.variantsParameterList[0].paramsValue.split(',').forEach(function(item){
-                    that.dataForm.variantsParameterList[1].paramsValue.split(',').forEach(function(m){
-                        that.dataForm.variantsInfoList.push({
-                            variantCombination:item + ' - ' + m,
-                            variantSku:'',
-                            eanCode:'',
-                            variantAddPrice:'',
-                            variantStock:(Math.round(Math.random()*10) + 60),
-                            imageUrl:'',
-                        })
+                    that.dataForm.variantsInfoList.push({
+                        variantCombination:item,
+                        variantSku:'',
+                        eanCode:'',
+                        variantAddPrice:'',
+                        variantStock:(Math.round(Math.random()*10) + 60),
+                        imageUrl:'',
                     })
                 })
-              }else{
-                this.dataForm.variantsParameterList[1].paramsValue.split(',').forEach(function(item){
-                    that.dataForm.variantsParameterList[0].paramsValue.split(',').forEach(function(m){
-                        that.dataForm.variantsInfoList.push({
-                            variantCombination:item + ' - ' + m,
-                            variantSku:'',
-                            eanCode:'',
-                            variantAddPrice:'',
-                            variantStock:(Math.round(Math.random()*10) + 60),
-                            imageUrl:'',
+                
+            }else if(this.dataForm.variantsParameterList.length == 2){
+                that.dataForm.variantsInfoList = [];
+                if(this.dataForm.variantsParameterList[0].paramsType == '颜色（color）'){
+                    this.dataForm.variantsParameterList[0].paramsValue.split(',').forEach(function(item){
+                        that.dataForm.variantsParameterList[1].paramsValue.split(',').forEach(function(m){
+                            that.dataForm.variantsInfoList.push({
+                                variantCombination:item + ' - ' + m,
+                                variantSku:'',
+                                eanCode:'',
+                                variantAddPrice:'',
+                                variantStock:(Math.round(Math.random()*10) + 60),
+                                imageUrl:'',
+                            })
                         })
                     })
-                })
-              }
-              
-          }else{
-              that.dataForm.variantsInfoList = [];
-          }
-          this.dataForm.viFlag = 1;
-      },
-    //   删除变体列表
-      delVList(index){
-        this.$confirm('确定删除该变体信息?', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-        }).then(() => {
-            this.dataForm.variantsInfoList.splice(index,1);
+                }else{
+                    this.dataForm.variantsParameterList[1].paramsValue.split(',').forEach(function(item){
+                        that.dataForm.variantsParameterList[0].paramsValue.split(',').forEach(function(m){
+                            that.dataForm.variantsInfoList.push({
+                                variantCombination:item + ' - ' + m,
+                                variantSku:'',
+                                eanCode:'',
+                                variantAddPrice:'',
+                                variantStock:(Math.round(Math.random()*10) + 60),
+                                imageUrl:'',
+                            })
+                        })
+                    })
+                }
+                
+            }else{
+                that.dataForm.variantsInfoList = [];
+            }
             this.dataForm.viFlag = 1;
-        })
-      },
+        },
+        //   删除变体列表
+        delVList(index){
+            this.$confirm('确定删除该变体信息?', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.dataForm.variantsInfoList.splice(index,1);
+                this.dataForm.viFlag = 1;
+            })
+        },
     //   翻译
         fanyi(text,num){
             const loading = this.$loading({
@@ -1875,7 +1883,7 @@
                     method: 'post',
                     data: this.$http.adornData(this.selectImageList, false)
                 }).then(({data}) => {
-                    loading.close();
+                    
                     if (data && data.code === 0) {
                         this.$message({
                             message: '操作成功',
@@ -1889,6 +1897,7 @@
                     } else {
                         
                     }
+                    loading.close();
                 })
             })
             
@@ -2002,6 +2011,20 @@
                   this.$message.error(data.msg)
               }
             })
+        },
+        // 开始上传
+        submitUpload(){
+            this.$refs.upload.submit();
+        },
+        upOk(response, file, fileList){
+            console.log(response);
+            console.log(file);
+            console.log(fileList);
+            if(response.code == 0){
+                fileList = []
+            }else{
+                this.$message.error(response.msg)
+            }
         }
     }
   }
@@ -2044,5 +2067,27 @@
   }
   .intrDiv .el-form-item , .intrDiv .el-form-item .el-form-item__content{
       width: 100%;
+  }
+  .tableVi .el-input__inner{
+      padding: 0 4px;
+  }
+  .el-dialog__body .el-upload--picture , .el-dialog__body .el-upload--picture .el-upload-dragger{
+      width: 100%;
+  }
+  .upDivDia .el-upload-list__item{
+      display: inline-block;
+      margin-right: 6px;
+      width: 70px;
+      padding: 10px 10px 10px 80px;
+  }
+  .upDivDia .el-upload-list--picture .el-upload-list__item-thumbnail{
+      margin-left:-70px
+  }
+  .upDivDia .el-upload-list__item .el-icon-close{
+      top: 0px;
+      right: 0px;
+  }
+  .upDivDia .el-upload-list--picture .el-upload-list__item-status-label{
+      z-index: 1;
   }
 </style>

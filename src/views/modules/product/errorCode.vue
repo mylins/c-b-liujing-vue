@@ -6,19 +6,12 @@
         <div class="sous">
             <el-row :gutter="20">
 
-                <el-col :span="6">
-                    <el-row>
-                        <el-col :span="6">
-                            <label class="labelSS">错误代码：</label>
-                        </el-col>
-                        <el-col :span="18">
-                            <el-input
-                                size="medium"
-                                placeholder="请输入内容"
-                                v-model="q.errorCode">
-                            </el-input>
-                        </el-col>
-                    </el-row>
+                <el-col :span="4">
+                    <el-input
+                        size="medium"
+                        placeholder="错误代码"
+                        v-model="q.errorCode">
+                    </el-input>
                 </el-col>
                 <el-col :span="6">
                     <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList">查询</el-button>
@@ -26,7 +19,7 @@
             </el-row>
         </div>
         <!-- 操作 -->
-        <div class="divM">
+        <div class="">
             <el-button type="primary" icon="el-icon-plus" size="small" @click="add">新增</el-button>
             <el-button type="primary" icon="el-icon-delete" size="small" @click="del">删除</el-button>
         </div>

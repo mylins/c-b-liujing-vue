@@ -4,19 +4,12 @@
           <!-- 搜索 -->
         <div class="sous">
             <el-row :gutter="20">
-                <el-col :span="6">
-                    <el-row>
-                        <el-col :span="6">
-                            <label class="labelSS">产品ID：</label>
-                        </el-col>
-                        <el-col :span="18">
-                            <el-input
-                                size="medium"
-                                placeholder="请输入内容"
-                                v-model="q.productId">
-                            </el-input>
-                        </el-col>
-                    </el-row>
+                <el-col :span="4">
+                    <el-input
+                        size="medium"
+                        placeholder="产品ID"
+                        v-model="q.productId">
+                    </el-input>
                 </el-col>
                 <el-col :span="6">
                     <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList">查询</el-button>

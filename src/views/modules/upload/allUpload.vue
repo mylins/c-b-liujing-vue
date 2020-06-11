@@ -3,19 +3,12 @@
         <!-- 搜索 -->
         <div class="sous">
             <el-row :gutter="20">
-                <el-col :span="6">
-                    <el-row>
-                        <el-col :span="6">
-                            <label class="labelSS">上传ID：</label>
-                        </el-col>
-                        <el-col :span="18">
-                            <el-input
-                                size="medium"
-                                placeholder="请输入内容"
-                                v-model="q.id">
-                            </el-input>
-                        </el-col>
-                    </el-row>
+                <el-col :span="4">
+                    <el-input
+                        size="medium"
+                        placeholder="上传ID"
+                        v-model="q.id">
+                    </el-input>
                 </el-col>
                 
                 <el-col :span="6">

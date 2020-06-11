@@ -3,19 +3,12 @@
         <!-- 搜索 -->
         <div class="sous">
             <el-row :gutter="20">
-                <el-col :span="6">
-                    <el-row>
-                        <el-col :span="6">
-                            <label class="labelSS">上传ID：</label>
-                        </el-col>
-                        <el-col :span="18">
-                            <el-input
-                                size="medium"
-                                placeholder="请输入内容"
-                                v-model="q.id">
-                            </el-input>
-                        </el-col>
-                    </el-row>
+                <el-col :span="4">
+                    <el-input
+                        size="medium"
+                        placeholder="上传ID"
+                        v-model="q.id">
+                    </el-input>
                 </el-col>
                 
                 <el-col :span="6">
@@ -25,7 +18,7 @@
             </el-row>
         </div>
         <!-- 操作 -->
-        <div class="divM">
+        <div class="">
             <!-- <el-button type="primary" icon="el-icon-plus" size="small" @click="toProduct">原创产品</el-button> -->
             <open-tab type="primary" icon="el-icon-plus" dec='添加上传' urlName='uploadAddUpdate' :opt='{"uploadId":null}'></open-tab>
             

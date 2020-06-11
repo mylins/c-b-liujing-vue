@@ -5,11 +5,15 @@
         <el-input v-model="dataForm.roleName" placeholder="角色名称" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('sys:role:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('sys:role:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList()">查询</el-button>
+        
       </el-form-item>
     </el-form>
+    <!-- 操作 -->
+    <div class="" style="margin-bottom:10px">
+       <el-button v-if="isAuth('sys:role:save')" icon="el-icon-plus" size="small" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('sys:role:delete')" icon="el-icon-delete" size="small" type="primary" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+    </div>
     <el-table
       :data="dataList"
       border

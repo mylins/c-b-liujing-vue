@@ -1,5 +1,5 @@
 <template>
-  <aside class="site-sidebar" :class="'site-sidebar--' + sidebarLayoutSkin">
+  <aside class="site-sidebar" :class="'site-sidebar--' + sidebarLayoutSkin+' site-sidebar--' + sidebarLayoutSkin+'-' + sidebarLayoutSkinColor">
     <div class="site-sidebar__inner">
       <el-menu
         :default-active="menuActiveName || 'home'"
@@ -50,6 +50,9 @@
     computed: {
       sidebarLayoutSkin: {
         get () { return this.$store.state.common.sidebarLayoutSkin }
+      },
+      sidebarLayoutSkinColor: {
+        get () { return this.$store.state.common.sidebarLayoutSkinColor }
       },
       sidebarFold: {
         get () { return this.$store.state.common.sidebarFold }

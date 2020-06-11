@@ -1,5 +1,5 @@
 <template>
-  <nav class="site-navbar" :class="'site-navbar--' + navbarLayoutType">
+  <nav class="site-navbar" :class="'site-navbar--' + navbarLayoutType+' site-navbar--' + navbarLayoutColor">
     <div class="site-navbar__header">
       <h1 class="site-navbar__brand" @click="$router.push({ name: 'home' })">
         <a class="site-navbar__brand-lg" href="javascript:;">融艺汇 · 跨境</a>
@@ -20,14 +20,14 @@
       <el-menu
         class="site-navbar__menu site-navbar__menu--right"
         mode="horizontal">
-        <!-- <el-menu-item index="1" @click="$router.push({ name: 'theme' })">
+        <el-menu-item index="1" @click="$router.push({ name: 'theme' })">
           <template slot="title">
             <el-badge value="new">
               <icon-svg name="shezhi" class="el-icon-setting"></icon-svg>
             </el-badge>
           </template>
         </el-menu-item>
-        <el-menu-item index="2">
+        <!-- <el-menu-item index="2">
           <el-badge value="hot">
             <a href="https://www.renren.io/" target="_blank">官方社区</a>
           </el-badge>
@@ -72,6 +72,9 @@
     computed: {
       navbarLayoutType: {
         get () { return this.$store.state.common.navbarLayoutType }
+      },
+      navbarLayoutColor: {
+        get () { return this.$store.state.common.navbarLayoutColor }
       },
       sidebarFold: {
         get () { return this.$store.state.common.sidebarFold },

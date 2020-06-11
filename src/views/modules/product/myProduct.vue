@@ -6,74 +6,38 @@
         <div class="sous">
             <el-row :gutter="20">
                 
-                <el-col :span="6">
-                    <el-row>
-                        <el-col :span="6">
-                            <label class="labelSS">产品标题：</label>
-                        </el-col>
-                        <el-col :span="18">
-                            <el-input
-                                size="medium"
-                                placeholder="请输入内容"
-                                v-model="q.title">
-                            </el-input>
-                        </el-col>
-                    </el-row>
+                <el-col :span="3">
+                    <el-input
+                        size="medium"
+                        placeholder="产品标题"
+                        v-model="q.title">
+                    </el-input>
+                </el-col>
+                <el-col :span="3">
+                    <el-input
+                        size="medium"
+                        placeholder="SKU／编码"
+                        v-model="q.sku">
+                    </el-input>
+                </el-col>
+                <el-col :span="3">
+                    <el-date-picker
+                    v-model="q.startDate"
+                    value-format="yyyy-MM-dd"
+                    type="date"
+                    placeholder="开始时间">
+                    </el-date-picker>
+                </el-col>
+                <el-col :span="3">
+                    <el-date-picker
+                    v-model="q.endDate"
+                    value-format="yyyy-MM-dd"
+                    type="date"
+                    placeholder="结束时间">
+                    </el-date-picker>
                 </el-col>
                 <el-col :span="6">
-                    <el-row>
-                        <el-col :span="7">
-                            <label class="labelSS">SKU／编码：</label>
-                        </el-col>
-                        <el-col :span="17">
-                            <el-input
-                                size="medium"
-                                placeholder="请输入内容"
-                                v-model="q.sku">
-                            </el-input>
-                        </el-col>
-                    </el-row>
-                </el-col>
-                <el-col :span="6">
-                    <el-row>
-                        <el-col :span="6">
-                            <label class="labelSS">开始时间：</label>
-                        </el-col>
-                        <el-col :span="18">
-                            <el-date-picker
-                            v-model="q.startDate"
-                            value-format="yyyy-MM-dd"
-                            type="date"
-                            placeholder="选择日期">
-                            </el-date-picker>
-                        </el-col>
-                    </el-row>
-                </el-col>
-                <el-col :span="6">
-                    <el-row>
-                        <el-col :span="6">
-                            <label class="labelSS">结束时间：</label>
-                        </el-col>
-                        <el-col :span="18">
-                            <el-date-picker
-                            v-model="q.endDate"
-                            value-format="yyyy-MM-dd"
-                            type="date"
-                            placeholder="选择日期">
-                            </el-date-picker>
-                        </el-col>
-                    </el-row>
-                </el-col>
-                <div style="height:10px;float:left;width:100%"></div>
-                <el-col :span="12">
-                    <el-row>
-                        <el-col :span="3">
-                            <label class="labelSS">产品分类：</label>
-                        </el-col>
-                        <el-col :span="21">
-                            <el-cascader v-model="nowProTypeId" :options="options" :props="props" clearable @visible-change="visibleChange"></el-cascader>
-                        </el-col>
-                    </el-row>
+                    <el-cascader placeholder="产品分类" v-model="nowProTypeId" :options="options" :props="props" clearable @visible-change="visibleChange"></el-cascader>
                 </el-col>
                 
                 <el-col :span="6">
@@ -83,43 +47,54 @@
             </el-row>
         </div>
         <!-- 筛选 -->
-        <div style="margin:16px 0">
-            <div class="tag-group" v-if="audit.length != 0">
-                <span class="tag-group__title">审核状态</span>
-                <el-tag
-                    v-for="item in audit"
-                    :key="item.code"
-                    size="medium"
-                    @click="auditClick(item.code)"
-                    :effect='item.code == auditValue ? "dark" : "plain"'>
-                    {{ item.value }} ({{item.count}})
-                </el-tag>
-            </div>
-            <div class="tag-group" v-if="productType.length != 0">
-                <span class="tag-group__title">产品类型</span>
-                <el-tag
-                    v-for="item in productType"
-                    :key="item.code"
-                    size="medium"
-                    @click="productTypeClick(item.code)"
-                    :effect='item.code == productTypeValue ? "dark" : "plain"'>
-                    {{ item.value }} ({{item.count}})
-                </el-tag>
-            </div>
-            <div class="tag-group" v-if="upload.length != 0">
-                <span class="tag-group__title">上传类型</span>
-                <el-tag
-                    v-for="item in upload"
-                    :key="item.code"
-                    size="medium"
-                    @click="uploadClick(item.code)"
-                    :effect='item.code == uploadValue ? "dark" : "plain"'>
-                    {{ item.value }} ({{item.count}})
-                </el-tag>
-            </div>
+        <div>
+            <el-row :gutter="10">
+                <el-col :span="8">
+                    <div class="tag-group" v-if="audit.length != 0">
+                        <span class="tag-group__title">审核状态</span>
+                        <el-tag
+                            v-for="item in audit"
+                            :key="item.code"
+                            size="medium"
+                            @click="auditClick(item.code)"
+                            :effect='item.code == auditValue ? "dark" : "plain"'>
+                            {{ item.value }} ({{item.count}})
+                        </el-tag>
+                    </div>
+                </el-col>
+                <el-col :span="8">
+                    <div class="tag-group" v-if="productType.length != 0">
+                        <span class="tag-group__title">产品类型</span>
+                        <el-tag
+                            v-for="item in productType"
+                            :key="item.code"
+                            size="medium"
+                            @click="productTypeClick(item.code)"
+                            :effect='item.code == productTypeValue ? "dark" : "plain"'>
+                            {{ item.value }} ({{item.count}})
+                        </el-tag>
+                    </div>
+                </el-col>
+                <el-col :span="8">
+                    <div class="tag-group" v-if="upload.length != 0">
+                        <span class="tag-group__title">上传类型</span>
+                        <el-tag
+                            v-for="item in upload"
+                            :key="item.code"
+                            size="medium"
+                            @click="uploadClick(item.code)"
+                            :effect='item.code == uploadValue ? "dark" : "plain"'>
+                            {{ item.value }} ({{item.count}})
+                        </el-tag>
+                    </div>
+                </el-col>
+            </el-row>
+            
+            
+            
         </div>
         <!-- 操作 -->
-        <div class="divM">
+        <div class="">
             <!-- <el-button type="primary" icon="el-icon-plus" size="small" @click="toProduct">原创产品</el-button> -->
             <open-tab :product="true" type="primary" icon="el-icon-plus" dec='原创产品' urlName='productAddUpdate' :opt='{"productId":null}'></open-tab>
             <el-button type="primary" icon="el-icon-delete" size="small" @click="del">删除</el-button>
@@ -169,7 +144,7 @@
                             :src="scope.row.mainImageUrl"></el-image>
                         </div>
                             <el-image
-                            style="width: 100px; height: 100px"
+                            style="width: 70px; height: 70px"
                             :src="scope.row.mainImageUrl"></el-image>
                     </el-tooltip>
                     

@@ -1,42 +1,23 @@
 <template>
   <div class="mod-user">
       <!-- 搜索 -->
-      <div>
+      <div class="sous">
         <el-row :gutter="20">
-            <el-col :span="6">
-                <el-row>
-                    <el-col :span="6">
-                        <label class="labelSS">公司名称：</label>
-                    </el-col>
-                    <el-col :span="18">
-                        <el-input
-                            size="medium"
-                            placeholder="请输入公司名称"
-                            v-model="dataForm.name"
-                            clearable>
-                        </el-input>
-                        <!-- <el-cascader
-                            v-model="dataForm.deptId"
-                            :options="comList"
-                            :props="{ label: 'name',value:'deptId',checkStrictly: true }"
-                            clearable></el-cascader> -->
-                    </el-col>
-                </el-row>
+            <el-col :span="3">
+              <el-input
+                  size="medium"
+                  placeholder="公司名称"
+                  v-model="dataForm.name"
+                  clearable>
+              </el-input>
             </el-col>
-            <el-col :span="6">
-                <el-row>
-                    <el-col :span="6">
-                        <label class="labelSS">联系人：</label>
-                    </el-col>
-                    <el-col :span="18">
-                        <el-input
-                            size="medium"
-                            placeholder="请输入联系人"
-                            v-model="dataForm.companyPerson"
-                            clearable>
-                        </el-input>
-                    </el-col>
-                </el-row>
+            <el-col :span="3">
+              <el-input
+                  size="medium"
+                  placeholder="联系人"
+                  v-model="dataForm.companyPerson"
+                  clearable>
+              </el-input>
             </el-col>
             <el-col :span="6">
               <span style="float: left;overflow: hidden;">
@@ -49,7 +30,7 @@
         </el-row>
       </div>
     <!-- 操作 -->
-      <div class="divM" style="margin-bottom:10px">
+      <div class="" style="margin-bottom:10px">
         <template v-if="$store.state.dept.user.type != 2">
           <open-tab type="primary" icon="el-icon-plus" v-if="isAuth('sys:user:save')" dec='新增' urlName='deptAddUpdate' :opt='{"deptId":null}'></open-tab>
         </template>

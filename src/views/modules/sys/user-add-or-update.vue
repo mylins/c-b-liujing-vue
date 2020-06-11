@@ -65,18 +65,12 @@
               <el-radio :label="1">正常</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item v-if='isAuth("sys:user:iphone")' label="手机验证码" size="mini" prop="">
+          <!-- <el-form-item v-if='isAuth("sys:user:iphone")' label="手机验证码" size="mini" prop="">
             <el-radio-group v-model="dataForm.iphone">
               <el-radio :label="0">禁用</el-radio>
               <el-radio :label="1">使用</el-radio>
             </el-radio-group>
-          </el-form-item>
-          <el-form-item v-if='isAuth("sys:user:iphone")' label="速卖通" size="mini" prop="">
-            <el-radio-group v-model="dataForm.aliexpress">
-              <el-radio :label="0">禁用</el-radio>
-              <el-radio :label="1">使用</el-radio>
-            </el-radio-group>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="获取订单" size="mini" prop="">
             <el-radio-group v-model="dataForm.orderFetch">
               <el-radio :label="0">禁用</el-radio>
@@ -299,7 +293,12 @@
                 this.dataForm.enName = data.user.enName;
                 this.dataForm.groupId = data.user.groupId;
                 this.dataForm.groupName = data.user.groupName;
-                this.dataForm.information = data.user.information;
+                if(data.user.information){
+                  this.dataForm.information = data.user.information;
+                }else{
+                  this.dataForm.information = {};
+                }
+                
                 this.dataForm.roleIdList = data.user.roleIdList;
                 this.dataForm.salt = data.user.salt;
                 this.dataForm.status = data.user.status;

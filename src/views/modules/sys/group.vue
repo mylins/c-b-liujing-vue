@@ -1,42 +1,27 @@
 <template>
   <div class="mod-user">
     <!-- 搜索 -->
-      <div>
+      <div class="sous">
         <el-row :gutter="20">
-            <el-col :span="6" v-if="$store.state.dept.user.type != 2">
-                <el-row>
-                    <el-col :span="6">
-                        <label class="labelSS">公司名称：</label>
-                    </el-col>
-                    <el-col :span="18">
-                      <el-select v-model="dataForm.deptId" filterable clearable placeholder="请选择">
-                          <el-option
-                            v-for="item in $store.state.dept.comList"
-                            :key="item.deptId"
-                            :label="item.name"
-                            :value="item.deptId">
-                          </el-option>
-                        </el-select>
-                        
-                    </el-col>
-                </el-row>
+            <el-col :span="4" v-if="$store.state.dept.user.type != 2">
+              <el-select v-model="dataForm.deptId" filterable clearable placeholder="选择公司">
+                  <el-option
+                    v-for="item in $store.state.dept.comList"
+                    :key="item.deptId"
+                    :label="item.name"
+                    :value="item.deptId">
+                  </el-option>
+              </el-select>
             </el-col>
-            <el-col :span="6">
-                <el-row>
-                    <el-col :span="6">
-                        <label class="labelSS">小组名称：</label>
-                    </el-col>
-                    <el-col :span="18">
-                        <el-select v-model="dataForm.groupId" clearable placeholder="请选择" @focus='getGroupList'>
-                          <el-option
-                            v-for="item in groupList"
-                            :key="item.groupId"
-                            :label="item.name"
-                            :value="item.groupId">
-                          </el-option>
-                        </el-select>
-                    </el-col>
-                </el-row>
+            <el-col :span="4">
+              <el-select v-model="dataForm.groupId" clearable placeholder="选择小组" @focus='getGroupList'>
+                <el-option
+                  v-for="item in groupList"
+                  :key="item.groupId"
+                  :label="item.name"
+                  :value="item.groupId">
+                </el-option>
+              </el-select>
             </el-col>
             <el-col :span="6">
               <span style="">
@@ -48,7 +33,7 @@
         </el-row>
       </div>
     <!-- 操作 -->
-      <div class="divM">
+      <div class="">
         <el-button v-if="isAuth('sys:user:save')" type="primary" icon="el-icon-plus" size="small" @click="addOrUpdateHandle()">新增</el-button>
         
       </div>

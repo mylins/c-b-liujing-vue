@@ -5,141 +5,78 @@
             <!-- 搜索 -->
         <div class="sous">
             <el-row :gutter="20">
-                <el-col :span="6" v-if="$store.state.dept.user.type == 0">
-                    <el-row>
-                        <el-col :span="6">
-                            <label class="labelSS">选择区域:</label>
-                        </el-col>
-                        <el-col :span="18">
-                            <el-select v-model="q.areaId" filterable clearable placeholder="请选择">
-                                <el-option
-                                    v-for="item in $store.state.dept.areaList"
-                                    :key="item.deptId"
-                                    :label="item.name"
-                                    :value="item.deptId">
-                                </el-option>
-                            </el-select>
-                        </el-col>
-                    </el-row>
+                <el-col :span="3" v-if="$store.state.dept.user.type == 0">
+                    <el-select v-model="q.areaId" filterable clearable placeholder="选择区域">
+                        <el-option
+                            v-for="item in $store.state.dept.areaList"
+                            :key="item.deptId"
+                            :label="item.name"
+                            :value="item.deptId">
+                        </el-option>
+                    </el-select>
                 </el-col>
-                <el-col :span="6" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1">
-                    <el-row>
-                        <el-col :span="6">
-                            <label class="labelSS">选择公司:</label>
-                        </el-col>
-                        <el-col :span="18">
-                            <el-select v-model="q.deptId" filterable clearable placeholder="请选择">
-                                <el-option
-                                    v-for="item in $store.state.dept.comList"
-                                    :key="'D'+item.deptId"
-                                    :label="item.name"
-                                    :value="item.deptId">
-                                </el-option>
-                            </el-select>
-                        </el-col>
-                    </el-row>
+                <el-col :span="3" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1">
+                    <el-select v-model="q.deptId" filterable clearable placeholder="选择公司">
+                        <el-option
+                            v-for="item in $store.state.dept.comList"
+                            :key="'D'+item.deptId"
+                            :label="item.name"
+                            :value="item.deptId">
+                        </el-option>
+                    </el-select>
                 </el-col>
-                <el-col :span="6" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1 || $store.state.dept.user.type == 2">
-                    <el-row>
-                        <el-col :span="6">
-                            <label class="labelSS">选择小组:</label>
-                        </el-col>
-                        <el-col :span="18">
-                            <el-select v-model="q.groupId" clearable placeholder="请选择" @focus='getGroupList'>
-                                <el-option
-                                    v-for="item in groupList"
-                                    :key="'G'+item.groupId"
-                                    :label="item.name"
-                                    :value="item.groupId">
-                                </el-option>
-                            </el-select>
-                        </el-col>
-                    </el-row>
+                <el-col :span="3" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1 || $store.state.dept.user.type == 2">
+                    <el-select v-model="q.groupId" clearable placeholder="选择小组" @focus='getGroupList'>
+                        <el-option
+                            v-for="item in groupList"
+                            :key="'G'+item.groupId"
+                            :label="item.name"
+                            :value="item.groupId">
+                        </el-option>
+                    </el-select>
                 </el-col>
-                <el-col :span="6">
-                    <el-row>
-                        <el-col :span="6">
-                            <label class="labelSS">选择员工:</label>
-                        </el-col>
-                        <el-col :span="18">
-                            <el-select v-model="q.userId" clearable placeholder="请选择" @focus='getuserList'>
-                                <el-option
-                                    v-for="item in userList"
-                                    :key="'U'+item.userId"
-                                    :label="item.displayName"
-                                    :value="item.userId">
-                                </el-option>
-                            </el-select>
-                        </el-col>
-                    </el-row>
+                <el-col :span="3">
+                    <el-select v-model="q.userId" clearable placeholder="选择员工" @focus='getuserList'>
+                        <el-option
+                            v-for="item in userList"
+                            :key="'U'+item.userId"
+                            :label="item.displayName"
+                            :value="item.userId">
+                        </el-option>
+                    </el-select>
                 </el-col>
-                <el-col :span="6">
-                    <el-row>
-                        <el-col :span="6">
-                            <label class="labelSS">产品标题：</label>
-                        </el-col>
-                        <el-col :span="18">
-                            <el-input
-                                size="medium"
-                                placeholder="请输入内容"
-                                v-model="q.title">
-                            </el-input>
-                        </el-col>
-                    </el-row>
+                <el-col :span="3">
+                    <el-input
+                        size="medium"
+                        placeholder="产品标题"
+                        v-model="q.title">
+                    </el-input>
+                </el-col>
+                <el-col :span="3">
+                    <el-input
+                        size="medium"
+                        placeholder="SKU／编码"
+                        v-model="q.sku">
+                    </el-input>
+                </el-col>
+                <el-col :span="3">
+                    <el-date-picker
+                    v-model="q.startDate"
+                    value-format="yyyy-MM-dd"
+                    type="date"
+                    placeholder="开始时间">
+                    </el-date-picker>
+                </el-col>
+                <el-col :span="3">
+                    <el-date-picker
+                    v-model="q.endDate"
+                    value-format="yyyy-MM-dd"
+                    type="date"
+                    placeholder="结束时间">
+                    </el-date-picker>
                 </el-col>
                 <el-col :span="6">
-                    <el-row>
-                        <el-col :span="6">
-                            <label class="labelSS">SKU/编码：</label>
-                        </el-col>
-                        <el-col :span="18">
-                            <el-input
-                                size="medium"
-                                placeholder="请输入内容"
-                                v-model="q.sku">
-                            </el-input>
-                        </el-col>
-                    </el-row>
-                </el-col>
-                <el-col :span="6">
-                    <el-row>
-                        <el-col :span="6">
-                            <label class="labelSS">开始时间：</label>
-                        </el-col>
-                        <el-col :span="18">
-                            <el-date-picker
-                            v-model="q.startDate"
-                            value-format="yyyy-MM-dd"
-                            type="date"
-                            placeholder="选择日期">
-                            </el-date-picker>
-                        </el-col>
-                    </el-row>
-                </el-col>
-                <el-col :span="6">
-                    <el-row>
-                        <el-col :span="6">
-                            <label class="labelSS">结束时间：</label>
-                        </el-col>
-                        <el-col :span="18">
-                            <el-date-picker
-                            v-model="q.endDate"
-                            value-format="yyyy-MM-dd"
-                            type="date"
-                            placeholder="选择日期">
-                            </el-date-picker>
-                        </el-col>
-                    </el-row>
-                </el-col>
-                <el-col :span="12">
-                    <el-row>
-                        <el-col :span="3">
-                            <label class="labelSS">产品分类：</label>
-                        </el-col>
-                        <el-col :span="21">
-                            <el-cascader v-model="nowProTypeId" :options="options" :props="props" clearable @visible-change="visibleChange"></el-cascader>
-                        </el-col>
-                    </el-row>
+                    <el-cascader placeholder="产品分类" v-model="nowProTypeId" :options="options" :props="props" clearable @visible-change="visibleChange"></el-cascader>
                 </el-col>
                 
                 
@@ -156,40 +93,49 @@
             </el-row>
         </div>
         <!-- 筛选 -->
-        <div style="margin:16px 0">
-            <div class="tag-group" v-if="audit.length != 0">
-                <span class="tag-group__title">审核状态</span>
-                <el-tag
-                    v-for="item in audit"
-                    :key="item.code"
-                    size="medium"
-                    @click="auditClick(item.code)"
-                    :effect='item.code == auditValue ? "dark" : "plain"'>
-                    {{ item.value }} ({{item.count}})
-                </el-tag>
-            </div>
-            <div class="tag-group" v-if="audit.length != 0">
-                <span class="tag-group__title">产品类型</span>
-                <el-tag
-                    v-for="item in productType"
-                    :key="item.code"
-                    size="medium"
-                    @click="productTypeClick(item.code)"
-                    :effect='item.code == productTypeValue ? "dark" : "plain"'>
-                    {{ item.value }} ({{item.count}})
-                </el-tag>
-            </div>
-            <div class="tag-group" v-if="audit.length != 0">
-                <span class="tag-group__title">上传类型</span>
-                <el-tag
-                    v-for="item in upload"
-                    :key="item.code"
-                    size="medium"
-                    @click="uploadClick(item.code)"
-                    :effect='item.code == uploadValue ? "dark" : "plain"'>
-                    {{ item.value }} ({{item.count}})
-                </el-tag>
-            </div>
+        <div style="">
+            <el-row :gutter="10">
+                <el-col :span="8">
+                    <div class="tag-group" v-if="audit.length != 0">
+                        <span class="tag-group__title">审核状态</span>
+                        <el-tag
+                            v-for="item in audit"
+                            :key="item.code"
+                            size="medium"
+                            @click="auditClick(item.code)"
+                            :effect='item.code == auditValue ? "dark" : "plain"'>
+                            {{ item.value }} ({{item.count}})
+                        </el-tag>
+                    </div>
+                </el-col>
+                <el-col :span="8">
+                    <div class="tag-group" v-if="productType.length != 0">
+                        <span class="tag-group__title">产品类型</span>
+                        <el-tag
+                            v-for="item in productType"
+                            :key="item.code"
+                            size="medium"
+                            @click="productTypeClick(item.code)"
+                            :effect='item.code == productTypeValue ? "dark" : "plain"'>
+                            {{ item.value }} ({{item.count}})
+                        </el-tag>
+                    </div>
+                </el-col>
+                <el-col :span="8">
+                    <div class="tag-group" v-if="upload.length != 0">
+                        <span class="tag-group__title">上传类型</span>
+                        <el-tag
+                            v-for="item in upload"
+                            :key="item.code"
+                            size="medium"
+                            @click="uploadClick(item.code)"
+                            :effect='item.code == uploadValue ? "dark" : "plain"'>
+                            {{ item.value }} ({{item.count}})
+                        </el-tag>
+                    </div>
+                </el-col>
+            </el-row>
+            
         </div>
         <!-- 列表 -->
         <div class="divM">
@@ -211,7 +157,7 @@
                             :src="scope.row.mainImageUrl"></el-image>
                         </div>
                             <el-image
-                            style="width: 100px; height: 100px"
+                            style="width: 70px; height: 70px"
                             :src="scope.row.mainImageUrl"></el-image>
                     </el-tooltip>
                 </template>

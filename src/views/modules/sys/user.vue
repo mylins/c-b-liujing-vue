@@ -1,80 +1,47 @@
 <template>
   <div class="mod-user">
     <!-- 搜索 -->
-      <div>
+      <div class="sous">
         <el-row :gutter="20">
-            <el-col :span="6">
-                <el-row>
-                    <el-col :span="6">
-                        <label class="labelSS">用户姓名：</label>
-                    </el-col>
-                    <el-col :span="18">
-                        <el-input
-                            size="medium"
-                            placeholder="请输入用户姓名"
-                            v-model="dataForm.displayName"
-                            clearable>
-                        </el-input>
-                    </el-col>
-                </el-row>
+            <el-col :span="3">
+              <el-input
+                  size="medium"
+                  placeholder="用户姓名"
+                  v-model="dataForm.displayName"
+                  clearable>
+              </el-input>
+            </el-col>
+            <el-col :span="3">
+              <el-input
+                  size="medium"
+                  placeholder="账户名称"
+                  v-model="dataForm.username"
+                  clearable>
+              </el-input>
+            </el-col>
+            <el-col :span="3" v-if="$store.state.dept.user.type != 2">
+              <el-select v-model="dataForm.deptId" filterable clearable placeholder="选择公司">
+                <el-option
+                  v-for="item in $store.state.dept.comList"
+                  :key="item.deptId"
+                  :label="item.name"
+                  :value="item.deptId">
+                </el-option>
+              </el-select>
+            </el-col>
+            <el-col :span="3">
+              <el-select v-model="dataForm.groupId" clearable placeholder="选择小组" @focus='getGroupList'>
+                <el-option
+                  v-for="item in groupList"
+                  :key="item.deptId"
+                  :label="item.name"
+                  :value="item.deptId">
+                </el-option>
+              </el-select>
             </el-col>
             <el-col :span="6">
-                <el-row>
-                    <el-col :span="6">
-                        <label class="labelSS">账户名称：</label>
-                    </el-col>
-                    <el-col :span="18">
-                      <el-input
-                            size="medium"
-                            placeholder="请输入账户名称"
-                            v-model="dataForm.username"
-                            clearable>
-                        </el-input>
-                        
-                    </el-col>
-                </el-row>
-            </el-col>
-            <el-col :span="6" v-if="$store.state.dept.user.type != 2">
-                <el-row>
-                    <el-col :span="6">
-                        <label class="labelSS">公司名称：</label>
-                    </el-col>
-                    <el-col :span="18">
-                      <el-select v-model="dataForm.deptId" filterable clearable placeholder="请选择">
-                          <el-option
-                            v-for="item in $store.state.dept.comList"
-                            :key="item.deptId"
-                            :label="item.name"
-                            :value="item.deptId">
-                          </el-option>
-                        </el-select>
-                        
-                    </el-col>
-                </el-row>
-            </el-col>
-            <el-col :span="6">
-                <el-row>
-                    <el-col :span="6">
-                        <label class="labelSS">小组名称：</label>
-                    </el-col>
-                    <el-col :span="18">
-                        <el-select v-model="dataForm.groupId" clearable placeholder="请选择" @focus='getGroupList'>
-                          <el-option
-                            v-for="item in groupList"
-                            :key="item.deptId"
-                            :label="item.name"
-                            :value="item.deptId">
-                          </el-option>
-                        </el-select>
-                    </el-col>
-                </el-row>
-            </el-col>
-            <el-col :span="24">
-              <span style="float: right;overflow: hidden;">
-                <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList()">查询</el-button>
-                <el-button type="" icon="el-icon-refresh" size="medium" @click="clean()">重置</el-button>
-              </span>
-                
+              <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList()">查询</el-button>
+              <el-button type="" icon="el-icon-refresh" size="medium" @click="clean()">重置</el-button>
             </el-col>
         </el-row>
       </div>

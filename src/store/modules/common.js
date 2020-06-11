@@ -5,8 +5,10 @@ export default {
     documentClientHeight: 0,
     // 导航条, 布局风格, defalut(默认) / inverse(反向)
     navbarLayoutType: 'inverse',
+    navbarLayoutColor:'color3',
     // 侧边栏, 布局皮肤, light(浅色) / dark(黑色)
     sidebarLayoutSkin: 'light',
+    sidebarLayoutSkinColor: 'color3',
     // 侧边栏, 折叠状态
     sidebarFold: false,
     // 侧边栏, 菜单
@@ -25,8 +27,14 @@ export default {
     updateNavbarLayoutType (state, type) {
       state.navbarLayoutType = type
     },
+    updateNavbarLayoutColor (state, color) {
+      state.navbarLayoutColor = color
+    },
     updateSidebarLayoutSkin (state, skin) {
       state.sidebarLayoutSkin = skin
+    },
+    updateSidebarLayoutSkinColor (state, color) {
+      state.sidebarLayoutSkinColor = color
     },
     updateSidebarFold (state, fold) {
       state.sidebarFold = fold
