@@ -324,7 +324,12 @@
             this.$refs['dataForm'].validate((valid) => {
             if (valid) {
                 // this.dataForm.amazonCategoryId = this.dataForm.amazonCategoryId[this.dataForm.amazonCategoryId.length-1]
-                this.dataForm.uploadIds = this.dataForm.uploadIds.split(',');
+                if(this.dataForm.uploadIds != ''){
+                    this.dataForm.uploadIds = this.dataForm.uploadIds.split(',');
+                }else{
+                    this.dataForm.uploadIds = null
+                }
+                
                 const loading = this.$loading({
                     lock: true,
                     text: 'Loading',
