@@ -16,6 +16,7 @@
             <span class="decVal">{{dataForm.productId}}</span>
             <!-- <el-button type="text">{{dataForm.productId}}</el-button> -->
           </el-form-item>
+          <br>
           <el-form-item v-if="!productId" label="审核状态" prop="">
               <span class="decVal">待审核</span>
             <!-- <el-button type="text">{{dataForm.auditStatus == '002' ? '待审核' : ''}}</el-button> -->
@@ -29,19 +30,18 @@
                   <el-input v-model="dataForm.productSku" placeholder="SKU"></el-input>
               </div>
               
-                <div style="display:inline-block">
-                    <el-input v-model="dataForm.correction" placeholder="SKU修正,建议两位英文字母"></el-input>
+                <div style="display:inline-block;">
+                    <el-input v-model="dataForm.correction" placeholder="SKU修正"></el-input>
                 </div>
           </el-form-item>
 
           <el-form-item label="UPC/EAN" prop="productSku">
               <el-input v-model="dataForm.eanCode" placeholder="UPC/EAN"></el-input>
           </el-form-item>
-          <br>
           <el-form-item label="产品分类" prop="categoryId">
             <el-cascader ref="aaa" v-model="categoryIds" :options="options" :props="props" clearable @change="productCategorChange" @visible-change="visibleChange"></el-cascader>
-            <br>
-            <span class="decVal">{{dataForm.categoryName}}</span>
+            <!-- <br>
+            <span class="decVal">{{dataForm.categoryName}}</span> -->
           </el-form-item>
           <br>
           <el-form-item v-if="productId" label="审核状态" prop="">
@@ -49,7 +49,7 @@
                 <el-radio v-for="item in auditStatusList" :key="item.code" :label="item.code">{{item.value}}</el-radio>
             </el-radio-group>
           </el-form-item>
-          <br>
+          <!-- <br> -->
           <el-form-item v-if="productId" label="产品类型" prop="">
             <el-radio-group v-model="dataForm.productType">
                 <el-radio v-for="item in productTypeList" :key="item.code" :label="item.code">{{item.value}}</el-radio>
@@ -60,7 +60,7 @@
         <div class="blockDivForm">
             <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;产品相册</h3>
             <div style="margin-left:50px">
-                <el-checkbox-group v-model="selectImageList" @change="checkGroup">
+                <el-checkbox-group v-model="selectImageList">
                     <draggable 
                         v-model="dataForm.imageList"
                         tag="ul"
@@ -126,31 +126,6 @@
           <el-form-item label="包装毛重(kg)" prop="property.productWeight" :rules="dataRule.productWeight">
             <el-input v-model="dataForm.property.productWeight" placeholder="包装毛重(kg)" @change="getcostFreight('property.productWeight')"></el-input>
           </el-form-item>
-          <el-form-item label="包装尺寸" prop="" required>
-              <el-col :span="6">
-                  <el-form-item prop="property.productLength" :rules="dataRule.productLength">
-                    <el-input v-model="dataForm.property.productLength" placeholder="长" @change="getcostFreight('property.productLength')"></el-input>
-                  </el-form-item>
-              </el-col>
-              <el-col :span="3">
-                *
-              </el-col>
-              <el-col :span="6">
-                  <el-form-item prop="property.productWide" :rules="dataRule.productWide">
-                    <el-input v-model="dataForm.property.productWide" placeholder="宽" @change="getcostFreight('property.productWide')"></el-input>
-                  </el-form-item>
-              </el-col>
-              <el-col :span="3">
-                *
-              </el-col>
-              <el-col :span="6">
-                  <el-form-item prop="property.productHeight" :rules="dataRule.productHeight">
-                    <el-input v-model="dataForm.property.productHeight" placeholder="高" @change="getcostFreight('property.productHeight')"></el-input>
-                  </el-form-item>
-              </el-col>
-            
-          </el-form-item>
-          <br>
           <el-form-item label="产品打折" prop="property.discount">
             <el-select v-model="dataForm.property.discount" placeholder="请选择" @change="getcostFreight('property.discount')">
                 <el-option
@@ -161,6 +136,32 @@
                 </el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="包装尺寸" prop="" required>
+              <el-col :span="4">
+                  <el-form-item prop="property.productLength" :rules="dataRule.productLength">
+                    <el-input v-model="dataForm.property.productLength" placeholder="长" @change="getcostFreight('property.productLength')"></el-input>
+                  </el-form-item>
+              </el-col>
+              <el-col :span="1">
+                *
+              </el-col>
+              <el-col :span="4">
+                  <el-form-item prop="property.productWide" :rules="dataRule.productWide">
+                    <el-input v-model="dataForm.property.productWide" placeholder="宽" @change="getcostFreight('property.productWide')"></el-input>
+                  </el-form-item>
+              </el-col>
+              <el-col :span="1">
+                *
+              </el-col>
+              <el-col :span="4">
+                  <el-form-item prop="property.productHeight" :rules="dataRule.productHeight">
+                    <el-input v-model="dataForm.property.productHeight" placeholder="高" @change="getcostFreight('property.productHeight')"></el-input>
+                  </el-form-item>
+              </el-col>
+            
+          </el-form-item>
+          <!-- <br> -->
+          
           <el-table
             class="freTable"
             :data="dataForm.freightCostList"
@@ -673,7 +674,7 @@
         <div class="blockDivForm">
             <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;规格变体</h3>
             <div style="margin-left:5%">
-                <el-button type="primary" plain v-if="dataForm.variantsParameterList.length < 2" @click="addVisible = true;addObj.type=null;addObj.value=''">添加变体参数</el-button>
+                <el-button type="primary" plain v-if="dataForm.variantsParameterList.length < 2" @click="addVisible = true;addObj.type=null;addObj.value='';addObj.id=''">添加变体参数</el-button>
 
                 <div class="tag-group" v-for="(item,index) in dataForm.variantsParameterList" :key="index">
                     <span class="tag-group__title">{{item.paramsType}}</span>
@@ -758,9 +759,17 @@
                         <div class="biantiDiv" v-if="scope.row.imageUrl != ''">
                             <div v-for="(item,index) in scope.row.imageUrl.split(',')" :key="index">
                                 <span class="close"><el-button type="text" icon="el-icon-error" @click="delImageVB(scope.$index,index)"></el-button></span>
-                                <el-image
-                                    style="width: 50px; height: 50px"
-                                    :src="item"></el-image>
+                                <el-tooltip placement="top" effect="light">
+                                    <div slot="content">
+                                        <el-image
+                                        style="width: 300px; height: 300px"
+                                        :src="item"></el-image>
+                                    </div>
+                                        <el-image
+                                        style="width: 50px; height: 50px"
+                                        :src="item"></el-image>
+                                </el-tooltip>
+                                
                             </div>
                         </div>
                     </template>
@@ -937,7 +946,6 @@
       <el-dialog
         title="上传图片"
         :visible.sync="uploadImageVisible"
-        :show-close="false"
         width="500px">
         <div class="upDivDia">
             <el-upload
@@ -948,6 +956,7 @@
                 :data="{'productId':dataForm.productId}"
                 :headers="{'token':$cookie.get('token')}"
                 list-type="picture"
+                :file-list="fileList"
                 :on-success="upOk"
                 :auto-upload="false"
                 multiple>
@@ -960,10 +969,7 @@
                 </div>
             </el-upload>
         </div>
-        <span slot="footer" class="dialog-footer">
-            <!-- <el-button @click="uploadImageVisible = false">取 消</el-button> -->
-            <el-button type="primary" @click="getImage">完 成</el-button>
-        </span>
+        
     </el-dialog>
 
     <!-- 变体选择图片 -->
@@ -972,13 +978,14 @@
         :visible.sync="selectImageVisible"
         width="800px">
         <div style="height:400px;overflow-y:auto">
-            <el-checkbox-group size="medium" v-model="imgSVList" @change="checkGroup">
+            <el-checkbox-group size="medium" v-model="imgSVList">
                 <ul class="imgUl">
                     <li class="imgLi" v-for="item in dataForm.imageList" :key="item.imageId">
                         <span class="selec">
                             <el-checkbox :label="item.imageUrl"></el-checkbox>
                         </span>
                         <el-image
+                        @click="selectImageClick(item.imageUrl)"
                         style="width: 142px; height: 142px"
                         :src="item.imageUrl"></el-image>
                     </li>
@@ -1012,6 +1019,7 @@
         }
       }
       return {
+        fileList:[],
         visible: false,
         categoryIds:null,
         imgSVList:[],
@@ -1147,7 +1155,7 @@
           viFlag:0,
           vpFlag:0
         },
-        addObj:{type:null,value:''},
+        addObj:{type:null,value:'',id:null},
         nowProTypeId:null,
         options:[],
         props:{
@@ -1162,7 +1170,7 @@
                                 data.data.categoryList.forEach(function (item) {
                                     nodes.push({
                                         value:item.categoryId,
-                                        label:item.categoryName+'('+item.count+')',
+                                        label:item.categoryName,
                                         leaf: level >= 2
                                     })
                                 })
@@ -1261,8 +1269,13 @@
                     this.imgList = this.dataForm.imageList.map((item) => {
                         return item.imageUrl
                     })
-                    this.categoryIds = this.dataForm.categoryName;
-                    console.log(this.dataForm.categoryId);
+                    this.categoryIds = this.dataForm.categoryId;
+                    console.log(this.categoryIds);
+                    this.options = [{
+                        value:this.dataForm.categoryId,
+                        label:this.dataForm.categoryName,
+                        leaf:true
+                    }]
                 }else{
                     this.$message.error(data.msg)
                 }
@@ -1276,9 +1289,6 @@
                 })
             }
         },
-        checkGroup(val){
-            console.log(val)
-        },
         // 产品分类下拉列表(一级)
         visibleChange(bol){
             if(bol){
@@ -1289,11 +1299,12 @@
                 }).then(({data}) => {
                     if (data && data.code === 0) {
                         console.log(data);
+                        this.options = [];
                         var that = this;
                         data.categoryOneList.forEach(function(item){
                             that.options.push({
                                 value:item.categoryId,
-                                label:item.categoryName+'('+item.count+')',
+                                label:item.categoryName,
                             })
                         })
                     
@@ -1431,20 +1442,23 @@
             if(this.dataForm.variantsParameterList.length == 0){
                 this.dataForm.variantsParameterList.push({
                     paramsType:this.addObj.type,
-                    paramsValue:this.addObj.value
+                    paramsValue:this.addObj.value,
+                    paramsId:this.addObj.id,
                 })
             }else if(this.dataForm.variantsParameterList.length == 1){
                 if(this.dataForm.variantsParameterList[0].paramsType == this.addObj.type){
                     this.dataForm.variantsParameterList.splice(0,1);
                     this.dataForm.variantsParameterList.push({
                         paramsType:this.addObj.type,
-                        paramsValue:this.addObj.value
+                        paramsValue:this.addObj.value,
+                        paramsId:this.addObj.id,
                     })
                     //   this.dataForm.variantsParameterList.type = this.addObj.value
                 }else{
                     this.dataForm.variantsParameterList.push({
                             paramsType:this.addObj.type,
-                            paramsValue:this.addObj.value
+                            paramsValue:this.addObj.value,
+                            paramsId:this.addObj.id,
                         })
                 }
             }else{
@@ -1454,7 +1468,8 @@
                         that.dataForm.variantsParameterList.splice(index,1);
                         that.dataForm.variantsParameterList.push({
                             paramsType:that.addObj.type,
-                            paramsValue:that.addObj.value
+                            paramsValue:that.addObj.value,
+                            paramsId:that.addObj.id,
                         })
                         // item.type = that.addObj.value
                     }
@@ -1470,6 +1485,7 @@
             this.addVisible = true;
             this.addObj.type = this.dataForm.variantsParameterList[index].paramsType;
             this.addObj.value = this.dataForm.variantsParameterList[index].paramsValue;
+            this.addObj.id = this.dataForm.variantsParameterList[index].paramsId;
         },
         //   删除变体
         del(index){
@@ -1478,19 +1494,17 @@
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                if(this.productId){
+                if(this.dataForm.variantsParameterList[index].paramsId){
                     const loading = this.$loading({
                         lock: true,
                         text: 'Loading',
                         spinner: 'el-icon-loading',
                         background: 'rgba(0, 0, 0, 0.7)'
-                        });
+                    });
                     this.$http({
                         url: this.$http.adornUrl('/product/productvariantparameter/delete'),
                         method: 'post',
-                        data: this.$http.adornData({
-                            paramsId:this.dataForm.variantsParameterList[index].paramsId
-                        })
+                        data: this.$http.adornData(this.dataForm.variantsParameterList[index])
                     }).then(({data}) => {
                         if (data && data.code === 0) {
                         this.$message({
@@ -1597,12 +1611,43 @@
         },
         //   删除变体列表
         delVList(index){
+            console.log(this.dataForm.variantsInfoList[index]);
             this.$confirm('确定删除该变体信息?', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                this.dataForm.variantsInfoList.splice(index,1);
+                if(this.dataForm.variantsInfoList[index].variantId){
+                    const loading = this.$loading({
+                        lock: true,
+                        text: 'Loading',
+                        spinner: 'el-icon-loading',
+                        background: 'rgba(0, 0, 0, 0.7)'
+                        });
+                    this.$http({
+                        url: this.$http.adornUrl('/product/productvariantsinfo/delete'),
+                        method: 'post',
+                        data: this.$http.adornData(this.dataForm.variantsInfoList[index])
+                    }).then(({data}) => {
+                        if (data && data.code === 0) {
+                            this.$message({
+                                message: '操作成功',
+                                type: 'success',
+                                duration: 1000,
+                                onClose: () => {
+                                    this.dataForm.variantsInfoList.splice(index,1);
+                                    loading.close()
+                                }
+                            })
+                        } else {
+                            this.$message.error(data.msg)
+                            loading.close()
+                        }
+                    })
+                }else{
+                    this.dataForm.variantsInfoList.splice(index,1);
+                }
+                
                 this.dataForm.viFlag = 1;
             })
         },
@@ -1816,7 +1861,7 @@
                     this.imgList = this.dataForm.imageList.map((item) => {
                         return item.imageUrl
                     })
-                    this.uploadImageVisible = false;
+                    // this.uploadImageVisible = false;
                 } else {
                     this.$message.error(data.msg)
                 }
@@ -2021,10 +2066,20 @@
             console.log(file);
             console.log(fileList);
             if(response.code == 0){
-                fileList = []
+                this.fileList = [];
+                this.getImage();
             }else{
                 this.$message.error(response.msg)
             }
+        },
+        selectImageClick(url){
+            var index = this.imgSVList.indexOf(url);
+            if(index == -1){
+                this.imgSVList.push(url)
+            }else{
+                this.imgSVList.splice(index,1);
+            }
+            
         }
     }
   }
@@ -2035,6 +2090,7 @@
       margin: 0;
       padding: 0;
       display: flex;
+      flex-wrap: wrap;
   }
   .imgUl .imgLi{
       list-style: none;

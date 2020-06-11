@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="proLook">
     <!-- <page-h ref="back" :product="productId? false:true" :productId="dataForm.productId" :id="productId"></page-h> -->
     <div class="conDivForm">
       <el-form :inline="true" :model="dataForm" :rules="dataRule" ref="dataForm" label-width="120px">
@@ -113,7 +113,6 @@
               </el-col>
             
           </el-form-item>
-          <br>
           <el-form-item label="产品打折" prop="productTitle">
               <span class="decVal">{{dataForm.property.discount ? dataForm.property.discount : '无'}}</span>
           </el-form-item>
@@ -1521,11 +1520,14 @@
   }
 </script>
 <style>
-    
+  .proLook .el-form-item{
+      margin-bottom: 10px;
+  }
   .imgUl{
       margin: 0;
       padding: 0;
       display: flex;
+      flex-wrap:wrap;
   }
   .imgUl .imgLi{
       list-style: none;

@@ -334,6 +334,7 @@
                 sku:'',
             };
             this.nowProTypeId = [];
+            this.getDataList();
         },
         // 每页数
         sizeChangeHandle (val) {

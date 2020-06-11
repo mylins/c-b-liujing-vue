@@ -264,6 +264,7 @@
           groupId:'',
           userId:''
         }
+        this.getDataList();
       },
       // 获取小组下拉
       getGroupList(){

@@ -131,8 +131,8 @@
         console.log(this.isMore);
         if(this.isMore){
           let id = this.opt.productId ? this.opt.productId : this.opt.orderId;
-          let decTitle = this.opt.productId ? '产品表单' : '订单表单';
-          let title = id+decTitle;
+          let decTitle = this.opt.productId ? '产品' : '订单';
+          let title = decTitle+' - '+id;
           let name = this.urlName+id;
           let url = this.opt.productId ? 'product/product-add-or-update' : 'order/order-update'
 

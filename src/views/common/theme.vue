@@ -28,9 +28,9 @@
           <span class="colorSpan" style="background:#9463f7"></span>
         </el-radio>
         <el-radio label="color7">
-          <span class="colorSpan" style="background:#757575"></span>
+          <span class="colorSpan" style="background:#263238"></span>
         </el-radio>
-        <el-radio label="color8">
+        <!-- <el-radio label="color8">
           <span class="colorSpan" style="background:#eb6709"></span>
         </el-radio>
         <el-radio label="color9">
@@ -41,7 +41,7 @@
         </el-radio>
         <el-radio label="color11">
           <span class="colorSpan" style="background:#ff4c52"></span>
-        </el-radio>
+        </el-radio> -->
       </el-radio-group>
     </el-form-item>
     <el-form-item label="侧边栏类型">
@@ -70,10 +70,10 @@
         <el-radio label="color6">
           <span class="colorSpan" style="background:#9463f7"></span>
         </el-radio>
-        <!-- <el-radio label="color7">
-          <span class="colorSpan" style="background:#757575"></span>
+        <el-radio label="color7">
+          <span class="colorSpan" style="background:#263238"></span>
         </el-radio>
-        <el-radio label="color8">
+        <!-- <el-radio label="color8">
           <span class="colorSpan" style="background:#eb6709"></span>
         </el-radio>
         <el-radio label="color9">

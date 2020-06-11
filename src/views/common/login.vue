@@ -1,11 +1,11 @@
 <template>
   <div class="site-wrapper site-page--login">
     <div class="site-content__wrapperL">
-      <div class="login-img">
+      <!-- <div class="login-img">
         <el-image
           style="width: 570px; height: 540px"
           :src="require('@/assets/img/login_img.jpg')"></el-image>
-      </div>
+      </div> -->
       <div class="login-main">
         <h3 class="login-title">管理员登录</h3>
         <el-form :model="dataForm" :rules="dataRule" ref="dataForm" status-icon>
@@ -125,9 +125,9 @@
       top: 50%;
       left: 50%;
       padding: 0;
-      margin: -270px 0 0 -500px;
-      height: 540px;
-      width: 1000px;
+      margin: -240px 0 0 -215px;
+      height: 480px;
+      width: 430px;
       background-color: transparent;
       display: flex;
       box-shadow: 0 0 10px #b0cdf6;
@@ -138,8 +138,8 @@
     }
     .login-main {
       display: inline-block;
-      width: calc(100% - 570px);
-      height: 540px;
+      width: 100%;
+      height: 480px;
       padding: 60px;
       background-color: #fff;
     }

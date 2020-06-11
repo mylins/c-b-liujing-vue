@@ -55,6 +55,9 @@
                         v-model="q.abroadWaybill">
                     </el-input>
                 </el-col>
+                <el-col :span="3" >
+                    <div style="height:36px"></div>
+                </el-col>
                 <el-col :span="3">
                     <el-date-picker
                     v-model="q.startDate"
@@ -577,6 +580,7 @@
                 domesticWaybill:'',
                 abroadWaybill:''
             }
+            this.getDataList();
         },
         // 每页数
         sizeChangeHandle (val) {

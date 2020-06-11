@@ -394,6 +394,7 @@
                 this.q.groupId = this.$store.state.dept.updateUser.groupId
             }
             this.nowProTypeId = [];
+            this.getDataList();
         },
         // 每页数
         sizeChangeHandle (val) {

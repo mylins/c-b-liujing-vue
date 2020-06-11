@@ -13,12 +13,7 @@
           </el-form-item>
           <el-form-item label="产品类型" prop="">
             <el-radio-group v-model="dataForm.productType">
-                <el-radio label="001">重点</el-radio>
-                <el-radio label="002">原创</el-radio>
-                <el-radio label="003">海外</el-radio>
-                <el-radio label="004">抓取</el-radio>
-                <el-radio label="005">其他</el-radio>
-                
+                <el-radio v-for="item in productTypeList" :key="item.code" :label="item.code">{{item.value}}</el-radio>
             </el-radio-group>
           </el-form-item>
         </div>
@@ -496,6 +491,7 @@
         }
       }
       return {
+        productTypeList:[],
         visible: false,
         roleList: [],
         productId:null,
@@ -637,6 +633,7 @@
                     productDescription:null,
                 }
             }
+            this.dict('产品类型');
             this.dataForm.productIds = ids;
             this.$nextTick(() => {
                 this.$refs['dataForm'].resetFields();
@@ -797,7 +794,27 @@
                 this.dataForm.spainIntroduction[val] = 0;
                 this.dataForm.japanIntroduction[val] = 0;
             }
-        }
+        },
+        // 数据字典
+        dict(type){
+            this.$http({
+              url: this.$http.adornUrl('/sys/sysdict/selectDict'),
+              method: 'get',
+              params: this.$http.adornParams({
+                  name:type
+              })
+            }).then(({data}) => {
+              if (data && data.code === 0) {
+                if(type == '审核状态'){
+                    this.auditStatusList = data.dictList
+                }else if(type = '产品类型'){
+                    this.productTypeList = data.dictList
+                }
+              }else{
+                  this.$message.error(data.msg)
+              }
+            })
+        },
     }
   }
 </script>

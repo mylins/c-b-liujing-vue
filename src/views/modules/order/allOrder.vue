@@ -594,6 +594,7 @@
                 this.q.deptId = this.$store.state.dept.user.deptId
                 this.q.groupId = this.$store.state.dept.user.groupId
             }
+            this.getDataList();
         },
         // 每页数
         sizeChangeHandle (val) {

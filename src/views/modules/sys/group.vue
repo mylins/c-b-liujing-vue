@@ -177,6 +177,7 @@
           deptId:null,
           groupId:null
         }
+        this.getDataList();
       },
       // 获取小组下拉
       getGroupList(){
