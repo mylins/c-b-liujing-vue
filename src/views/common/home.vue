@@ -1,6 +1,6 @@
 <template>
   <div class="mod-home">
-    <h3>常用网址</h3>
+    <h3 style="padding-left:10px">常用网址</h3>
     <div class="mainItem">
         <div>
             技术学习
@@ -20,7 +20,7 @@
         </div>
         <div>
             <a target="_blank" href="https://translate.google.cn/">谷歌翻译</a>
-            <a target="_blank" href="https://fanyi.baidu.com/">百度翻译</a>
+            <!-- <a target="_blank" href="https://fanyi.baidu.com/">百度翻译</a> -->
             <a target="_blank" href="http://fanyi.youdao.com/">有道翻译</a>
             <a target="_blank" href="http://cn.bing.com/translator/">必应翻译</a>
         </div>
@@ -38,7 +38,7 @@
             <a target="_blank" href="http://www.kuaidi100.com/">国内快递查询</a>
             <a target="_blank" href="https://www.17track.net/zh-cn/">国际快递查询</a>
             <a target="_blank" href="http://www.laposte.fr/particulier">法国物流查询</a>
-            <a target="_blank" href="https://www.sfcservice.com/track?tdsourcetag=s_pcqq_aiomsg">三态物流查询</a>
+            <!-- <a target="_blank" href="https://www.sfcservice.com/track?tdsourcetag=s_pcqq_aiomsg">三态物流查询</a> -->
         </div>
     </div>
 
@@ -88,10 +88,9 @@
             收款网址
         </div>
         <div>
-            <a target="_blank" href="">连连跨境支付</a>
-            <a target="_blank" href="">P卡</a>
-            <a target="_blank"
-               href="">PingPong</a>
+            <!-- <a target="_blank" href="">连连跨境支付</a> -->
+            <a target="_blank" href="https://www.payoneer.com/zh/">P卡</a>
+            <a target="_blank" href="https://us.pingpongx.com">PingPong</a>
         </div>
     </div>
 
@@ -135,7 +134,7 @@
       background: #fff;
       border-radius: 5px;
       padding: 10px;
-
+      box-shadow:0 0 10px #eee;
   }
 
   .mainItem > div:nth-child(1) {

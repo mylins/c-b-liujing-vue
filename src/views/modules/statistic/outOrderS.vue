@@ -97,7 +97,7 @@
                 })
             }).then(({data}) => {
                 if (data && data.code === 0) {
-                    this.dataList = data.dataList
+                    this.dataList = data.productFranchiseeStatisticsRank100
                 } else {
                     this.$message.error(data.msg)
                 }
