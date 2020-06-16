@@ -40,7 +40,7 @@ const dept = {
               // this.totalPage = data.page.totalCount
             } else {
               if(data.code != 401){
-                alert(data.msg)
+                // alert(data.msg)
               }
             }
           })
@@ -58,7 +58,7 @@ const dept = {
               commit('updateAreaList', data.deptList)
             } else {
               if(data.code != 401){
-                alert(data.msg)
+                // alert(data.msg)
               }
             }
           })
@@ -94,7 +94,7 @@ const dept = {
               // this.totalPage = data.page.totalCount
             } else {
               if(data.code != 401){
-                alert(data.msg)
+                // alert(data.msg)
               }
               
             }

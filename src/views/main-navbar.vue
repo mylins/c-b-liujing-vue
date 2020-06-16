@@ -40,7 +40,7 @@
         </el-submenu> -->
         <el-menu-item class="site-navbar__avatar" index="3">
           <el-dropdown :show-timeout="0" placement="bottom" trigger="click">
-            <span class="el-dropdown-link">
+            <span class="el-dropdown-link" style="display:inline-block;line-height:59px">
               <!-- <img src="~@/assets/img/avatar.png" :alt="userName"> -->
               <i class="el-icon-s-custom"></i>{{ userName }}
             </span>

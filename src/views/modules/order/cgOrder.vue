@@ -198,7 +198,7 @@
                     <br>
                     <el-image
                         style="width: 25px; height: 13px"
-                        :src="'src/assets/img/'+scope.row.countryCode+'.jpg'"></el-image>
+                        :src="require('@/assets/img/'+scope.row.countryCode+'.jpg')"></el-image>
                     <span>{{comObj[scope.row.countryCode]}}</span>
                 </template>
                 </el-table-column>
@@ -248,7 +248,7 @@
                         <!-- <open-tab size="medium" type="text" icon="" :dec='scope.row.amazonOrderId' urlName='productAddUpdate' :opt='{"orderId":scope.row.orderId}'></open-tab> -->
                         <el-image
                             style="width: 15px; height: 15px"
-                            src="src/assets/img/yamaxun.jpg"></el-image>
+                            :src="require('@/assets/img/yamaxun.jpg')"></el-image>
                         <span>{{scope.shopName}}</span>
                     </template>
                 </el-table-column>
