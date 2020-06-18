@@ -6,21 +6,21 @@
         <div class="sous">
             <el-row :gutter="20">
                 
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-input
                         size="medium"
                         placeholder="产品标题"
                         v-model="q.title">
                     </el-input>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-input
                         size="medium"
                         placeholder="SKU／编码"
                         v-model="q.sku">
                     </el-input>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-date-picker
                     v-model="q.startDate"
                     value-format="yyyy-MM-dd"
@@ -28,7 +28,7 @@
                     placeholder="开始时间">
                     </el-date-picker>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-date-picker
                     v-model="q.endDate"
                     value-format="yyyy-MM-dd"
@@ -36,11 +36,11 @@
                     placeholder="结束时间">
                     </el-date-picker>
                 </el-col>
-                <el-col :span="6">
+                <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
                     <el-cascader placeholder="产品分类" v-model="nowProTypeId" :options="options" :props="props" clearable @visible-change="visibleChange"></el-cascader>
                 </el-col>
                 
-                <el-col :span="6">
+                <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
                     <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList">查询</el-button>
                     <el-button type="" icon="el-icon-refresh" size="medium" @click="clean">重置</el-button>
                 </el-col>
@@ -49,7 +49,7 @@
         <!-- 筛选 -->
         <div>
             <el-row :gutter="10">
-                <el-col :span="8">
+                <el-col :md="24" :lg="8">
                     <div class="tag-group" v-if="audit.length != 0">
                         <span class="tag-group__title">审核状态</span>
                         <el-tag
@@ -62,7 +62,7 @@
                         </el-tag>
                     </div>
                 </el-col>
-                <el-col :span="8">
+                <el-col :md="24" :lg="8">
                     <div class="tag-group" v-if="productType.length != 0">
                         <span class="tag-group__title">产品类型</span>
                         <el-tag
@@ -75,7 +75,7 @@
                         </el-tag>
                     </div>
                 </el-col>
-                <el-col :span="8">
+                <el-col :md="24" :lg="8">
                     <div class="tag-group" v-if="upload.length != 0">
                         <span class="tag-group__title">上传类型</span>
                         <el-tag
@@ -94,7 +94,8 @@
             
         </div>
         <!-- 操作 -->
-        <div class="">
+        <div class="btnGroupDiv" style="overflow:hidden">
+            <el-checkbox v-model="allSelect" label="全选" border @change="allSelectClick" size="small"></el-checkbox>&nbsp;&nbsp;
             <!-- <el-button type="primary" icon="el-icon-plus" size="small" @click="toProduct">原创产品</el-button> -->
             <open-tab :product="true" type="primary" icon="el-icon-plus" dec='原创产品' urlName='productAddUpdate' :opt='{"productId":null}'></open-tab>
             <el-button type="primary" icon="el-icon-delete" size="small" @click="del">删除</el-button>
@@ -122,69 +123,37 @@
         </div>
         <!-- 列表 -->
         <div class="divM">
-            <el-table
-                :data="dataList"
-                v-loading="dataListLoading"
-                @selection-change="selectionChangeHandle"
-                style="width: 100%">
-                <el-table-column
-                type="selection"
-                width="55">
-                </el-table-column>
-                <el-table-column
-                fixed
-                prop=""
-                label="图片"
-                width="160">
-                <template slot-scope="scope">
-                    <el-tooltip placement="right-start" effect="light">
-                        <div slot="content">
+            <el-row :gutter="10">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3" v-for="item in dataList" :key="item.productId">
+                    <div class="proItemDiv" :class="dataListSelections.indexOf(item.productId) != -1 ? 'active' : ''">
+                        <div class="imgClickSelDiv" @click="imgClickSel(item.productId)">
                             <el-image
-                            style="width: 300px; height: 300px"
-                            :src="scope.row.mainImageUrl"></el-image>
+                            style="width: 100%;"
+                            fit="cover"
+                            :src="item.mainImageUrl">
+                                <div slot="placeholder" class="image-slot errorImgDiv1">
+                                    加载中<span class="dot">...</span>
+                                </div>
+                                <div slot="error" class="image-slot errorImgDiv">
+                                    <i class="el-icon-picture-outline"></i>
+                                </div>
+                            </el-image>
                         </div>
-                            <el-image
-                            style="width: 70px; height: 70px"
-                            :src="scope.row.mainImageUrl"></el-image>
-                    </el-tooltip>
-                    
-                </template>
-                </el-table-column>
-                <el-table-column
-                prop="productId"
-                label="编号"
-                width="150">
-                </el-table-column>
-                <el-table-column
-                prop=""
-                label="标题"
-                width="">
-                <template slot-scope="scope">
-                    <open-tab :isMore="true" size="medium" type="text" icon="" :dec='scope.row.productTitle' urlName='productAddUpdate' :opt='{"productId":scope.row.productId}'></open-tab>
-                    <div v-if="scope.row.productSku"><span style="color:#999">SKU：</span>{{scope.row.productSku}}</div>
-                    <div v-if="scope.row.categoryName"><span style="color:#999">分类：</span>{{scope.row.categoryName}}</div>
-                </template>
-                </el-table-column>
-                <el-table-column
-                prop="createTime"
-                label="时间"
-                width="100">
-                </el-table-column>
-                <el-table-column
-                fixed="right"
-                label="操作"
-                width="100">
-                <template slot-scope="scope">
-                    <open-tab :isMore="true" size="medium" type="text" icon="el-icon-edit" dec='' urlName='productAddUpdate' :opt='{"productId":scope.row.productId}'></open-tab>
-                    <el-button type="text" icon="" @click="copy(scope.row.productId)">复制</el-button>
-                </template>
-                </el-table-column>
-            </el-table>
+                        
+                        <div class="titlePro">
+                            <open-tab :isMore="true" size="medium" type="text" icon="" :dec='item.productTitle' urlName='productAddUpdate' :opt='{"productId":item.productId}'></open-tab>
+                        </div>
+                        <div class="decProSN">SKU：{{item.productSku}}</div>
+                        <div class="decProSN">时间：{{item.createTime}}</div>
+                    </div>
+                </el-col>
+            </el-row>
+            
             <el-pagination
             @size-change="sizeChangeHandle"
             @current-change="currentChangeHandle"
             :current-page="pageIndex"
-            :page-sizes="[20, 30, 50]"
+            :page-sizes="[24, 40, 56]"
             :page-size="pageSize"
             :total="totalPage"
             layout="total, sizes, prev, pager, next, jumper">
@@ -218,6 +187,7 @@
                 title:'',
                 sku:''
             },
+            allSelect:false,
             dataListLoading:true,
             nowProTypeId:[],
             options:[],
@@ -260,7 +230,7 @@
             auditValue:'',
             productTypeValue:'',
             uploadValue:'',
-            pageSize:20,
+            pageSize:24,
             pageIndex:1,
             totalPage:0,
             dataListSelections:[]
@@ -320,7 +290,12 @@
         // 获取数据列表
         getDataList () {
             // console.log(this.nowProTypeId);
-            this.dataListLoading = true
+            const loading = this.$loading({
+                lock: true,
+                text: 'Loading',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
             this.$http({
                 url: this.$http.adornUrl('/product/product/mylist'),
                 method: 'get',
@@ -345,7 +320,7 @@
                 } else {
                     this.$message.error(data.msg)
                 }
-                this.dataListLoading = false
+                loading.close()
             })
         },
         // 重置
@@ -374,12 +349,29 @@
         selectionChangeHandle (val) {
             this.dataListSelections = val
         },
+        // 全选
+        allSelectClick(val){
+            console.log(val);
+            this.dataListSelections = [];
+            if(val){
+                var that = this;
+                this.dataList.forEach(function(item){
+                    that.dataListSelections.push(item.productId)
+                })
+            }
+        },
+        // 多选
+        imgClickSel(id){
+            if(this.dataListSelections.indexOf(id) == -1){
+                this.dataListSelections.push(id)
+            }else{
+                this.dataListSelections.splice(this.dataListSelections.indexOf(id),1)
+            }
+        },
         // 删除
         del(){
             console.log(this.dataListSelections);
-            var productIds = this.dataListSelections.map(item => {
-                return item.productId
-            })
+            var productIds = this.dataListSelections;
             console.log(productIds)
             if(productIds.length == 0){
                 this.$message({
@@ -398,7 +390,7 @@
                     text: 'Loading',
                     spinner: 'el-icon-loading',
                     background: 'rgba(0, 0, 0, 0.7)'
-                    });
+                });
                 this.$http({
                     url: this.$http.adornUrl('/product/product/falsedeletion'),
                     method: 'post',
@@ -432,9 +424,7 @@
                 });
             }else{
                 this.piliangVisible = true;
-                this.ids = this.dataListSelections.map(item => {
-                    return item.productId
-                })
+                this.ids = this.dataListSelections;
                 this.$nextTick(() => {
                     this.$refs.addOrUpdate.init(this.ids)
                 })
@@ -443,9 +433,7 @@
             
         },
         changeStats(code,type){
-            var productIds = this.dataListSelections.map(item => {
-                return item.productId
-            })
+            var productIds = this.dataListSelections;
             if(productIds.length == 0){
                 this.$message({
                     message: '请选择一条数据',

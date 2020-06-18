@@ -59,7 +59,7 @@
                         <span class="decVal">{{dataForm.amazonCategory}}</span>
                   </div>
                   <div style="width:240px">
-                      <el-input v-model="dataForm.amazonCategoryNodeId" placeholder="分类节点ID" :disabled="true"></el-input>
+                      <el-input v-model="dataForm.amazonCategoryNodeId" placeholder="分类节点ID"></el-input>
                   </div>
                   <div>
                       <el-button type="primary" plain @click="history">历史选择</el-button>

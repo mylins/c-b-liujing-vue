@@ -3,7 +3,7 @@
       <!-- 搜索 -->
       <div class="sous">
         <el-row :gutter="20">
-            <el-col :span="3">
+            <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
               <el-input
                   size="medium"
                   placeholder="公司名称"
@@ -11,7 +11,7 @@
                   clearable>
               </el-input>
             </el-col>
-            <el-col :span="3">
+            <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
               <el-input
                   size="medium"
                   placeholder="联系人"
@@ -19,7 +19,7 @@
                   clearable>
               </el-input>
             </el-col>
-            <el-col :span="6">
+            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
               <span style="float: left;overflow: hidden;">
                 <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList()">查询</el-button>
                 <el-button type="" icon="el-icon-refresh" size="medium" @click="clean()">重置</el-button>
@@ -142,7 +142,7 @@
       <el-dialog
         title="充值"
         :visible.sync="rechargeVisible"
-        width="20%">
+        width="400px">
         <div>
           <div>
             <label style="display:inline-block;margin:10px 0 10px 0;font-weight:600">充值金额</label>
@@ -170,7 +170,7 @@
       <el-dialog
         title="充值记录"
         :visible.sync="rechargeListVisible"
-        width="50%">
+        width="600px">
         <div>
           <el-table
             :data="rechargeList"

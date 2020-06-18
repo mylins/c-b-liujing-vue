@@ -3,7 +3,7 @@
     <!-- 搜索 -->
       <div class="sous">
         <el-row :gutter="20">
-            <el-col :span="3">
+            <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
               <el-input
                   size="medium"
                   placeholder="用户姓名"
@@ -11,7 +11,7 @@
                   clearable>
               </el-input>
             </el-col>
-            <el-col :span="3">
+            <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
               <el-input
                   size="medium"
                   placeholder="账户名称"
@@ -19,7 +19,7 @@
                   clearable>
               </el-input>
             </el-col>
-            <el-col :span="3" v-if="$store.state.dept.user.type != 2">
+            <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3" v-if="$store.state.dept.user.type != 2">
               <el-select v-model="dataForm.deptId" filterable clearable placeholder="选择公司">
                 <el-option
                   v-for="item in $store.state.dept.comList"
@@ -29,7 +29,7 @@
                 </el-option>
               </el-select>
             </el-col>
-            <el-col :span="3">
+            <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
               <el-select v-model="dataForm.groupId" clearable placeholder="选择小组" @focus='getGroupList'>
                 <el-option
                   v-for="item in groupList"
@@ -39,7 +39,7 @@
                 </el-option>
               </el-select>
             </el-col>
-            <el-col :span="6">
+            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
               <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList()">查询</el-button>
               <el-button type="" icon="el-icon-refresh" size="medium" @click="clean()">重置</el-button>
             </el-col>
@@ -118,12 +118,12 @@
 					fixed="right"
           header-align="center"
           align="center"
-          width="150"
+          width="80"
 					label="操作">
 				<template slot-scope="scope">
 					<!-- <el-button v-if="isAuth('sys:user:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.userId)">修改</el-button> -->
-          <open-tab type="text" icon="" v-if="isAuth('sys:user:update')" dec='修改' urlName='userAddUpdate' :opt='{"userId":scope.row.userId}'></open-tab>
-          <el-button v-if="isAuth('sys:user:delete')" type="text" size="small" @click="deleteHandle(scope.row.userId)">删除</el-button>
+          <open-tab type="text" icon="el-icon-edit" v-if="isAuth('sys:user:update')" dec='' urlName='userAddUpdate' :opt='{"userId":scope.row.userId}'></open-tab>
+          <el-button v-if="isAuth('sys:user:delete')" type="text" icon="el-icon-delete" size="small" @click="deleteHandle(scope.row.userId)"></el-button>
 				</template>
 			</el-table-column>
     </el-table>

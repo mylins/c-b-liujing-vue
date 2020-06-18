@@ -3,7 +3,7 @@
     <!-- 搜索 -->
       <div class="sous">
         <el-row :gutter="20">
-            <el-col :span="4" v-if="$store.state.dept.user.type != 2">
+            <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3" v-if="$store.state.dept.user.type != 2">
               <el-select v-model="dataForm.deptId" filterable clearable placeholder="选择公司">
                   <el-option
                     v-for="item in $store.state.dept.comList"
@@ -13,7 +13,7 @@
                   </el-option>
               </el-select>
             </el-col>
-            <el-col :span="4">
+            <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
               <el-select v-model="dataForm.groupId" clearable placeholder="选择小组" @focus='getGroupList'>
                 <el-option
                   v-for="item in groupList"
@@ -23,7 +23,7 @@
                 </el-option>
               </el-select>
             </el-col>
-            <el-col :span="6">
+            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
               <span style="">
                 <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList()">查询</el-button>
                 <el-button type="" icon="el-icon-refresh" size="medium" @click="clean()">重置</el-button>
@@ -94,11 +94,11 @@
 					fixed="right"
           header-align="center"
           align="center"
-          width="150"
+          width="80"
 					label="操作">
 				<template slot-scope="scope">
-					<el-button v-if="isAuth('sys:user:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.groupId)">修改</el-button>
-          <el-button v-if="isAuth('sys:user:delete')" type="text" size="small" @click="deleteHandle(scope.row.groupId)">删除</el-button>
+					<el-button v-if="isAuth('sys:user:update')" icon="el-icon-edit" type="text" size="small" @click="addOrUpdateHandle(scope.row.groupId)"></el-button>
+          <el-button v-if="isAuth('sys:user:delete')" icon="el-icon-delete" type="text" size="small" @click="deleteHandle(scope.row.groupId)"></el-button>
 				</template>
 			</el-table-column>
     </el-table>

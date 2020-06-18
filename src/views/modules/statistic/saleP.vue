@@ -14,7 +14,7 @@
         <div class="sous">
             <el-row :gutter="20">
                 
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-date-picker
                         v-model="q.startData"
                         type="date"
@@ -22,7 +22,7 @@
                         placeholder="开始日期">
                     </el-date-picker>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-date-picker
                         v-model="q.endData"
                         type="date"
@@ -31,7 +31,7 @@
                     </el-date-picker>
                 </el-col>
                 
-                <el-col :span="6">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList">查询</el-button>
                 </el-col>
             </el-row>

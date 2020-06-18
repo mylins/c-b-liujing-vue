@@ -3,7 +3,7 @@
         <!-- 搜索 -->
         <div class="sous">
             <el-row :gutter="20">
-                <el-col :span="4">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-input
                         size="medium"
                         placeholder="上传ID"
@@ -11,7 +11,7 @@
                     </el-input>
                 </el-col>
                 
-                <el-col :span="6">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList">查询</el-button>
                     <!-- <el-button type="" icon="el-icon-refresh" size="medium" @click="clean">重置</el-button> -->
                 </el-col>
@@ -73,7 +73,7 @@
                 <el-table-column
                 fixed="right"
                 label="操作"
-                width="150">
+                width="80">
                 <template slot-scope="scope">
                     <open-tab v-if="scope.row.uploadState == 3 || scope.row.uploadState == 4" size="medium" type="text" icon="" dec='报告列表' urlName='baogaoList' :opt='{"uploadId":scope.row.uploadId}'></open-tab>
                 </template>

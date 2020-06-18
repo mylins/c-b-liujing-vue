@@ -37,12 +37,19 @@
     width: 100%;
 }
 
-.el-button--text>span{
-    overflow: hidden;
-    text-overflow: ellipsis;
+.titlePro .el-button--text>span , span.proTitleSpan{
     display: -webkit-box;
-    -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    white-space: pre-wrap;
+    text-align: left;
+    min-height: 36px;
+    line-height: 18px;
+    padding: 0 6px;
+}
+span.proTitleSpan{
+    color: #333;
 }
 span.el-dropdown-link.spanDown{
     color: #409eff;
@@ -51,4 +58,58 @@ span.el-dropdown-link.spanDown{
 }
 .tableDown .el-dropdown-menu__item{
     color: #409eff;
+}
+// .proList{
+//     display: flex;
+// }
+.proItemDiv{
+    border: 1px solid #eee;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+}
+.proItemDiv.active{
+    border: 1px solid #409eff;
+    box-shadow: 0 0 10px #409eff;
+}
+.proItemDiv .decProSN{
+    color: #888;
+    font-size: 11px;
+    margin-bottom: 6px;
+    padding: 0 6px;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}
+.proItemDiv .errorImgDiv{
+    padding-top: calc(50% - 28px);
+    padding-bottom: calc(50% - 29px);
+    text-align: center;
+    font-size: 50px;
+    color: #888;
+}
+.proItemDiv .errorImgDiv1{
+    padding-top: calc(50% - 8px);
+    padding-bottom: calc(50% - 8px);
+    text-align: center;
+    color: #888;
+}
+.proItemDiv .float{
+    display: flex;
+    margin-bottom: 8px;
+    color: #5d83ab;
+}
+.proItemDiv .float>span:nth-child(2){
+    flex: 1;
+    text-align: right;
+}
+.proItemDiv .imgClickSelDiv{
+    cursor: pointer;
+}
+.renlDivC{
+    display: inline-block;
+    margin-bottom: 6px;
+    margin-right: 8px;
+}
+.btnGroupDiv button{
+    margin-bottom: 4px;
 }

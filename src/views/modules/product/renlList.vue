@@ -4,14 +4,14 @@
           <!-- 搜索 -->
         <div class="sous">
             <el-row :gutter="20">
-                <el-col :span="4">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-input
                         size="medium"
                         placeholder="产品ID"
                         v-model="q.productId">
                     </el-input>
                 </el-col>
-                <el-col :span="6">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList">查询</el-button>
                 </el-col>
             </el-row>

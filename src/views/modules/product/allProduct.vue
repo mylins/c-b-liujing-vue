@@ -5,7 +5,7 @@
             <!-- 搜索 -->
         <div class="sous">
             <el-row :gutter="20">
-                <el-col :span="3" v-if="$store.state.dept.user.type == 0">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3" v-if="$store.state.dept.user.type == 0">
                     <el-select v-model="q.areaId" filterable clearable placeholder="选择区域">
                         <el-option
                             v-for="item in $store.state.dept.areaList"
@@ -15,17 +15,17 @@
                         </el-option>
                     </el-select>
                 </el-col>
-                <el-col :span="3" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1">
-                    <el-select v-model="q.deptId" filterable clearable placeholder="选择公司">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1">
+                    <el-select v-model="q.deptId" filterable clearable placeholder="选择公司" @focus="getComList">
                         <el-option
-                            v-for="item in $store.state.dept.comList"
+                            v-for="item in comList"
                             :key="'D'+item.deptId"
                             :label="item.name"
                             :value="item.deptId">
                         </el-option>
                     </el-select>
                 </el-col>
-                <el-col :span="3" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1 || $store.state.dept.user.type == 2">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1 || $store.state.dept.user.type == 2">
                     <el-select v-model="q.groupId" clearable placeholder="选择小组" @focus='getGroupList'>
                         <el-option
                             v-for="item in groupList"
@@ -35,7 +35,7 @@
                         </el-option>
                     </el-select>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-select v-model="q.userId" clearable placeholder="选择员工" @focus='getuserList'>
                         <el-option
                             v-for="item in userList"
@@ -45,21 +45,21 @@
                         </el-option>
                     </el-select>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-input
                         size="medium"
                         placeholder="产品标题"
                         v-model="q.title">
                     </el-input>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-input
                         size="medium"
                         placeholder="SKU／编码"
                         v-model="q.sku">
                     </el-input>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-date-picker
                     v-model="q.startDate"
                     value-format="yyyy-MM-dd"
@@ -67,7 +67,7 @@
                     placeholder="开始时间">
                     </el-date-picker>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-date-picker
                     v-model="q.endDate"
                     value-format="yyyy-MM-dd"
@@ -75,7 +75,7 @@
                     placeholder="结束时间">
                     </el-date-picker>
                 </el-col>
-                <el-col :span="6">
+                <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
                     <el-cascader placeholder="产品分类" v-model="nowProTypeId" :options="options" :props="props" clearable @visible-change="visibleChange"></el-cascader>
                 </el-col>
                 
@@ -86,7 +86,7 @@
                         <el-button type="" icon="el-icon-refresh" size="medium" @click="clean">重置</el-button>
                     </span>
                 </el-col>
-                <el-col v-else :span="6">
+                <el-col v-else :xs="24" :sm="12" :md="12" :xl="6">
                     <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList">查询</el-button>
                     <el-button type="" icon="el-icon-refresh" size="medium" @click="clean">重置</el-button>
                 </el-col>
@@ -95,7 +95,7 @@
         <!-- 筛选 -->
         <div style="">
             <el-row :gutter="10">
-                <el-col :span="8">
+                <el-col :md="24" :lg="8">
                     <div class="tag-group" v-if="audit.length != 0">
                         <span class="tag-group__title">审核状态</span>
                         <el-tag
@@ -108,7 +108,7 @@
                         </el-tag>
                     </div>
                 </el-col>
-                <el-col :span="8">
+                <el-col :md="24" :lg="8">
                     <div class="tag-group" v-if="productType.length != 0">
                         <span class="tag-group__title">产品类型</span>
                         <el-tag
@@ -121,7 +121,7 @@
                         </el-tag>
                     </div>
                 </el-col>
-                <el-col :span="8">
+                <el-col :md="24" :lg="8">
                     <div class="tag-group" v-if="upload.length != 0">
                         <span class="tag-group__title">上传类型</span>
                         <el-tag
@@ -139,58 +139,40 @@
         </div>
         <!-- 列表 -->
         <div class="divM">
-            <el-table
-                :data="dataList"
-                v-loading="dataListLoading"
-                @selection-change="selectionChangeHandle"
-                style="width: 100%">
-                <el-table-column
-                fixed
-                prop=""
-                label="图片"
-                width="160">
-                <template slot-scope="scope">
-                    <el-tooltip placement="right-start" effect="light">
-                        <div slot="content">
+            <el-row :gutter="10">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3" v-for="item in dataList" :key="item.productId">
+                    <div class="proItemDiv">
+                        <div>
                             <el-image
-                            style="width: 300px; height: 300px"
-                            :src="scope.row.mainImageUrl"></el-image>
+                            style="width: 100%;"
+                            fit="cover"
+                            :src="item.mainImageUrl">
+                                <div slot="placeholder" class="image-slot errorImgDiv1">
+                                    加载中<span class="dot">...</span>
+                                </div>
+                                <div slot="error" class="image-slot errorImgDiv">
+                                    <i class="el-icon-picture-outline"></i>
+                                </div>
+                            </el-image>
                         </div>
-                            <el-image
-                            style="width: 70px; height: 70px"
-                            :src="scope.row.mainImageUrl"></el-image>
-                    </el-tooltip>
-                </template>
-                </el-table-column>
-                <el-table-column
-                prop="productId"
-                label="编号"
-                width="150">
-                </el-table-column>
-                <el-table-column
-                prop=""
-                label="标题"
-                width="">
-                <template slot-scope="scope">
-                    
-                    <!-- <open-tab type="text" icon="" :dec='scope.row.productTitle' urlName='productLook' :opt='{"productId":scope.row.productId}'></open-tab> -->
-                    <open-tab :isMoreL="true" size="medium" type="text" icon="" :dec='scope.row.productTitle' urlName='productLook' :opt='{"productId":scope.row.productId}'></open-tab>
-                    <div v-if="scope.row.productSku"><span style="color:#999">SKU：</span>{{scope.row.productSku}}</div>
-                    <div v-if="scope.row.categoryName"><span style="color:#999">分类：</span>{{scope.row.categoryName}}</div>
-                </template>
-                </el-table-column>
-                
-                <el-table-column
-                prop="createTime"
-                label="时间"
-                width="100">
-                </el-table-column>
-            </el-table>
+                        <div class="titlePro">
+                            <open-tab :isMoreL="true" size="medium" type="text" icon="" :dec='item.productTitle' urlName='productLook' :opt='{"productId":item.productId}'></open-tab>
+                        </div>
+                        <div class="decProSN float">
+                            <span>{{item.deptName}}</span>
+                            <span>{{item.userName}}</span>
+                        </div>
+                        <div class="decProSN">SKU：{{item.productSku}}</div>
+                        <div class="decProSN">时间：{{item.createTime}}</div>
+                    </div>
+                </el-col>
+            </el-row>
+            
             <el-pagination
             @size-change="sizeChangeHandle"
             @current-change="currentChangeHandle"
             :current-page="pageIndex"
-            :page-sizes="[20, 30, 50]"
+            :page-sizes="[24, 40, 56]"
             :page-size="pageSize"
             :total="totalPage"
             layout="total, sizes, prev, pager, next, jumper">
@@ -212,6 +194,7 @@
           return{
             showList:true,
             productD:{},
+            comList:[],
             q:{
                 startDate:'',
                 endDate:'',
@@ -264,7 +247,7 @@
             auditValue:'',
             productTypeValue:'',
             uploadValue:'',
-            pageSize:20,
+            pageSize:24,
             pageIndex:1,
             totalPage:0,
             dataListSelections:[]
@@ -336,7 +319,12 @@
         // 获取数据列表
         getDataList () {
             // console.log(this.nowProTypeId);
-            this.dataListLoading = true
+            const loading = this.$loading({
+                lock: true,
+                text: 'Loading',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
             this.$http({
                 url: this.$http.adornUrl('/product/product/alllist'),
                 method: 'get',
@@ -363,10 +351,9 @@
                     this.totalPage = data.page.totalCount
                     console.log(this.$store.state.dept)
                 } else {
-                    this.dataList = []
-                    this.totalPage = 0
+                    this.$message.error(data.msg)
                 }
-                this.dataListLoading = false
+                loading.close();
             })
         },
         // 重置
@@ -553,22 +540,38 @@
                 }
             })
         },
+        // 获取公司下拉
+        getComList(){
+            this.$http({
+                url: this.$http.adornUrl('/sys/dept/select'),
+                method: 'get',
+                params: this.$http.adornParams({
+                    areaId:this.q.areaId
+                })
+            }).then(({data}) => {
+                if (data.code == 0) {
+                    this.comList = data.deptList
+                } else {
+                    this.$message.error(data.msg)
+                }
+            })
+        },
         // 获取小组下拉
         getGroupList(){
             if(this.q.deptId){
                 this.$http({
-                url: this.$http.adornUrl('/sys/sysgroup/select'),
-                method: 'get',
-                params: this.$http.adornParams({
-                    'deptId':this.q.deptId,
+                    url: this.$http.adornUrl('/sys/sysgroup/select'),
+                    method: 'get',
+                    params: this.$http.adornParams({
+                        'deptId':this.q.deptId,
+                    })
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                        this.groupList = data.groupList
+                    } else {
+                        this.$message.error(data.msg)
+                    }
                 })
-            }).then(({data}) => {
-                if (data && data.code === 0) {
-                this.groupList = data.groupList
-                } else {
-                this.$message.error(data.msg)
-                }
-            })
             }else{
                 this.$message({
                     message: '请先选择公司',

@@ -3,78 +3,53 @@
       <!-- 列表页 -->
       <div>
           <!-- 操作 -->
-        <div class="divM" style="border-bottom:2px solid #f0f0f0;padding-bottom:16px;margin-bottom:20px">
-            <el-row :gutter="20">
-                <el-col :span="5" v-if="$store.state.dept.user.type == 0">
-                    <el-row>
-                        <el-col :span="6">
-                            <label class="labelSS">选择区域:</label>
-                        </el-col>
-                        <el-col :span="18">
-                            <el-select v-model="q.toAreaId" filterable clearable placeholder="请选择">
-                                <el-option
-                                    v-for="item in $store.state.dept.areaList"
-                                    :key="item.deptId"
-                                    :label="item.name"
-                                    :value="item.deptId">
-                                </el-option>
-                            </el-select>
-                        </el-col>
-                    </el-row>
-                </el-col>
-                <el-col :span="6" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1">
-                    <el-row>
-                        <el-col :span="9">
-                            <label class="labelSS">选择认领到的公司:</label>
-                        </el-col>
-                        <el-col :span="15">
-                            <el-select v-model="q.toDeptId" filterable clearable placeholder="请选择">
-                                <el-option
-                                    v-for="item in $store.state.dept.comList"
-                                    :key="'D'+item.deptId"
-                                    :label="item.name"
-                                    :value="item.deptId">
-                                </el-option>
-                            </el-select>
-                        </el-col>
-                    </el-row>
-                </el-col>
-                <el-col :span="6" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1 || $store.state.dept.user.type == 2">
-                    <el-row>
-                        <el-col :span="9">
-                            <label class="labelSS">选择认领到的小组:</label>
-                        </el-col>
-                        <el-col :span="15">
-                            <el-select v-model="q.toGroupId" clearable placeholder="请选择" @focus='getGroupList(q.toDeptId)'>
-                                <el-option
-                                    v-for="item in groupList"
-                                    :key="'G'+item.groupId"
-                                    :label="item.name"
-                                    :value="item.groupId">
-                                </el-option>
-                            </el-select>
-                        </el-col>
-                    </el-row>
-                </el-col>
-                <el-col :span="6">
-                    <el-row>
-                        <el-col :span="9">
-                            <label class="labelSS">选择认领到的员工:</label>
-                        </el-col>
-                        <el-col :span="15">
-                            <el-select v-model="q.toUserId" clearable placeholder="请选择" @focus='getuserList(q.toDeptId,q.toGroupId)' @change="getDataList">
-                                <el-option
-                                    v-for="item in userList"
-                                    :key="'U'+item.userId"
-                                    :label="item.displayName"
-                                    :value="item.userId">
-                                </el-option>
-                            </el-select>
-                        </el-col>
-                    </el-row>
-                </el-col>
-                <el-button type="warning" icon="" size="small" @click="renlClickPL">认领</el-button>
-            </el-row>
+        <div class="divM" style="border-bottom:2px solid #f0f0f0;padding-bottom:16px;margin-bottom:20px;">
+            <div class="renlDivC" v-if="$store.state.dept.user.type == 0">
+                <label class="labelSS">选择区域:</label>
+                <el-select v-model="q.toAreaId" filterable clearable placeholder="请选择">
+                    <el-option
+                        v-for="item in $store.state.dept.areaList"
+                        :key="item.deptId"
+                        :label="item.name"
+                        :value="item.deptId">
+                    </el-option>
+                </el-select>
+            </div>
+            <div class="renlDivC" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1">
+                <label class="labelSS">选择公司:</label>
+                <el-select v-model="q.toDeptId" filterable clearable placeholder="请选择" @focus="getComList(q.toAreaId)">
+                    <el-option
+                        v-for="item in $store.state.dept.comList"
+                        :key="'D'+item.deptId"
+                        :label="item.name"
+                        :value="item.deptId">
+                    </el-option>
+                </el-select>
+            </div>
+            <div class="renlDivC" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1 || $store.state.dept.user.type == 2">
+                <label class="labelSS">选择小组:</label>
+                <el-select v-model="q.toGroupId" clearable placeholder="请选择" @focus='getGroupList(q.toDeptId)'>
+                    <el-option
+                        v-for="item in groupList"
+                        :key="'G'+item.groupId"
+                        :label="item.name"
+                        :value="item.groupId">
+                    </el-option>
+                </el-select>
+            </div>
+            <div class="renlDivC">
+                <label class="labelSS">选择员工:</label>
+                <el-select v-model="q.toUserId" clearable placeholder="请选择" @focus='getuserList(q.toDeptId,q.toGroupId)' @change="getDataList">
+                    <el-option
+                        v-for="item in userList"
+                        :key="'U'+item.userId"
+                        :label="item.displayName"
+                        :value="item.userId">
+                    </el-option>
+                </el-select>
+            </div>
+            <el-button type="warning" icon="" size="small" @click="renlClickPL">认领</el-button>
+            
 
             
             
@@ -82,7 +57,7 @@
             <!-- 搜索 -->
         <div class="sous">
             <el-row :gutter="20">
-                <el-col :span="3" v-if="$store.state.dept.user.type == 0">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3" v-if="$store.state.dept.user.type == 0">
                     <el-select v-model="q.areaId" filterable clearable placeholder="选择区域">
                         <el-option
                             v-for="item in $store.state.dept.areaList"
@@ -92,8 +67,8 @@
                         </el-option>
                     </el-select>
                 </el-col>
-                <el-col :span="3" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1">
-                    <el-select v-model="q.deptId" filterable clearable placeholder="选择公司">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1">
+                    <el-select v-model="q.deptId" filterable clearable placeholder="选择公司" @focus="getComList(q.areaId)">
                         <el-option
                             v-for="item in $store.state.dept.comList"
                             :key="'D'+item.deptId"
@@ -102,7 +77,7 @@
                         </el-option>
                     </el-select>
                 </el-col>
-                <el-col :span="3" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1 || $store.state.dept.user.type == 2">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1 || $store.state.dept.user.type == 2">
                     <el-select v-model="q.groupId" clearable placeholder="选择小组" @focus='getGroupList'>
                         <el-option
                             v-for="item in groupList"
@@ -112,7 +87,7 @@
                         </el-option>
                     </el-select>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-select v-model="q.userId" clearable placeholder="选择员工" @focus='getuserList'>
                         <el-option
                             v-for="item in userList"
@@ -122,21 +97,21 @@
                         </el-option>
                     </el-select>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-input
                         size="medium"
                         placeholder="产品标题"
                         v-model="q.title">
                     </el-input>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-input
                         size="medium"
                         placeholder="SKU／编码"
                         v-model="q.sku">
                     </el-input>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-date-picker
                     v-model="q.startDate"
                     value-format="yyyy-MM-dd"
@@ -144,7 +119,7 @@
                     placeholder="开始时间">
                     </el-date-picker>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-date-picker
                     v-model="q.endDate"
                     value-format="yyyy-MM-dd"
@@ -152,7 +127,7 @@
                     placeholder="结束时间">
                     </el-date-picker>
                 </el-col>
-                <el-col :span="6">
+                <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
                     <el-cascader placeholder="产品分类" v-model="nowProTypeId" :options="options" :props="props" clearable @visible-change="visibleChange"></el-cascader>
                 </el-col>
                 
@@ -162,7 +137,7 @@
                         <el-button type="" icon="el-icon-refresh" size="medium" @click="clean">重置</el-button>
                     </span>
                 </el-col>
-                <el-col v-else :span="6">
+                <el-col v-else :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
                     <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList">查询</el-button>
                     <el-button type="" icon="el-icon-refresh" size="medium" @click="clean">重置</el-button>
                 </el-col>
@@ -183,12 +158,12 @@
                 @selection-change="selectionChangeHandle"
                 style="width: 100%">
                 <el-table-column
+                fixed
                 type="selection"
                 :selectable="checkSelectable"
                 width="55">
                 </el-table-column>
                 <el-table-column
-                fixed
                 prop=""
                 label="图片"
                 width="160">
@@ -270,6 +245,7 @@
           return{
             showList:true,
             productD:{},
+            comList:[],
             q:{
                 startDate:'',
                 endDate:'',
@@ -515,6 +491,22 @@
                 })
             }
             
+        },
+        // 获取公司下拉
+        getComList(id){
+            this.$http({
+                url: this.$http.adornUrl('/sys/dept/select'),
+                method: 'get',
+                params: this.$http.adornParams({
+                    areaId:id
+                })
+            }).then(({data}) => {
+                if (data.code == 0) {
+                    this.comList = data.deptList
+                } else {
+                    this.$message.error(data.msg)
+                }
+            })
         },
         // 获取小组下拉
         getGroupList(id){

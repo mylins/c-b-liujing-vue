@@ -3,79 +3,50 @@
     <!-- 搜索 -->
       <div>
         <el-row :gutter="20">
-            <el-col :span="6">
-                <el-row>
-                    <el-col :span="6">
-                        <label class="labelSS">订单ID：</label>
-                    </el-col>
-                    <el-col :span="18">
-                        <el-input
-                            size="medium"
-                            placeholder="请输入"
-                            v-model="dataForm.orderId"
-                            clearable>
-                        </el-input>
-                    </el-col>
-                </el-row>
+            <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
+                <el-input
+                    size="medium"
+                    placeholder="订单ID"
+                    v-model="dataForm.orderId"
+                    clearable>
+                </el-input>
             </el-col>
-            <el-col :span="6">
-                <el-row>
-                    <el-col :span="6">
-                        <label class="labelSS">消费类型：</label>
-                    </el-col>
-                    <el-col :span="18">
-                      <el-select v-model="dataForm.type" filterable clearable placeholder="请选择">
-                          <el-option
-                            key="2"
-                            label="服务费"
-                            value="服务费">
-                          </el-option>
-                          <el-option
-                            key="3"
-                            label="物流费"
-                            value="物流费">
-                          </el-option>
-                        </el-select>
-                        
-                    </el-col>
-                </el-row>
+            <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
+              <el-select v-model="dataForm.type" filterable clearable placeholder="消费类型">
+                <el-option
+                  key="2"
+                  label="服务费"
+                  value="服务费">
+                </el-option>
+                <el-option
+                  key="3"
+                  label="物流费"
+                  value="物流费">
+                </el-option>
+              </el-select>
             </el-col>
-            <el-col :span="6">
-                <el-row>
-                    <el-col :span="6">
-                        <label class="labelSS">小组名称：</label>
-                    </el-col>
-                    <el-col :span="18">
-                        <el-select v-model="dataForm.groupId" clearable placeholder="请选择" @focus='getGroupList'>
-                          <el-option
-                            v-for="item in groupList"
-                            :key="item.groupId"
-                            :label="item.name"
-                            :value="item.groupId">
-                          </el-option>
-                        </el-select>
-                    </el-col>
-                </el-row>
+            <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
+              <el-select v-model="dataForm.groupId" clearable placeholder="选择小组" @focus='getGroupList'>
+                <el-option
+                  v-for="item in groupList"
+                  :key="item.groupId"
+                  :label="item.name"
+                  :value="item.groupId">
+                </el-option>
+              </el-select>
             </el-col>
-            <el-col :span="6">
-                <el-row>
-                    <el-col :span="6">
-                        <label class="labelSS">员工名称：</label>
-                    </el-col>
-                    <el-col :span="18">
-                        <el-select v-model="dataForm.userId" clearable placeholder="请选择" @focus='getuserList'>
-                          <el-option
-                            v-for="item in userList"
-                            :key="item.userId"
-                            :label="item.displayName"
-                            :value="item.userId">
-                          </el-option>
-                        </el-select>
-                    </el-col>
-                </el-row>
+            <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
+              <el-select v-model="dataForm.userId" clearable placeholder="选择员工" @focus='getuserList'>
+                <el-option
+                  v-for="item in userList"
+                  :key="item.userId"
+                  :label="item.displayName"
+                  :value="item.userId">
+                </el-option>
+              </el-select>
             </el-col>
-            <el-col :span="24">
-              <span style="float: right;overflow: hidden;">
+            <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
+              <span>
                 <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList()">查询</el-button>
                 <el-button type="" icon="el-icon-refresh" size="medium" @click="clean()">重置</el-button>
               </span>

@@ -6,59 +6,59 @@
         <div class="sous">
             <el-row :gutter="20">
                 
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-input
                         size="medium"
                         placeholder="订单ID"
                         v-model="q.orderId">
                     </el-input>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-input
                         size="medium"
                         placeholder="亚马逊订单ID"
                         v-model="q.amazonOrderId">
                     </el-input>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-input
                         size="medium"
                         placeholder="关联产品ID"
                         v-model="q.productId">
                     </el-input>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-input
                         size="medium"
                         placeholder="产品SKU"
                         v-model="q.productSku">
                     </el-input>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-input
                         size="medium"
                         placeholder="产品asin码"
                         v-model="q.productAsin">
                     </el-input>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-input
                         size="medium"
                         placeholder="国内物流单号"
                         v-model="q.domesticWaybill">
                     </el-input>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-input
                         size="medium"
                         placeholder="国际物流单号"
                         v-model="q.abroadWaybill">
                     </el-input>
                 </el-col>
-                <el-col :span="3" >
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <div style="height:36px"></div>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-date-picker
                     v-model="q.startDate"
                     value-format="yyyy-MM-dd"
@@ -66,7 +66,7 @@
                     placeholder="开始时间">
                     </el-date-picker>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-date-picker
                     v-model="q.endDate"
                     value-format="yyyy-MM-dd"
@@ -75,7 +75,7 @@
                     </el-date-picker>
                 </el-col>
                 
-                <el-col :span="6">
+                <el-col :xs="24" :sm="12" :md="12" :xl="6">
                     <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList">查询</el-button>
                     <el-button type="" icon="el-icon-refresh" size="medium" @click="clean">重置</el-button>
                 </el-col>

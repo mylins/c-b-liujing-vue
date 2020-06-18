@@ -2,7 +2,7 @@
   <div class="">
       <!-- 操作 -->
       <div class="divM">
-        <el-button type="primary" icon="el-icon-plus" size="small" @click="addVisible = true;addObj.type='EAN'">添加UPC／EAN</el-button>
+        <el-button type="primary" icon="el-icon-plus" size="small" @click="addVisible = true;addObj.type='EAN'">添加</el-button>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <el-input-number v-model="num" :controls="false" size="small"></el-input-number>
         <el-button type="primary" icon="el-icon-delete" size="small" @click="del">批量删除</el-button>

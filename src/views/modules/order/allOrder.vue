@@ -5,7 +5,7 @@
         <!-- 搜索 -->
         <div class="sous">
             <el-row :gutter="20">
-                <el-col :span="3" v-if="$store.state.dept.user.type == 0">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3" v-if="$store.state.dept.user.type == 0">
                     <el-select v-model="q.areaId" filterable clearable placeholder="选择区域">
                         <el-option
                             v-for="item in $store.state.dept.areaList"
@@ -15,17 +15,17 @@
                         </el-option>
                     </el-select>
                 </el-col>
-                <el-col :span="3" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1">
-                    <el-select v-model="q.deptId" filterable clearable placeholder="选择公司">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1">
+                    <el-select v-model="q.deptId" filterable clearable placeholder="选择公司" @focus="getComList">
                         <el-option
-                            v-for="item in $store.state.dept.comList"
+                            v-for="item in comList"
                             :key="'D'+item.deptId"
                             :label="item.name"
                             :value="item.deptId">
                         </el-option>
                     </el-select>
                 </el-col>
-                <el-col :span="3" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1 || $store.state.dept.user.type == 2">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3" v-if="$store.state.dept.user.type == 0 || $store.state.dept.user.type == 1 || $store.state.dept.user.type == 2">
                     <el-select v-model="q.groupId" clearable placeholder="选择小组" @focus='getGroupList'>
                         <el-option
                             v-for="item in groupList"
@@ -35,7 +35,7 @@
                         </el-option>
                     </el-select>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-select v-model="q.userId" clearable placeholder="选择员工" @focus='getuserList'>
                         <el-option
                             v-for="item in userList"
@@ -45,56 +45,56 @@
                         </el-option>
                     </el-select>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-input
                         size="medium"
                         placeholder="订单ID"
                         v-model="q.orderId">
                     </el-input>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-input
                         size="medium"
                         placeholder="亚马逊订单ID"
                         v-model="q.amazonOrderId">
                     </el-input>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-input
                         size="medium"
                         placeholder="关联产品ID"
                         v-model="q.productId">
                     </el-input>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-input
                         size="medium"
                         placeholder="产品SKU"
                         v-model="q.productSku">
                     </el-input>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-input
                         size="medium"
                         placeholder="产品asin码"
                         v-model="q.productAsin">
                     </el-input>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-input
                         size="medium"
                         placeholder="国内物流单号"
                         v-model="q.domesticWaybill">
                     </el-input>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-input
                         size="medium"
                         placeholder="国际物流单号"
                         v-model="q.abroadWaybill">
                     </el-input>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-date-picker
                     v-model="q.startDate"
                     value-format="yyyy-MM-dd"
@@ -102,7 +102,7 @@
                     placeholder="开始时间">
                     </el-date-picker>
                 </el-col>
-                <el-col :span="3">
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-date-picker
                     v-model="q.endDate"
                     value-format="yyyy-MM-dd"
@@ -117,7 +117,7 @@
                         <el-button type="" icon="el-icon-refresh" size="medium" @click="clean">重置</el-button>
                     </span>
                 </el-col> -->
-                <el-col :span="6">
+                <el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
                     <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList">查询</el-button>
                     <el-button type="" icon="el-icon-refresh" size="medium" @click="clean">重置</el-button>
                 </el-col>
@@ -392,6 +392,7 @@
       data(){
           return{
             orderId:'',
+            comList:[],
             userList:[],
             groupList:[],
             ids:[],
@@ -725,6 +726,22 @@
                 })
             }).catch(() => {})
 
+        },
+        // 获取公司下拉
+        getComList(){
+            this.$http({
+                url: this.$http.adornUrl('/sys/dept/select'),
+                method: 'get',
+                params: this.$http.adornParams({
+                    areaId:this.q.areaId
+                })
+            }).then(({data}) => {
+                if (data.code == 0) {
+                    this.comList = data.deptList
+                } else {
+                    this.$message.error(data.msg)
+                }
+            })
         },
         // 获取小组下拉
         getGroupList(){
