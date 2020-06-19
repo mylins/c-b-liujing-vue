@@ -665,10 +665,10 @@
                     keyWord:null,
                     keyPoints:null,
                     productDescription:null,
-                    isProductTitle:false,
-                    isProductDescription:false,
-                    isKeyPoints:false,
-                    isKeyWord:false
+                    isProductTitle:0,
+                    isProductDescription:0,
+                    isKeyPoints:0,
+                    isKeyWord:0
                 },
                 franceIntroduction:{
                     countryCode: "FR",
@@ -676,10 +676,10 @@
                     keyWord:null,
                     keyPoints:null,
                     productDescription:null,
-                    isProductTitle:false,
-                    isProductDescription:false,
-                    isKeyPoints:false,
-                    isKeyWord:false
+                    isProductTitle:0,
+                    isProductDescription:0,
+                    isKeyPoints:0,
+                    isKeyWord:0
                 },
                 germanyIntroduction:{
                     countryCode: "DE",
@@ -687,10 +687,10 @@
                     keyWord:null,
                     keyPoints:null,
                     productDescription:null,
-                    isProductTitle:false,
-                    isProductDescription:false,
-                    isKeyPoints:false,
-                    isKeyWord:false
+                    isProductTitle:0,
+                    isProductDescription:0,
+                    isKeyPoints:0,
+                    isKeyWord:0
                 },
                 italyIntroduction:{
                     countryCode: "IT",
@@ -698,10 +698,10 @@
                     keyWord:null,
                     keyPoints:null,
                     productDescription:null,
-                    isProductTitle:false,
-                    isProductDescription:false,
-                    isKeyPoints:false,
-                    isKeyWord:false
+                    isProductTitle:0,
+                    isProductDescription:0,
+                    isKeyPoints:0,
+                    isKeyWord:0
                 },
                 spainIntroduction:{
                     countryCode: "ES",
@@ -709,10 +709,10 @@
                     keyWord:null,
                     keyPoints:null,
                     productDescription:null,
-                    isProductTitle:false,
-                    isProductDescription:false,
-                    isKeyPoints:false,
-                    isKeyWord:false
+                    isProductTitle:0,
+                    isProductDescription:0,
+                    isKeyPoints:0,
+                    isKeyWord:0
                 },
                 japanIntroduction:{
                     countryCode: "JP",
@@ -720,10 +720,10 @@
                     keyWord:null,
                     keyPoints:null,
                     productDescription:null,
-                    isProductTitle:false,
-                    isProductDescription:false,
-                    isKeyPoints:false,
-                    isKeyWord:false
+                    isProductTitle:0,
+                    isProductDescription:0,
+                    isKeyPoints:0,
+                    isKeyWord:0
                 },
                 nlIntroduction:{
                     countryCode: "NL",
@@ -731,10 +731,10 @@
                     keyWord:null,
                     keyPoints:null,
                     productDescription:null,
-                    isProductTitle:false,
-                    isProductDescription:false,
-                    isKeyPoints:false,
-                    isKeyWord:false
+                    isProductTitle:0,
+                    isProductDescription:0,
+                    isKeyPoints:0,
+                    isKeyWord:0
                 }
             }
             this.dict('产品类型');
@@ -845,6 +845,7 @@
             introductionList.push(this.dataForm.italyIntroduction);
             introductionList.push(this.dataForm.spainIntroduction);
             introductionList.push(this.dataForm.japanIntroduction);
+            introductionList.push(this.dataForm.nlIntroduction);
             const loading = this.$loading({
                 lock: true,
                 text: 'Loading',
@@ -872,6 +873,7 @@
                             this.dataForm.germanyIntroduction = data.introductionList[2];
                             this.dataForm.italyIntroduction = data.introductionList[3];
                             this.dataForm.spainIntroduction = data.introductionList[4];
+                            this.dataForm.nlIntroduction = data.introductionList[6];
                             this.dataForm.japanIntroduction = data.introductionList[5];
                         }
                     })

@@ -2,9 +2,9 @@
   <div class="mod-user">
     <!-- 操作 -->
       <div class="" style="margin-bottom:10px">
-        <el-button type="primary" icon="el-icon-setting" size="small" @click="getDept">设置公司参数</el-button>
+        <el-button type="primary" icon="el-icon-setting" size="small" @click="getDept">设置全局参数</el-button>
         <el-button v-if="editOk" type="warning" icon="el-icon-edit" size="small" @click="edit">保存</el-button>
-        <el-button v-else type="primary" icon="el-icon-edit" size="small" @click="editOk = true">修改参数</el-button>
+        <el-button v-else type="primary" icon="el-icon-edit" size="small" @click="editOk = true">修改物流参数</el-button>
         
       </div>
 
@@ -23,7 +23,7 @@
         </el-table-column>
         <el-table-column
           prop=""
-          label="单价">
+          label="单价(／kg)">
           <template slot-scope="scope">
               <el-input-number v-if="editOk" v-model="scope.row.price" controls-position="right"></el-input-number>
               <span v-else>{{scope.row.price}}</span>
@@ -32,7 +32,7 @@
         </el-table-column>
         <el-table-column
           prop=""
-          label="加价">
+          label="处理费">
           <template slot-scope="scope">
               <el-input-number v-if="editOk" v-model="scope.row.addPrice" controls-position="right"></el-input-number>
               <span v-else>{{scope.row.addPrice}}</span>
