@@ -182,6 +182,7 @@
                     <span v-if="scope.row.countryCode == 'ES'" style="font-size:14px;color:#409EFF">西班牙</span>
                     <span v-if="scope.row.countryCode == 'JP'" style="font-size:14px;color:#409EFF">日本</span>
                     <span v-if="scope.row.countryCode == 'AU'" style="font-size:14px;color:#409EFF">澳大利亚</span>
+                    <span v-if="scope.row.countryCode == 'NL'" style="font-size:14px;color:#409EFF">荷兰</span>
                 </template>
             </el-table-column>
             <el-table-column
@@ -605,13 +606,13 @@
                     </div>
                 </div>
             </el-tab-pane>
-            <el-tab-pane label="日语">
+            <el-tab-pane label="荷兰语">
                 <div class="intrDiv">
                     <label>
                         <span>产品标题</span>  <br>
                     </label>
                     <div>
-                        <el-form-item label="" prop="introductionList[6].productTitle" :rules="{max: 200,message: '日语标题最多200个字',trigger: 'blur'}">
+                        <el-form-item label="" prop="introductionList[6].productTitle" :rules="{max: 200,message: '荷兰语标题最多200个字',trigger: 'blur'}">
                             <el-input
                             type="textarea"
                             placeholder="请输入内容"
@@ -626,7 +627,7 @@
                         <span>关键字</span>  <br>
                     </label>
                     <div>
-                         <el-form-item label="" prop="introductionList[6].keyWord" :rules="{max: 250,message: '日语关键字最多250个字',trigger: 'blur'}">
+                         <el-form-item label="" prop="introductionList[6].keyWord" :rules="{max: 250,message: '荷兰语关键字最多250个字',trigger: 'blur'}">
                             <el-input
                             type="textarea"
                             placeholder="请输入内容"
@@ -641,7 +642,7 @@
                         <span>重点说明</span>  <br>
                     </label>
                     <div>
-                         <el-form-item label="" prop="introductionList[6].keyPoints" :rules="{max: 500,message: '日语重点说明最多500个字',trigger: 'blur'}">
+                         <el-form-item label="" prop="introductionList[6].keyPoints" :rules="{max: 500,message: '荷兰语重点说明最多500个字',trigger: 'blur'}">
                             <el-input
                             type="textarea"
                             placeholder="请输入内容"
@@ -657,7 +658,7 @@
                         <span>产品描述</span>  <br>
                     </label>
                     <div>
-                        <el-form-item label="" prop="introductionList[6].productDescription" :rules="{max: 2000,message: '日语产品描述最多2000个字',trigger: 'blur'}">
+                        <el-form-item label="" prop="introductionList[6].productDescription" :rules="{max: 2000,message: '荷兰语产品描述最多2000个字',trigger: 'blur'}">
                             <el-input
                             type="textarea"
                             placeholder="请输入内容"
@@ -669,6 +670,71 @@
                     </div>
                 </div>
             </el-tab-pane>
+            <el-tab-pane label="日语">
+                <div class="intrDiv">
+                    <label>
+                        <span>产品标题</span>  <br>
+                    </label>
+                    <div>
+                        <el-form-item label="" prop="introductionList[7].productTitle" :rules="{max: 200,message: '日语标题最多200个字',trigger: 'blur'}">
+                            <el-input
+                            type="textarea"
+                            placeholder="请输入内容"
+                            v-model="dataForm.introductionList[7].productTitle"
+                            maxlength="200"
+                            show-word-limit></el-input>
+                        </el-form-item>
+                    </div>
+                </div>
+                <div class="intrDiv">
+                    <label>
+                        <span>关键字</span>  <br>
+                    </label>
+                    <div>
+                         <el-form-item label="" prop="introductionList[7].keyWord" :rules="{max: 250,message: '日语关键字最多250个字',trigger: 'blur'}">
+                            <el-input
+                            type="textarea"
+                            placeholder="请输入内容"
+                            v-model="dataForm.introductionList[7].keyWord"
+                            maxlength="250"
+                            show-word-limit></el-input>
+                         </el-form-item>
+                    </div>
+                </div>
+                <div class="intrDiv">
+                    <label>
+                        <span>重点说明</span>  <br>
+                    </label>
+                    <div>
+                         <el-form-item label="" prop="introductionList[7].keyPoints" :rules="{max: 500,message: '日语重点说明最多500个字',trigger: 'blur'}">
+                            <el-input
+                            type="textarea"
+                            placeholder="请输入内容"
+                            v-model="dataForm.introductionList[7].keyPoints"
+                            maxlength="500"
+                            :rows="4"
+                            show-word-limit></el-input>
+                         </el-form-item>
+                    </div>
+                </div>
+                <div class="intrDiv">
+                    <label>
+                        <span>产品描述</span>  <br>
+                    </label>
+                    <div>
+                        <el-form-item label="" prop="introductionList[7].productDescription" :rules="{max: 2000,message: '日语产品描述最多2000个字',trigger: 'blur'}">
+                            <el-input
+                            type="textarea"
+                            placeholder="请输入内容"
+                            v-model="dataForm.introductionList[7].productDescription"
+                            maxlength="2000"
+                            :rows="4"
+                            show-word-limit></el-input>
+                        </el-form-item>
+                    </div>
+                </div>
+            </el-tab-pane>
+            
           </el-tabs>
         </div>
         <div class="blockDivForm">
@@ -1142,8 +1208,17 @@
             price: 0,
             profit: 0,
             profitRate: "0.00%",
+          },{
+              countryCode: "",
+            finalPrice: 0,
+            foreignCurrency: 0,
+            freight: 0,
+            optimization: 0,
+            price: 0,
+            profit: 0,
+            profitRate: "0.00%",
           }],
-          introductionList:[{},{},{},{},{},{},{}],
+          introductionList:[{},{},{},{},{},{},{},{}],
           productTitle:'',
           property:{
               purchasePrice:0,

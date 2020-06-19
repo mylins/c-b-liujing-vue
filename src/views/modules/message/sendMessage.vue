@@ -130,9 +130,9 @@
                 console.log("您的浏览器不支持WebSocket");  
             }else{  
                 console.log("您的浏览器支持WebSocket");
-                var url = this.$http.adornUrl("/websocket?token="+this.$cookie.get("token")+"/"+this.userId).replace('http://','ws://');
+                var url = this.$http.adornUrl("/websocket/"+this.userId).replace('http://','ws://');
                 //实现化WebSocket对象，指定要连接的服务器地址与端口  建立连接
-                socket = new WebSocket("ws://127.0.0.1:8080");
+                socket = new WebSocket(url);
                 // socket = new WebSocket("ws://192.168.1.20:8080/renren-fast/websocket?token="+this.$cookie.get("token"));
                 // socket = new WebSocket("ws://localhost:8080/renren-fast/websocket/"+this.userId+"/"+this.$cookie.get("token")); 
                 //打开事件
@@ -160,7 +160,7 @@
                 //     socket.close();
                 //});
             }
-        }
+        },
 
       }
   }

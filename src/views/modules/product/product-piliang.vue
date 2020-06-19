@@ -460,6 +460,72 @@
                     </div>
                 </div>
             </el-tab-pane>
+            <el-tab-pane label="荷兰语">
+                <div class="intrDiv">
+                    <label>
+                        <span>产品标题</span>  <br>
+                        <el-checkbox :true-label='1' :false-label='0' v-model="dataForm.nlIntroduction.isProductTitle">是否追加</el-checkbox>
+                    </label>
+                    <div>
+                        <el-form-item label="" prop="nlIntroduction.productTitle" :rules="{max: 200,message: '荷兰语标题最多200个字',trigger: 'blur'}">
+                            <el-input
+                            type="textarea"
+                            placeholder="请输入内容"
+                            v-model="dataForm.nlIntroduction.productTitle"
+                            maxlength="200"
+                            show-word-limit></el-input>
+                        </el-form-item>
+                    </div>
+                </div>
+                <div class="intrDiv">
+                    <label>
+                        <span>关键字</span>  <br>
+                        <el-checkbox :true-label='1' :false-label='0' v-model="dataForm.nlIntroduction.isKeyWord">是否追加</el-checkbox>
+                    </label>
+                    <div>
+                        <el-form-item label="" prop="nlIntroduction.keyWord" :rules="{max: 250,message: '荷兰语关键字最多250个字',trigger: 'blur'}">
+                            <el-input
+                            type="textarea"
+                            placeholder="请输入内容"
+                            v-model="dataForm.nlIntroduction.keyWord"
+                            maxlength="250"
+                            show-word-limit></el-input>
+                        </el-form-item>
+                    </div>
+                </div>
+                <div class="intrDiv">
+                    <label>
+                        <span>重点说明</span>  <br>
+                        <el-checkbox :true-label='1' :false-label='0' v-model="dataForm.nlIntroduction.isKeyPoints">是否追加</el-checkbox>
+                    </label>
+                    <div>
+                        <el-form-item label="" prop="nlIntroduction.keyPoints" :rules="{max: 500,message: '荷兰语重点说明最多500个字',trigger: 'blur'}">
+                            <el-input
+                            type="textarea"
+                            placeholder="请输入内容"
+                            v-model="dataForm.nlIntroduction.keyPoints"
+                            maxlength="500"
+                            show-word-limit></el-input>
+                        </el-form-item>
+                    </div>
+                </div>
+                <div class="intrDiv">
+                    <label>
+                        <span>产品描述</span>  <br>
+                        <el-checkbox :true-label='1' :false-label='0' v-model="dataForm.nlIntroduction.isProductDescription">是否追加</el-checkbox>
+                    </label>
+                    <div>
+                        <el-form-item label="" prop="nlIntroduction.productDescription" :rules="{max: 2000,message: '荷兰语产品描述最多2000个字',trigger: 'blur'}">
+                            <el-input
+                            type="textarea"
+                            placeholder="请输入内容"
+                            v-model="dataForm.nlIntroduction.productDescription"
+                            maxlength="2000"
+                            show-word-limit></el-input>
+                        </el-form-item>
+                    </div>
+                </div>
+            </el-tab-pane>
           </el-tabs>
         </div>
         
@@ -525,6 +591,9 @@
                 },
                 japanIntroduction:{
                     countryCode: "JP"
+                },
+                nlIntroduction:{
+                    countryCode: "NL"
                 }
         },
         options:[],
@@ -576,13 +645,13 @@
     },
     methods: {
         init(ids){
+            console.log('111');
             this.visible = true;
             this.dataForm = {
                 productIds: [],
                 productType:'',
                 categoryId:null,
                 categoryName:'',
-                categoryId:null,
                 producerName:'',
                 brandName:'',
                 manufacturerNumber:'',
@@ -596,6 +665,10 @@
                     keyWord:null,
                     keyPoints:null,
                     productDescription:null,
+                    isProductTitle:false,
+                    isProductDescription:false,
+                    isKeyPoints:false,
+                    isKeyWord:false
                 },
                 franceIntroduction:{
                     countryCode: "FR",
@@ -603,6 +676,10 @@
                     keyWord:null,
                     keyPoints:null,
                     productDescription:null,
+                    isProductTitle:false,
+                    isProductDescription:false,
+                    isKeyPoints:false,
+                    isKeyWord:false
                 },
                 germanyIntroduction:{
                     countryCode: "DE",
@@ -610,6 +687,10 @@
                     keyWord:null,
                     keyPoints:null,
                     productDescription:null,
+                    isProductTitle:false,
+                    isProductDescription:false,
+                    isKeyPoints:false,
+                    isKeyWord:false
                 },
                 italyIntroduction:{
                     countryCode: "IT",
@@ -617,6 +698,10 @@
                     keyWord:null,
                     keyPoints:null,
                     productDescription:null,
+                    isProductTitle:false,
+                    isProductDescription:false,
+                    isKeyPoints:false,
+                    isKeyWord:false
                 },
                 spainIntroduction:{
                     countryCode: "ES",
@@ -624,6 +709,10 @@
                     keyWord:null,
                     keyPoints:null,
                     productDescription:null,
+                    isProductTitle:false,
+                    isProductDescription:false,
+                    isKeyPoints:false,
+                    isKeyWord:false
                 },
                 japanIntroduction:{
                     countryCode: "JP",
@@ -631,6 +720,21 @@
                     keyWord:null,
                     keyPoints:null,
                     productDescription:null,
+                    isProductTitle:false,
+                    isProductDescription:false,
+                    isKeyPoints:false,
+                    isKeyWord:false
+                },
+                nlIntroduction:{
+                    countryCode: "NL",
+                    productTitle:null,
+                    keyWord:null,
+                    keyPoints:null,
+                    productDescription:null,
+                    isProductTitle:false,
+                    isProductDescription:false,
+                    isKeyPoints:false,
+                    isKeyWord:false
                 }
             }
             this.dict('产品类型');
@@ -853,5 +957,8 @@
       top: -10px;
       right: 0;
       z-index: 1;
+  }
+  .intrDiv .el-form-item , .intrDiv .el-form-item .el-form-item__content{
+      width: 100%;
   }
 </style>
