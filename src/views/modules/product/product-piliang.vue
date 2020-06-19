@@ -893,12 +893,14 @@
                 this.dataForm.italyIntroduction[val] = 1;
                 this.dataForm.spainIntroduction[val] = 1;
                 this.dataForm.japanIntroduction[val] = 1;
+                this.dataForm.nlIntroduction[val] = 1;
             }else{
                 this.dataForm.franceIntroduction[val] = 0;
                 this.dataForm.germanyIntroduction[val] = 0;
                 this.dataForm.italyIntroduction[val] = 0;
                 this.dataForm.spainIntroduction[val] = 0;
                 this.dataForm.japanIntroduction[val] = 0;
+                this.dataForm.nlIntroduction[val] = 0;
             }
         },
         // 数据字典
