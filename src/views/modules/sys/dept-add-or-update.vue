@@ -333,6 +333,8 @@
                   onClose: () => {
                     loading.close();
                     this.$refs.back.removeTabHandle(this.mainTabsActiveName);
+                    this.$store.dispatch('getComList');
+                    this.$store.dispatch('getAreaList');
                     // this.$nextTick(() => {
                     //   this.$refs['dataForm'].resetFields();
                     // })

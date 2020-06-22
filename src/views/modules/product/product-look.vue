@@ -136,6 +136,7 @@
                     <span v-if="scope.row.countryCode == 'ES'" style="font-size:14px;color:#409EFF">西班牙</span>
                     <span v-if="scope.row.countryCode == 'JP'" style="font-size:14px;color:#409EFF">日本</span>
                     <span v-if="scope.row.countryCode == 'AU'" style="font-size:14px;color:#409EFF">澳大利亚</span>
+                    <span v-if="scope.row.countryCode == 'NL'" style="font-size:14px;color:#409EFF">荷兰</span>
                 </template>
             </el-table-column>
             <el-table-column
