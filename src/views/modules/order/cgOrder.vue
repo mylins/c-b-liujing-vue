@@ -528,7 +528,11 @@
                     'startDate':this.q.startDate,
                     'endDate':this.q.endDate,
                     'abnormalStatus':this.abnormalStatusValue,
-                    'orderStatus':this.orderStatusValue
+                    'orderStatus':this.orderStatusValue,
+                    'deptId':this.q.deptId,
+                    'userId':this.q.userId,
+                    'groupId':this.q.groupId,
+                    'areaId':this.q.areaId,
                 })
             }).then(({data}) => {
                 if (data && data.code === 0) {
