@@ -594,7 +594,7 @@
                         <span>产品描述</span>  <br>
                     </label>
                     <div>
-                        <el-form-item label="" prop="introductionList[5].productDescription" :rules="{max: 200,message: '德语产品描述最多200个字',trigger: 'blur'}">
+                        <el-form-item label="" prop="introductionList[5].productDescription" :rules="{max: 200,message: '德语产品描述最多2000个字',trigger: 'blur'}">
                             <el-input
                             type="textarea"
                             placeholder="请输入内容"

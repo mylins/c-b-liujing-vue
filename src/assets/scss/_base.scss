@@ -26,6 +26,11 @@ ul{
   padding: 0;
 }
 
+// table
+.el-table tr.danger-row{
+  background: #fef0f0;
+}
+
 /* Utils
 ------------------------------ */
 .clearfix:before,

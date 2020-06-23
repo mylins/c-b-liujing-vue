@@ -49,9 +49,9 @@
           <el-form-item label="公司账户数" prop="accountCount">
             <el-input v-model="dataForm.accountCount" placeholder="公司账户数"></el-input>
           </el-form-item>
-          <el-form-item label="公司SKU信息" prop="companySku">
+          <!-- <el-form-item label="公司SKU信息" prop="companySku">
             <el-input v-model="dataForm.companySku" placeholder="公司SKU信息"></el-input>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="公司地址" prop="companyAddress">
             <el-input v-model="dataForm.companyAddress" placeholder="公司地址"></el-input>
           </el-form-item>

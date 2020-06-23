@@ -82,6 +82,7 @@
             <el-table
                 :data="dataList"
                 v-loading="dataListLoading"
+                :row-class-name="tableRowClassName"
                 style="width: 100%">
                 <el-table-column
                 prop="productId"
@@ -138,7 +139,8 @@
                         <el-tooltip v-if="scope.row.generalRemark" :content="scope.row.generalRemark" placement="bottom" effect="light">
                             <i class="el-icon-s-flag" style="color:#F56C6C"></i>
                         </el-tooltip>
-                        <open-tab size="medium" type="text" icon="" :dec='scope.row.amazonOrderId' urlName='productAddUpdate' :opt='{"orderId":scope.row.orderId}'></open-tab>
+                        <open-tab :isMore="true" size="medium" type="text" icon="" :dec='scope.row.amazonOrderId' urlName='orderAddUpdateCk' :opt='{"orderId":scope.row.orderId}'></open-tab>
+                        <!-- <open-tab size="medium" type="text" icon="" :dec='scope.row.amazonOrderId' urlName='productAddUpdate' :opt='{"orderId":scope.row.orderId}'></open-tab> -->
                         <el-image
                             style="width: 15px; height: 15px"
                             :src="require('@/assets/img/yamaxun.jpg')"></el-image>
@@ -150,11 +152,11 @@
                 label="数量"
                 width="100">
                 </el-table-column>
-                <el-table-column
+                <!-- <el-table-column
                 prop="purchasePrice"
                 label="采购价"
                 width="100">
-                </el-table-column>
+                </el-table-column> -->
                 <el-table-column
                 prop=""
                 label="国内物流单号"
@@ -173,7 +175,6 @@
                     <template slot-scope="scope">
                         <div v-for="item in scope.abroadWaybill" :key="item.abroadLogisticsId">
                             <span>{{item.abroadWaybill}}</span>
-                            <!-- <el-button type="text" icon="" @click="rukuClick1(scope.row.orderId)">入库</el-button> -->
                         </div>
                     </template>
                 </el-table-column>
@@ -207,7 +208,7 @@
                 width="100">
                     <template slot-scope="scope">
                         <el-button v-if="scope.row.orderStatus =='InShipped'" type="text" icon="" @click="rukuClick(scope.row.orderId)">入库</el-button>
-                        <el-button v-if="scope.row.orderStatus =='Warehousing'" type="text" icon="" @click="chukuClick(scope.row.orderId)">出库</el-button>
+                        <el-button v-if="scope.row.orderStatus =='Warehousing'" type="text" icon="" @click="chukuClick(scope.row)">出库</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -309,6 +310,12 @@
         uploadClick(num){
             this.uploadValue = num;
             this.getDataList();
+        },
+        // 展示列为红色
+        tableRowClassName({row, rowIndex}){
+            if(row.isRed == 1){
+                return 'danger-row';
+            }
         },
         // 获取订单状态列表
         getMyStatusList () {
@@ -622,41 +629,49 @@
             })
         },
         // 出库
-        chukuClick(id){
-            this.$confirm('该订单确定出库?', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                    const loading = this.$loading({
-                    lock: true,
-                    text: 'Loading',
-                    spinner: 'el-icon-loading',
-                    background: 'rgba(0, 0, 0, 0.7)'
-                });
-                this.$http({
-                    url: this.$http.adornUrl('/order/order/listchuku'),
-                    method: 'get',
-                    params: this.$http.adornParams({
-                        'orderId': id
-                    })
-                }).then(({data}) => {
-                    if (data && data.code === 0) {
-                        this.$message({
-                            message: '操作成功',
-                            type: 'success',
-                            duration: 1000,
-                            onClose: () => {
-                                this.getDataList();
-                                loading.close()
-                            }
-                        })
-                    } else {
-                        this.$message.error(data.msg)
-                        loading.close()
-                    }
+        chukuClick(row){
+            if(row.isRed == 1){
+                this.$message.error({
+                    message: '余额不足',
+                    duration: 1000
                 })
-            }).catch(() => {})
+            }else{
+                this.$confirm('该订单确定出库?', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                        const loading = this.$loading({
+                        lock: true,
+                        text: 'Loading',
+                        spinner: 'el-icon-loading',
+                        background: 'rgba(0, 0, 0, 0.7)'
+                    });
+                    this.$http({
+                        url: this.$http.adornUrl('/order/order/listchuku'),
+                        method: 'get',
+                        params: this.$http.adornParams({
+                            'orderId': row.orderId
+                        })
+                    }).then(({data}) => {
+                        if (data && data.code === 0) {
+                            this.$message({
+                                message: '操作成功',
+                                type: 'success',
+                                duration: 1000,
+                                onClose: () => {
+                                    this.getDataList();
+                                    loading.close()
+                                }
+                            })
+                        } else {
+                            this.$message.error(data.msg)
+                            loading.close()
+                        }
+                    })
+                }).catch(() => {})
+            }
+            
             
         }
       }

@@ -134,7 +134,7 @@
           let decTitle = this.opt.productId ? '产品' : '订单';
           let title = decTitle+' - '+id;
           let name = this.urlName+id;
-          let url = this.opt.productId ? 'product/product-add-or-update' : 'order/order-update'
+          let url = this.opt.productId ? 'product/product-add-or-update' : this.urlName == 'orderAddUpdateCk' ? 'order/order-update-ck' : 'order/order-update'
 
           this.$router.addRoutes([{
             path: '/',

@@ -59,6 +59,16 @@
               <el-checkbox v-for="role in roleList" :key="role.roleId" :label="role.roleId">{{ role.roleName }}</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
+          <el-form-item v-if="dataForm.roleIdList.indexOf(5) != -1" label="所属小组" size="mini" prop="groupId">
+            <el-select v-model="dataForm.groupId" placeholder="选择小组" @focus='getGroupList' @change="groupChange">
+                <el-option
+                    v-for="item in groupList"
+                    :key="item.groupId"
+                    :label="item.name"
+                    :value="item.groupId">
+                </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="状态" size="mini" prop="status">
             <el-radio-group v-model="dataForm.status">
               <el-radio :label="0">禁用</el-radio>
@@ -180,9 +190,41 @@
           })
         }
       }
+      var displayNameR = (rule, value, callback) => {
+        if(this.dataForm.deptId){
+          callback()
+        }else{
+          this.$http({
+            url: this.$http.adornUrl('/sys/user/checkName'),
+            method: 'get',
+            params: this.$http.adornParams({
+              'displayName':value
+            })
+          }).then(({data}) => {
+            if (data.code == 0) {
+              callback()
+            } else {
+              callback(new Error('该名称已被使用'))
+            }
+          })
+        }
+      }
+      var groupName = (rule, value, callback) => {
+        if (value == 0) {
+          callback(new Error('请选择小组'))
+        } else {
+          callback()
+        }
+      }
       return {
         visible: false,
         roleList: [],
+        groupList:[
+          {
+            groupId:0,
+            name:'请选择'
+          }
+        ],
         dataForm: {
           userId: null,
           username: '',
@@ -190,6 +232,7 @@
           password: '',
           password1: '',
           deptId:'',
+          groupId:0,
           salt: '',
           email: '',
           mobile: '',
@@ -198,7 +241,8 @@
           information:{},
           enName:'',
           enBrand:'',
-          orderFetch:1
+          orderFetch:1,
+          flag:0
         },
         dataRule: {
           username: [
@@ -223,10 +267,15 @@
             { validator: validateMobile, trigger: 'blur' }
           ],
           displayName:[
-            {required: true, message: '姓名不能为空', trigger: 'blur' }
+            {required: true, message: '姓名不能为空', trigger: 'blur' },
+            { validator: displayNameR, trigger: 'blur' }
           ],
           deptId:[
             {required: true, message: '所属公司不能为空', trigger: 'change' }
+          ],
+          groupId:[
+            {required: true, message: '所属小组不能为空', trigger: 'change' },
+            { validator: groupName, trigger: 'blur' }
           ],
           enName:[
             {required: true, message: '英文名称不能为空', trigger: 'blur' }
@@ -243,7 +292,7 @@
     components: {
       PageH
     },
-    activated(){
+    created(){
       this.init(this.$route.params.userId)
     },
     computed: {
@@ -306,6 +355,13 @@
                 this.dataForm.mobile = data.user.mobile;
                 this.dataForm.aliexpress = data.user.aliexpress;
                 this.dataForm.orderFetch =data.user.orderFetch;
+                this.dataForm.groupId = data.user.groupId;
+                this.groupList = [
+                  {
+                    groupId:data.user.groupId,
+                    name:data.user.groupName
+                  }
+                ];
               }else{
                 this.$message.error(data.msg)
               }
@@ -393,8 +449,44 @@
       },
       deptChange(opt){
         this.dataForm.deptName = (this.$store.state.dept.comList.find(item => item.deptId == opt)).name;
-        console.log(this.dataForm);
-      }
+        // console.log(this.dataForm);
+      },
+      groupChange(opt){
+        this.dataForm.groupName = (this.groupList.find(item => item.groupId == opt)).name;
+        this.dataForm.flag = 1;
+      },
+      // 获取小组下拉
+      getGroupList(){
+          if(this.dataForm.deptId){
+              this.$http({
+                  url: this.$http.adornUrl('/sys/sysgroup/select'),
+                  method: 'get',
+                  params: this.$http.adornParams({
+                      'deptId':this.dataForm.deptId,
+                  })
+              }).then(({data}) => {
+                  if (data && data.code === 0) {
+                      this.groupList = data.groupList;
+                      if(this.groupList.length == 0){
+                        this.groupList  = [
+                          {
+                            groupId:0,
+                            name:'请选择'
+                          }
+                        ]
+                      }
+                  } else {
+                      this.$message.error(data.msg)
+                  }
+              })
+          }else{
+              this.$message({
+                  message: '请先选择公司',
+                  type: 'warning'
+              });
+          }
+          
+      },
     }
   }
 </script>
