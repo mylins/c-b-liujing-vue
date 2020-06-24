@@ -1,13 +1,14 @@
 <template>
   <div class="site-wrapper site-page--login">
+    <el-image
+          style="width: 600px;position:absolute;top:50%;left:50%;margin-top:-240px;margin-left:-560px"
+          :src="require('@/assets/img/title.jpg')"></el-image>
     <div class="site-content__wrapperL">
-      <!-- <div class="login-img">
-        <el-image
-          style="width: 570px; height: 540px"
-          :src="require('@/assets/img/login_img.jpg')"></el-image>
-      </div> -->
+      <!-- <div class="login-img"> -->
+        
+      <!-- </div> -->
       <div class="login-main">
-        <h3 class="login-title">管理员登录</h3>
+        <h3 class="login-title">融艺汇</h3>
         <el-form :model="dataForm" :rules="dataRule" ref="dataForm" status-icon>
           <el-form-item prop="userName">
             <el-input prefix-icon="el-icon-user-solid" v-model="dataForm.userName" placeholder="帐号"></el-input>
@@ -27,7 +28,7 @@
             </el-row>
           </el-form-item>
           <el-form-item>
-            <el-button class="login-btn-submit" type="primary" @click="dataFormSubmit()">登录</el-button>
+            <el-button class="login-btn-submit" type="info" @click="dataFormSubmit()">登录</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -109,6 +110,7 @@
     bottom: 0;
     left: 0;
     overflow: hidden;
+    text-align: center;
     &:before {
       position: fixed;
       top: 0;
@@ -117,7 +119,6 @@
       width: 100%;
       height: 100%;
       content: "";
-      background-image: url(~@/assets/img/bg.jpg);
       background-size: cover;
     }
     .site-content__wrapperL {
@@ -125,12 +126,16 @@
       top: 50%;
       left: 50%;
       padding: 0;
-      margin: -240px 0 0 -215px;
-      height: 480px;
-      width: 430px;
+      margin: -260px 0 0 100px;
+      height: 410px;
+      // height: 480px;
+      width: 620px;
       background-color: transparent;
-      display: flex;
-      box-shadow: 0 0 10px #b0cdf6;
+      // box-shadow: 0 0 10px #eee;
+      text-align: center;
+      // border: 2px solid #000;
+      border-radius: 50% 50%;
+      // padding-top: 20px;
     }
     .login-img{
       display: inline-block;
@@ -139,13 +144,13 @@
     .login-main {
       display: inline-block;
       width: 100%;
-      height: 480px;
-      padding: 60px;
-      background-color: #fff;
+      // height: 480px;
+      padding: 20px 140px;
+      // background-color: #fff;
     }
     .login-title {
       font-size: 25px;
-      color: #409EFF;
+      color: #000;
       text-align: center;
       letter-spacing:2px;
     }
@@ -158,7 +163,8 @@
     }
     .login-btn-submit {
       width: 100%;
-      margin-top: 38px;
+      margin-top: 30px;
+      background: #000;
     }
   }
 </style>

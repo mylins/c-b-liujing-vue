@@ -53,12 +53,12 @@
           
           <el-form-item label="选择分类" prop="amazonCategoryId">
               <div style="display:flex;">
-                  <div style="width:620px">
+                  <div style="margin-right:10px">
                       <el-cascader ref="aaa" :props="props" v-model="amazonCategoryId" :options="options" clearable @change="productCategorChange" @visible-change="visibleChange"></el-cascader>
                         <br>
                         <span class="decVal">{{dataForm.amazonCategory}}</span>
                   </div>
-                  <div style="width:240px">
+                  <div style="margin-right:10px">
                       <el-input v-model="dataForm.amazonCategoryNodeId" placeholder="分类节点ID"></el-input>
                   </div>
                   <div>
@@ -412,6 +412,7 @@
                         url: this.$http.adornUrl('/upload/amazoncategory/amazonOneCategory'),
                         method: 'post',
                         data: this.$http.adornData({
+                            // countryCode:'US',
                             countryCode:obj.countryCode,
                         })
                     }).then(({data}) => {

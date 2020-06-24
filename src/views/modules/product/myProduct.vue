@@ -108,7 +108,7 @@
             <div style="float:right;">
                 <el-button type="primary" icon="el-icon-download" size="small" @click="downTemplate">插件下载</el-button>
                 <!-- <el-button type="text">采集手册</el-button> -->&nbsp;&nbsp;&nbsp;&nbsp;
-                <el-link href="http://liujing.obs.cn-north-4.myhuaweicloud.com/pdf/b.pdf" target="_blank" type="primary">采集手册</el-link>
+                <el-link href="http://rongyihui.obs.cn-north-4.myhuaweicloud.com/pdf/ryhcjffsm.pdf" target="_blank" type="primary">采集手册</el-link>
             </div>
         </div>
         <!-- 统计 -->

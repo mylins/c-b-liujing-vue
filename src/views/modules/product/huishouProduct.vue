@@ -350,12 +350,10 @@
                 })
             }
         },
-        // 删除
+        // 恢复
         huifu(){
             console.log(this.dataListSelections);
-            var productIds = this.dataListSelections.map(item => {
-                return item.productId
-            })
+            var productIds = this.dataListSelections;
             console.log(productIds)
             if(productIds.length == 0){
                 this.$message({
@@ -381,19 +379,20 @@
                     data: this.$http.adornData(productIds, false)
                 }).then(({data}) => {
                     if (data && data.code === 0) {
-                    this.$message({
-                        message: '操作成功',
-                        type: 'success',
-                        duration: 1000,
-                        onClose: () => {
-                            this.getDataList()
-                            this.getMyStatusList();
-                            loading.close()
-                        }
-                    })
+                        this.$message({
+                            message: '操作成功',
+                            type: 'success',
+                            duration: 1000,
+                            onClose: () => {
+                                this.getDataList()
+                                this.getMyStatusList();
+                                
+                            }
+                        })
                     } else {
-                    this.$message.error(data.msg)
+                        this.$message.error(data.msg)
                     }
+                    loading.close()
                 })
             }).catch(() => {})
         },

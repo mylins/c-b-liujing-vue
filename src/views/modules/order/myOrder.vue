@@ -279,8 +279,8 @@
                         <span 
                             v-if="scope.row.abnormalStatus"
                             class="el-tag el-tag--medium" 
-                            :style="{'color':color1[states1.indexOf(scope.row.abnormalStatus)],'background':'#fff','border':'1px solid '+color1[states1.indexOf(scope.row.abnormalStatus)]}">
-                            {{ scope.row.abnormalStatus }}</span>
+                            :style="{'color':color1[states1.indexOf(scope.row.abnormalState)],'background':'#fff','border':'1px solid '+color1[states1.indexOf(scope.row.abnormalState)]}">
+                            {{ scope.row.abnormalState }}</span>
                     </template>
                 </el-table-column>
                 

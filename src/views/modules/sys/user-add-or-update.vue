@@ -59,7 +59,7 @@
               <el-checkbox v-for="role in roleList" :key="role.roleId" :label="role.roleId">{{ role.roleName }}</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
-          <el-form-item v-if="dataForm.roleIdList.indexOf(5) != -1" label="所属小组" size="mini" prop="groupId">
+          <el-form-item v-if="dataForm.roleIdList.indexOf(5) != -1" label="所属小组" prop="groupId">
             <el-select v-model="dataForm.groupId" placeholder="选择小组" @focus='getGroupList' @change="groupChange">
                 <el-option
                     v-for="item in groupList"
@@ -347,7 +347,7 @@
                 }else{
                   this.dataForm.information = {};
                 }
-                
+                this.dataForm.flag = data.user.flag;
                 this.dataForm.roleIdList = data.user.roleIdList;
                 this.dataForm.salt = data.user.salt;
                 this.dataForm.status = data.user.status;
@@ -397,7 +397,10 @@
                     username:this.dataForm.username,
                     aliexpress:this.dataForm.aliexpress,
                     orderFetch:this.dataForm.orderFetch,
-                    userId:this.dataForm.userId
+                    userId:this.dataForm.userId,
+                    flag:this.dataForm.flag,
+                    groupId:this.dataForm.groupId,
+                    groupName:this.dataForm.groupName
                   })
                 }).then(({data}) => {
                   if (data && data.code === 0) {
