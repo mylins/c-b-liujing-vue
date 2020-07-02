@@ -37,7 +37,7 @@
     width: 100%;
 }
 
-.titlePro .el-button--text>span , span.proTitleSpan{
+.titlePro .el-button--text>span{
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
@@ -51,12 +51,39 @@
 span.proTitleSpan{
     color: #333;
 }
+div.aaa{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    white-space: pre-wrap;
+    text-align: left;
+    min-height: 38px;
+    line-height: 18px;
+    padding: 0 6px;
+    margin: 6px 0;
+  }
 span.el-dropdown-link.spanDown{
     color: #409eff;
     cursor: pointer;
     font-size: 12px;
 }
 .tableDown .el-dropdown-menu__item{
+    color: #409eff;
+}
+.lineDivPro{
+    display: flex;
+    padding: 0 6px;
+    line-height: 25px;
+}
+.lineDivLeft{
+    flex: 1;
+    color: #888;
+    
+    text-align: right;
+}
+.lineDivRight{
+    font-size: 18px;
     color: #409eff;
 }
 // .proList{

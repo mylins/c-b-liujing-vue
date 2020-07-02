@@ -1,7 +1,11 @@
 <template>
-  <el-button v-if="!product" :type="type" :size="size" :icon="icon" @click="open">{{dec}}</el-button>
-  <!-- <el-button v-if="!product" :type="type" :size="size" :icon="icon" @click="$router.push({ name: urlName,params: opt,meta:{title:opt.productId} })">{{dec}}</el-button> -->
-  <el-button v-else :type="type" size="small" :icon="icon" @click="toProduct">{{dec}}</el-button>
+    <div v-if="auditStatus != 'null'" class="aaa" style="cursor:pointer;color:#409EFF" :type="type" :size="size" :icon="icon" @click="open">
+      <el-tag effect="dark" size="mini" v-if="auditStatus == '001'">审核通过</el-tag>
+      <el-tag effect="dark" type="warning" size="mini" v-else>待审核</el-tag>
+      <span class="el-button--text">{{dec}}</span>
+    </div>
+    <el-button v-else-if="!product && auditStatus == 'null'" :type="type" :size="size" :icon="icon" @click="open">{{dec}}</el-button> 
+    <el-button v-else-if="product && auditStatus == 'null'" :type="type" :size="size" :icon="icon" @click="toProduct">{{dec}}</el-button> 
 </template>
 
 <script>
@@ -37,11 +41,12 @@
       isMoreL:{
         type:Boolean,
         default:false
-      }
+      },
     },
     data () {
       return {
-        dynamicMenuRoutes: []
+        dynamicMenuRoutes: [],
+        auditStatus:'null'
       }
     },
     computed: {
@@ -72,6 +77,11 @@
       $route: 'routeHandle'
     },
     created () {
+      if(this.opt.auditStatus){
+        this.auditStatus = this.opt.auditStatus;
+      }
+      
+
       this.menuList = JSON.parse(sessionStorage.getItem('menuList') || '[]')
       this.dynamicMenuRoutes = JSON.parse(sessionStorage.getItem('dynamicMenuRoutes') || '[]')
       this.routeHandle(this.$route)
@@ -173,3 +183,7 @@
     }
   }
 </script>
+
+<style>
+  
+</style>

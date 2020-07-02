@@ -128,9 +128,20 @@
                         <!-- <div class="titlePro">
                             <open-tab :isMore="true" size="medium" type="text" icon="" :dec='item.productTitle' urlName='productAddUpdate' :opt='{"productId":item.productId}'></open-tab>
                         </div> -->
-                        <span class="proTitleSpan">{{item.productTitle}}</span>
+                        <div class="aaa">
+                            <el-tag effect="dark" size="mini" v-if="item.auditStatus == '001'">审核通过</el-tag>
+                            <el-tag effect="dark" type="warning" size="mini" v-else>待审核</el-tag>
+                            <span class="proTitleSpan">{{item.productTitle}}</span>
+                        </div>
+                        <!-- <span class="proTitleSpan">{{item.productTitle}}</span> -->
                         <div class="decProSN">SKU：{{item.productSku}}</div>
                         <div class="decProSN">时间：{{item.createTime}}</div>
+                        <div class="lineDivPro">
+                            <span class="lineDivRight">¥{{item.money}}</span>
+                            <div class="lineDivLeft">
+                                <span>{{item.productId}}</span>
+                            </div>
+                        </div>
                     </div>
                 </el-col>
             </el-row>

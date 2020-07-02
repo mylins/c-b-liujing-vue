@@ -137,12 +137,18 @@
             </el-row>
             
         </div>
+        <!-- 操作 -->
+        <div class="btnGroupDiv" style="overflow:hidden">
+            <el-checkbox v-model="allSelect" label="全选" border @change="allSelectClick" size="small"></el-checkbox>&nbsp;&nbsp;
+            <el-button type="primary" icon="el-icon-edit" size="small" @click="copy">批量复制产品</el-button>
+            <el-button type="primary" icon="el-icon-edit" size="small" @click="clearProductSku">批量清楚SKU</el-button>
+        </div>
         <!-- 列表 -->
         <div class="divM">
             <el-row :gutter="10">
                 <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3" v-for="item in dataList" :key="item.productId">
-                    <div class="proItemDiv">
-                        <div>
+                    <div class="proItemDiv" :class="dataListSelections.indexOf(item.productId) != -1 ? 'active' : ''">
+                        <div class="imgClickSelDiv" @click="imgClickSel(item.productId)">
                             <el-image
                             style="width: 100%;"
                             fit="cover"
@@ -156,7 +162,7 @@
                             </el-image>
                         </div>
                         <div class="titlePro">
-                            <open-tab :isMoreL="true" size="medium" type="text" icon="" :dec='item.productTitle' urlName='productLook' :opt='{"productId":item.productId}'></open-tab>
+                            <open-tab :isMoreL="true" size="medium" type="text" icon="" :dec='item.productTitle' urlName='productLook' :opt='{"productId":item.productId,"auditStatus":item.auditStatus}'></open-tab>
                         </div>
                         <div class="decProSN float">
                             <span>{{item.deptName}}</span>
@@ -164,6 +170,12 @@
                         </div>
                         <div class="decProSN">SKU：{{item.productSku}}</div>
                         <div class="decProSN">时间：{{item.createTime}}</div>
+                        <div class="lineDivPro">
+                            <span class="lineDivRight">¥{{item.money}}</span>
+                            <div class="lineDivLeft">
+                                <span>{{item.productId}}</span>
+                            </div>
+                        </div>
                     </div>
                 </el-col>
             </el-row>
@@ -394,56 +406,24 @@
             this.pageIndex = val
             this.getDataList()
         },
-        // 多选
-        selectionChangeHandle (val) {
-            this.dataListSelections = val
-        },
-        // 删除
-        del(){
-            console.log(this.dataListSelections);
-            var productIds = this.dataListSelections.map(item => {
-                return item.productId
-            })
-            console.log(productIds)
-            if(productIds.length == 0){
-                this.$message({
-                    message: '请选择一条数据',
-                    type: 'warning'
-                });
-                return 
-            }
-            this.$confirm('确定对选项进行删除操作?', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                const loading = this.$loading({
-                    lock: true,
-                    text: 'Loading',
-                    spinner: 'el-icon-loading',
-                    background: 'rgba(0, 0, 0, 0.7)'
-                    });
-                this.$http({
-                    url: this.$http.adornUrl('/product/product/falsedeletion'),
-                    method: 'post',
-                    data: this.$http.adornData(productIds, false)
-                }).then(({data}) => {
-                    if (data && data.code === 0) {
-                    this.$message({
-                        message: '操作成功',
-                        type: 'success',
-                        duration: 1000,
-                        onClose: () => {
-                            this.getDataList()
-                            this.getMyStatusList();
-                            loading.close()
-                        }
-                    })
-                    } else {
-                    this.$message.error(data.msg)
-                    }
+        // 全选
+        allSelectClick(val){
+            console.log(val);
+            this.dataListSelections = [];
+            if(val){
+                var that = this;
+                this.dataList.forEach(function(item){
+                    that.dataListSelections.push(item.productId)
                 })
-            }).catch(() => {})
+            }
+        },
+        // 多选
+        imgClickSel(id){
+            if(this.dataListSelections.indexOf(id) == -1){
+                this.dataListSelections.push(id)
+            }else{
+                this.dataListSelections.splice(this.dataListSelections.indexOf(id),1)
+            }
         },
         changeStats(code,type){
             var productIds = this.dataListSelections.map(item => {
@@ -517,29 +497,6 @@
             }
             
         },
-        // 原创第一步
-        toProduct(){
-            const loading = this.$loading({
-                lock: true,
-                text: 'Loading',
-                spinner: 'el-icon-loading',
-                background: 'rgba(0, 0, 0, 0.7)'
-            });
-            this.$http({
-                url: this.$http.adornUrl('/product/product/getproductid'),
-                method: 'get',
-                params: this.$http.adornParams()
-            }).then(({data}) => {
-                if (data && data.code === 0) {
-                    console.log(data);
-                    this.productD = data.product;
-                    this.showList = false;
-
-                    // this.dataForm = data.product;
-                    loading.close();
-                }
-            })
-        },
         // 获取公司下拉
         getComList(){
             this.$http({
@@ -603,7 +560,77 @@
                     type: 'warning'
                 });
             }
-        }
+        },
+        // 复制产品
+        copy(){
+            this.$confirm('确定复制选中产品?', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                    });
+                this.$http({
+                    url: this.$http.adornUrl('/product/product/copyProduct'),
+                    method: 'post',
+                    data: this.$http.adornData(this.dataListSelections,false)
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                        this.$message({
+                            message: '操作成功',
+                            type: 'success',
+                            duration: 1000,
+                            onClose: () => {
+                                this.getDataList()
+                                loading.close()
+                            }
+                        })
+                    } else {
+                        this.$message.error(data.msg)
+                        loading.close()
+                    }
+                })
+            }).catch(() => {})
+        },
+        // 批量清楚SKU
+        clearProductSku(){
+            this.$confirm('确定清楚选中产品SKU?', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                    });
+                this.$http({
+                    url: this.$http.adornUrl('/product/product/clearProductSku'),
+                    method: 'post',
+                    data: this.$http.adornData(this.dataListSelections,false)
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                        this.$message({
+                            message: '操作成功',
+                            type: 'success',
+                            duration: 1000,
+                            onClose: () => {
+                                this.getDataList()
+                                loading.close()
+                            }
+                        })
+                    } else {
+                        this.$message.error(data.msg)
+                        loading.close()
+                    }
+                })
+            }).catch(() => {})
+        },
       }
   }
 </script>

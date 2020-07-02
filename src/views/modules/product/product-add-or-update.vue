@@ -66,7 +66,7 @@
                         tag="ul"
                         v-bind="dragOptions"
                         @start="isDragging = true"
-                        @end="isDragging = false"
+                        @end="endImg"
                         @moved='moveImg'>
                         <transition-group type="transition" name="flip-list" class="imgUl">
                             <li class="imgLi" v-for="item in dataForm.imageList" :key="item.imageId">
@@ -74,7 +74,7 @@
                                     <el-checkbox :label="item.imageId"></el-checkbox>
                                 </span>
                                 <el-image
-                                style="width: 142px; height: 142px"
+                                style="width: 152px; height: 152px"
                                 :preview-src-list="imgList"
                                 :src="item.imageUrl"></el-image>
                             </li>
@@ -82,14 +82,20 @@
                     </draggable>
                 </el-checkbox-group>
                 <div style="height:10px"></div>
+                <el-button type="primary" size="small" plain @click="allSelectxcImg">图片全选</el-button>
                 <el-button type="primary" size="small" plain @click="uploadImageVisible = true">上传图片</el-button>
-                <el-button type="primary" size="small" plain @click="saveImageList">保存相册</el-button>
+                <el-button type="primary" size="small" plain @click="downImg">图片下载</el-button>
                 <el-button type="primary" size="small" plain @click="delImageList">图片删除</el-button>
                 <div style="color:#F56C6C;margin-top:6px;font-size:13px">图片位置修改后，请点击 '保存相册' 按钮使其生效</div>
             </div>
             
         </div>
-
+        <div class="blockDivForm" v-if="dataForm.info.sellerLink">
+            <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;商家信息</h3>
+            <el-form-item label="商家信息">
+                <a :href="dataForm.info.sellerLink" target="_blank">产品页</a>
+            </el-form-item>
+        </div>
         <div class="blockDivForm">
           <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;产品信息</h3>
           <el-form-item label="厂商名称" prop="">
@@ -127,14 +133,15 @@
             <el-input v-model="dataForm.property.productWeight" placeholder="包装毛重(kg)" @change="getcostFreight('property.productWeight')"></el-input>
           </el-form-item>
           <el-form-item label="产品打折" prop="property.discount">
-            <el-select v-model="dataForm.property.discount" placeholder="请选择" @change="getcostFreight('property.discount')">
+              <el-input v-model="dataForm.property.discount" placeholder="包装毛重(kg)" @change="getcostFreight('property.discount')"></el-input>
+            <!-- <el-select v-model="dataForm.property.discount" placeholder="请选择" @change="getcostFreight('property.discount')">
                 <el-option
                 v-for="item in discountList"
                 :key="item"
                 :label="item"
                 :value="item">
                 </el-option>
-            </el-select>
+            </el-select> -->
           </el-form-item>
           <el-form-item label="包装尺寸" prop="" required>
               <el-col :span="4">
@@ -225,7 +232,7 @@
           <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;产品介绍</h3>
           
           <el-tabs type="border-card">
-            <el-tab-pane label="中文">
+            <!-- <el-tab-pane label="中文">
                 <div class="intrDiv">
                     <label>
                         <span>产品标题</span>  <br>
@@ -281,8 +288,104 @@
                         show-word-limit></el-input>
                     </div>
                 </div>
+            </el-tab-pane> -->
+            <el-tab-pane v-for="(item,index) in dataForm.introductionList" :key="index" :label="comObj[item.countryCode]">
+                <div class="intrDiv">
+                    <label>
+                        <span>产品标题</span>  <br>
+                        <el-button v-if="index == 1" type="primary" size="mini" plain @click="fanyi1(item.productTitle,0)">一键翻译</el-button>
+                        <el-button v-if="index == 0" type="primary" size="mini" plain @click="fanyi(item.productTitle,0)">一键翻译</el-button>
+                    </label>
+                    <div>
+                        <el-input
+                        v-if="index == 0"
+                        type="textarea"
+                        placeholder="请输入内容"
+                        v-model="item.productTitle"
+                        show-word-limit></el-input>
+                        <el-form-item v-else label="">
+                            <el-input
+                            type="textarea"
+                            placeholder="请输入内容"
+                            v-model="item.productTitle"
+                            maxlength="200"
+                            show-word-limit></el-input>
+                        </el-form-item>
+                    </div>
+                </div>
+                <div class="intrDiv">
+                    <label>
+                        <span>关键字</span>  <br>
+                        <el-button v-if="index == 1" type="primary" size="mini" plain @click="fanyi1(item.keyWord,1)">一键翻译</el-button>
+                        <el-button v-if="index == 0" type="primary" size="mini" plain @click="fanyi(item.keyWord,1)">一键翻译</el-button>
+                    </label>
+                    <div>
+                        <el-input
+                        v-if="index == 0"
+                        type="textarea"
+                        placeholder="请输入内容"
+                        v-model="item.keyWord"
+                        show-word-limit></el-input>
+                        <el-form-item v-else label="">
+                            <el-input
+                            type="textarea"
+                            placeholder="请输入内容"
+                            v-model="item.keyWord"
+                            maxlength="250"
+                            show-word-limit></el-input>
+                        </el-form-item>
+                    </div>
+                </div>
+                <div class="intrDiv">
+                    <label>
+                        <span>重点说明</span>  <br>
+                        <el-button v-if="index == 0" type="primary" size="mini" plain @click="fanyi(item.keyPoints,2)">一键翻译</el-button>
+                        <el-button v-if="index == 1" type="primary" size="mini" plain @click="fanyi1(item.keyPoints,2)">一键翻译</el-button>
+                    </label>
+                    <div>
+                        <el-input
+                        v-if="index == 0"
+                        type="textarea"
+                        placeholder="请输入内容"
+                        v-model="item.keyPoints"
+                        show-word-limit></el-input>
+                        <el-form-item v-else label="">
+                            <el-input
+                            type="textarea"
+                            placeholder="请输入内容"
+                            :rows="4"
+                            v-model="item.keyPoints"
+                            maxlength="2500"
+                            show-word-limit></el-input>
+                        </el-form-item>
+                    </div>
+                </div>
+                <div class="intrDiv">
+                    <label>
+                        <span>产品描述</span>  <br>
+                        <el-button v-if="index == 0" type="primary" size="mini" plain @click="fanyi(item.productDescription,3)">一键翻译</el-button>
+                        <el-button v-if="index == 1" type="primary" size="mini" plain @click="fanyi1(item.productDescription,3)">一键翻译</el-button>
+                    </label>
+                    <div>
+                        <el-input
+                        v-if="index == 0"
+                        type="textarea"
+                        placeholder="请输入内容"
+                        v-model="item.productDescription"
+                        show-word-limit></el-input>
+                        <el-form-item v-else label="">
+                            <el-input
+                            type="textarea"
+                            placeholder="请输入内容"
+                            :rows="4"
+                            v-model="item.productDescription"
+                            maxlength="2000"
+                            show-word-limit></el-input>
+                        </el-form-item>
+                    </div>
+                </div>
             </el-tab-pane>
-            <el-tab-pane label="英语">
+            <!-- <el-tab-pane label="英语">
                 <div class="intrDiv">
                     <label>
                         <span>产品标题</span>  <br>
@@ -733,7 +836,7 @@
                         </el-form-item>
                     </div>
                 </div>
-            </el-tab-pane>
+            </el-tab-pane> -->
             
           </el-tabs>
         </div>
@@ -787,9 +890,12 @@
                 <el-table-column
                     prop=""
                     label="加价（¥）"
-                    width="90">
+                    width="120">
                     <template slot-scope="scope">
-                        <el-input placeholder="请输入" size="small" v-model="scope.row.variantAddPrice"></el-input>
+                        <div style="display:flex">
+                            <el-input placeholder="请输入" size="small" v-model="scope.row.variantAddPrice"></el-input>&nbsp;&nbsp;
+                            <el-button type="text" size="mini" icon="" @click="showSaleMoney(scope.row.variantAddPrice)">最终售价</el-button>
+                        </div>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -1038,33 +1144,52 @@
         
     </el-dialog>
 
-    <!-- 变体选择图片 -->
-    <el-dialog
-        title="选择变体图片"
-        :visible.sync="selectImageVisible"
-        width="800px">
-        <div style="height:400px;overflow-y:auto">
-            <el-checkbox-group size="medium" v-model="imgSVList">
-                <ul class="imgUl">
-                    <li class="imgLi" v-for="item in dataForm.imageList" :key="item.imageId">
-                        <span class="selec">
-                            <el-checkbox :label="item.imageUrl"></el-checkbox>
-                        </span>
-                        <el-image
-                        @click="selectImageClick(item.imageUrl)"
-                        style="width: 142px; height: 142px"
-                        :src="item.imageUrl"></el-image>
-                    </li>
-                </ul>
-            </el-checkbox-group>
+        <!-- 变体选择图片 -->
+        <el-dialog
+            title="选择变体图片"
+            :visible.sync="selectImageVisible"
+            width="800px">
+            <div style="height:400px;overflow-y:auto">
+                <el-checkbox-group size="medium" v-model="imgSVList">
+                    <ul class="imgUl">
+                        <li class="imgLi" v-for="item in dataForm.imageList" :key="item.imageId">
+                            <span class="selec">
+                                <el-checkbox :label="item.imageUrl"></el-checkbox>
+                            </span>
+                            <el-image
+                            @click="selectImageClick(item.imageUrl)"
+                            style="width: 142px; height: 142px"
+                            :src="item.imageUrl"></el-image>
+                        </li>
+                    </ul>
+                </el-checkbox-group>
+                
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="selectImageVisible = false">取 消</el-button>
+                <el-button type="primary" @click="selectImgOk">确 定</el-button>
+            </span>
             
-        </div>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="selectImageVisible = false">取 消</el-button>
-            <el-button type="primary" @click="selectImgOk">确 定</el-button>
-        </span>
-        
-    </el-dialog>
+        </el-dialog>
+
+        <!-- 最终售价 -->
+        <el-dialog
+            title="最终售价（¥）"
+            :visible.sync="saleMoneyVisible"
+            width="800px">
+            <div style="">
+                <el-table
+                class="freTable tableVi"
+                :data="saleMoneyList">
+                    <el-table-column
+                        v-for="(item,index) in saleMoneyListH"
+                        :key="index"
+                        :prop="'price'+index"
+                        :label="item">
+                    </el-table-column>
+                </el-table>
+            </div>
+        </el-dialog>
 
     </div>
   </div>
@@ -1085,6 +1210,10 @@
         }
       }
       return {
+        isDragging:false,
+        saleMoneyVisible:false,
+        saleMoneyList:[],
+        saleMoneyListH:[],
         fileList:[],
         visible: false,
         categoryIds:null,
@@ -1099,6 +1228,7 @@
         selectImageVisible:false,
         selectImageIndex:null,
         selectImageList:[],
+        selectImageList1:[],
         stock:null,
         addVMoneyList:[],
         itemV:{color:'',size:''},
@@ -1106,8 +1236,8 @@
         imgList:[],
         productId:null,
         discountList:[1,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1],
-        recommend:['米色','黑色','蓝色','青铜','棕色','明确','铜','奶油','金','绿色','灰色','金属','多色','橙子','粉','紫色','红','银','白色','黄色','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T'],
-        recommendE:['Beige','Black','Blue','Bronze','Brown','Clear','Copper','Cream','Gold','Green','Grey','Metallic','Multi-colored','Orange','Pink','Purple','Red','Silver','White','Yellow','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T'],
+        recommend:['米色','黑色','蓝色','青铜','棕色','明确','铜','奶油','金','绿色','灰色','金属','多色','橙子','粉','紫色','红','银','白色','黄色','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','A-C','A-F','A-L','A-I','A-O','A-Z'],
+        recommendE:['Beige','Black','Blue','Bronze','Brown','Clear','Copper','Cream','Gold','Green','Grey','Metallic','Multi-colored','Orange','Pink','Purple','Red','Silver','White','Yellow','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','A-C','A-F','A-L','A-I','A-O','A-Z'],
         recommend1:['均码','XS','S','M','L','XL','XXL','XXXL','XXXXL','XXXXXL'],
         recommend1E:['OneSize','XS','S','M','L','XL','XXL','XXXL','XXXXL','XXXXXL'],
         freightLoading:false,
@@ -1289,6 +1419,21 @@
             categoryId:[
                 {required: true, message: '分类不能为空', trigger: 'change' }
             ]
+        },
+        comObj:{
+            'US':'美国',
+            'JP':'日语',
+            'ES':'西班牙语',
+            'FR':'法语',
+            'GB':'英语',
+            'IT':'意大利语',
+            'DE':'德语',
+            'BR':'巴西',
+            'CA':'加拿大',
+            'MX':'墨西哥',
+            'AU':'澳大利亚',
+            'NL':'荷兰语',
+            'ZH':'中文'
         }
       }
     },
@@ -1321,6 +1466,11 @@
             // this.dataForm.imageList = this.dataForm.imageList.shunxu((a, b) => a.sort - b.sort);
             console.log(this.dataForm.imageList[newIndex]);
             console.log(this.dataForm.imageList[oldIndex]);
+        },
+        endImg(){
+            this.isDragging = false;
+            this.saveImageList();
+            console.log('111')
         },
         init (obj) {
             this.productId = obj.productId || 0;
@@ -1946,11 +2096,11 @@
         saveImageList(){
             // var that=this;
             // console.log(this.dataForm.imageList)
-            this.$confirm('确定保存当前相册顺序?', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
+            // this.$confirm('确定保存当前相册顺序?', {
+            //     confirmButtonText: '确定',
+            //     cancelButtonText: '取消',
+            //     type: 'warning'
+            // }).then(() => {
                 this.dataForm.imageList.forEach(function(item,index){
                     item.sort = index+1
                 })
@@ -1981,7 +2131,7 @@
                         this.$message.error(data.msg)
                     }
                 })
-            })
+            // })
             
         },
         // 删除图片
@@ -2021,6 +2171,43 @@
                 })
             })
             
+        },
+        // 全选图片
+        allSelectxcImg(){
+            this.selectImageList = [];
+            var that = this;
+            this.dataForm.imageList.forEach(function(item,index){
+                that.selectImageList.push(item.imageId);
+            })
+        },
+        // 下载图片
+        downImg(){
+            var arr = [];
+            var that = this;
+            this.selectImageList.forEach(function(item,index){
+                that.dataForm.imageList.forEach(function(m){
+                    if(m.imageId == item){
+                        arr.push(m.imageUrl);
+                    }
+                })
+            })
+            // var i = 0;
+            this.forFunc(0,arr)
+            // arr.forEach(function(url){
+            //     window.location.href = that.$http.adornUrl('/product/productimage/downloadImage?url='+url+'&token='+that.$cookie.get("token"));
+            // })
+            // window.location.href = this.$http.adornUrl('/product/productimage/downloadImage?url='+'http://rongyihui.obs.cn-north-4.myhuaweicloud.com/images/1/1/1/0c406a2b6281427094f3125fa54c8565..jpg?x-image-process=style/style-1000'+'&token='+this.$cookie.get("token"));
+            
+        },
+        // 循环
+        forFunc(i,arr){
+            var that = this;
+            if(i<arr.length){
+                window.location.href = that.$http.adornUrl('/product/productimage/downloadImage?url='+arr[i]+'&token='+that.$cookie.get("token"));
+                setTimeout(function() {
+                    that.forFunc(i+1,arr);
+                }, 1000)
+            }
         },
         // 变体选择图片
         selectImgClick(index){
@@ -2155,6 +2342,37 @@
                 this.imgSVList.splice(index,1);
             }
             
+        },
+        // 获取最终售价
+        showSaleMoney(variantAddPrice){
+            
+            const loading = this.$loading({
+                lock: true,
+                text: 'Loading',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
+            this.$http({
+                url: this.$http.adornUrl('/product/product/queryMoney'),
+                method: 'post',
+                data: this.$http.adornData({
+                    productId:this.dataForm.productId,
+                    variantAddPrice:variantAddPrice
+                })
+            }).then(({data}) => {
+                if (data && data.code === 0) {
+                    this.saleMoneyList[0] = {};
+                    var that = this;
+                    data.priceList.forEach(function(item,index){
+                        that.saleMoneyList[0]['price'+index] = item.price
+                        that.saleMoneyListH.push(item.country)
+                    })
+                    this.saleMoneyVisible = true;
+                    loading.close()
+                } else {
+                    this.$message.error(data.msg)
+                }
+            })
         }
     }
   }
@@ -2172,11 +2390,29 @@
       width: 152px;
       margin: 3px;
       position: relative;
+      overflow: hidden;
   }
   .imgUl .imgLi .selec{
       position: absolute;
       left: 6px;
       top: 6px;
+  }
+  .imgUl .imgLi .down{
+      position: absolute;
+      top: -30px;
+      left: 0;
+      height: 30px;
+      width: 100%;
+      background: rgba(0, 0, 0, .1);
+      z-index: 1;
+      text-align: right;
+  }
+  .imgUl .imgLi .down i{
+      cursor: pointer;
+  }
+  .imgUl .imgLi:hover .down{
+      top: 0;
+      transition:top 1s;
   }
   .imgUl .imgLi .selec .el-checkbox__label{
       color: transparent;

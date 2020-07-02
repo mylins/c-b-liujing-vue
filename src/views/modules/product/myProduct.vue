@@ -100,6 +100,8 @@
             <open-tab :product="true" type="primary" icon="el-icon-plus" dec='原创产品' urlName='productAddUpdate' :opt='{"productId":null}'></open-tab>
             <el-button type="primary" icon="el-icon-delete" size="small" @click="del">删除</el-button>
             <el-button type="primary" icon="el-icon-edit" size="small" @click="piliang">批量修改</el-button>
+            <el-button type="primary" icon="el-icon-edit" size="small" @click="copy">批量复制产品</el-button>
+            <el-button type="primary" icon="el-icon-edit" size="small" @click="clearProductSku">批量清楚SKU</el-button>
             <el-button type="primary" size="small" @click="changeStats('001','SHELVE_STATE')">上架</el-button>
             <el-button type="primary" size="small" @click="changeStats('002','SHELVE_STATE')">下架</el-button>
             <el-button type="primary" size="small" @click="changeStats('001','AUDIT_STATE')">审核通过</el-button>
@@ -141,10 +143,18 @@
                         </div>
                         
                         <div class="titlePro">
-                            <open-tab :isMore="true" size="medium" type="text" icon="" :dec='item.productTitle' urlName='productAddUpdate' :opt='{"productId":item.productId}'></open-tab>
+                            
+                            <open-tab :isMore="true" size="medium" type="text" icon="" :dec='item.productTitle' urlName='productAddUpdate' :opt='{"productId":item.productId,"auditStatus":item.auditStatus}'></open-tab>
                         </div>
                         <div class="decProSN">SKU：{{item.productSku}}</div>
                         <div class="decProSN">时间：{{item.createTime}}</div>
+                        <div class="lineDivPro">
+                            <span class="lineDivRight">¥{{item.money}}</span>
+                            <div class="lineDivLeft">
+                                <span>{{item.productId}}</span>
+                            </div>
+                        </div>
+                        
                     </div>
                 </el-col>
             </el-row>
@@ -528,8 +538,8 @@
             })
         },
         // 复制产品
-        copy(id){
-            this.$confirm('确定复制该产品?', {
+        copy(){
+            this.$confirm('确定复制选中产品?', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
@@ -542,10 +552,43 @@
                     });
                 this.$http({
                     url: this.$http.adornUrl('/product/product/copyProduct'),
-                    method: 'get',
-                    params: this.$http.adornParams({
-                        'productId':id
-                    })
+                    method: 'post',
+                    data: this.$http.adornData(this.dataListSelections,false)
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                        this.$message({
+                            message: '操作成功',
+                            type: 'success',
+                            duration: 1000,
+                            onClose: () => {
+                                this.getDataList()
+                                loading.close()
+                            }
+                        })
+                    } else {
+                        this.$message.error(data.msg)
+                        loading.close()
+                    }
+                })
+            }).catch(() => {})
+        },
+        // 批量清楚SKU
+        clearProductSku(){
+            this.$confirm('确定清楚选中产品SKU?', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                    });
+                this.$http({
+                    url: this.$http.adornUrl('/product/product/clearProductSku'),
+                    method: 'post',
+                    data: this.$http.adornData(this.dataListSelections,false)
                 }).then(({data}) => {
                     if (data && data.code === 0) {
                         this.$message({

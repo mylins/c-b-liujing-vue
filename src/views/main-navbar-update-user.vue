@@ -20,6 +20,9 @@
       <el-form-item label="英文品牌" prop="enBrand">
         <el-input v-model="dataForm.enBrand"></el-input>
       </el-form-item>
+      <el-form-item label="厂商名称" prop="producerName">
+        <el-input v-model="dataForm.producerName" placeholder="输入英文符号或数字"></el-input>
+      </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
@@ -32,6 +35,14 @@
   import { clearLoginInfo } from '@/utils'
   export default {
     data () {
+      var producerNameR = (rule, value, callback) => {
+        var reg = /^[0-9a-zA-Z]{1,}$/;
+        if(reg.test(value)){
+          callback()
+        }else{
+          callback(new Error('厂商名称只能为字母数字'))
+        }
+      }
       return {
         visible: false,
         dataForm: {
@@ -50,6 +61,10 @@
           ],
           enBrand: [
             { required: true, message: '英文品牌不能为空', trigger: 'blur' }
+          ],
+          producerName: [
+            { required: true, message: '厂商名称不能为空', trigger: 'blur' },
+            { validator: producerNameR, trigger: 'blur' }
           ]
         }
       }

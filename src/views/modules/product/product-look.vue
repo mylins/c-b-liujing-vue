@@ -52,7 +52,12 @@
                 </ul>
             </div>
         </div>
-
+        <div class="blockDivForm" v-if="dataForm.info.sellerLink">
+            <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;商家信息</h3>
+            <el-form-item label="商家信息">
+                <a :href="dataForm.info.sellerLink" target="_blank">产品页</a>
+            </el-form-item>
+        </div>
         <div class="blockDivForm">
           <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;产品信息</h3>
           <el-form-item label="厂商名称" prop="">

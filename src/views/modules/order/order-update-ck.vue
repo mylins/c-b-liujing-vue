@@ -76,6 +76,12 @@
                     <el-form-item label="发货日期" prop="">
                         <span class="decVal">{{item.domesticLogistics.issuanceDate ? item.domesticLogistics.issuanceDate : '无'}}</span>
                     </el-form-item>
+                    <el-form-item label="尺寸" prop="">
+                        <span class="decVal">{{item.domesticLogistics.size ? item.domesticLogistics.size : '无'}}</span>
+                    </el-form-item>
+                    <el-form-item label="颜色" prop="">
+                        <span class="decVal">{{item.domesticLogistics.color ? item.domesticLogistics.color : '无'}}</span>
+                    </el-form-item>
                 </div>
                 <div class="con">
                     <el-form-item label="采购价(￥)" prop="">
@@ -84,11 +90,17 @@
                     <el-form-item label="物流单号" prop="">
                         <span class="decVal">{{item.domesticLogisticsReissue.waybill ? item.domesticLogisticsReissue.waybill : '无'}}</span>
                     </el-form-item>
-                    <el-form-item label="物流更新" prop="">
+                    <el-form-item label="物流公司" prop="">
                         <span class="decVal">{{item.domesticLogisticsReissue.logisticsCompany ? item.domesticLogisticsReissue.logisticsCompany : '无'}}</span>
                     </el-form-item>
                     <el-form-item label="更新日期" prop="">
                         <span class="decVal">{{item.domesticLogisticsReissue.issuanceDate ? item.domesticLogisticsReissue.issuanceDate : '无'}}</span>
+                    </el-form-item>
+                    <el-form-item label="尺寸" prop="">
+                        <span class="decVal">{{item.domesticLogisticsReissue.size ? item.domesticLogisticsReissue.size : '无'}}</span>
+                    </el-form-item>
+                    <el-form-item label="颜色" prop="">
+                        <span class="decVal">{{item.domesticLogisticsReissue.color ? item.domesticLogisticsReissue.color : '无'}}</span>
                     </el-form-item>
                 </div>
               </div>
@@ -106,6 +118,9 @@
           </h3>
           <el-form-item label="收件人" prop="">
               <span class="decVal">{{dataForm.shipAddress.shipName ? dataForm.shipAddress.shipName : '无'}}</span>
+          </el-form-item>
+          <el-form-item label="Tel" prop="">
+              <span class="decVal">{{dataForm.shipAddress.shipTel ? dataForm.shipAddress.shipTel : '无'}}</span>
           </el-form-item>
           <el-form-item label="收件人国家" prop="">
               <span class="decVal">{{dataForm.shipAddress.shipCountry ? dataForm.shipAddress.shipCountry : '无'}}</span>
@@ -508,6 +523,12 @@
                     </el-form-item>
                     <el-form-item label="物流公司" prop="">
                         <el-input v-model="wuliuobj.logisticsCompany" placeholder="请输入内容" clearable></el-input>
+                    </el-form-item>
+                    <el-form-item label="尺寸" prop="">
+                        <el-input v-model="wuliuobj.size" placeholder="请输入内容" clearable></el-input>
+                    </el-form-item>
+                    <el-form-item label="颜色" prop="">
+                        <el-input v-model="wuliuobj.color" placeholder="请输入内容" clearable></el-input>
                     </el-form-item>
                     <!-- <el-form-item label="发货日期" prop="">
                         <el-input v-model="wuliuobj.issuanceDate" placeholder="请输入内容" clearable></el-input>

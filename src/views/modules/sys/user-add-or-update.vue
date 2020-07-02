@@ -48,6 +48,9 @@
           <el-form-item label="英文品牌" prop="enBrand">
             <el-input v-model="dataForm.enBrand" placeholder="英文品牌"></el-input>
           </el-form-item>
+          <el-form-item label="厂商名称" prop="producerName">
+            <el-input v-model="dataForm.producerName" placeholder="厂商名称（英文）"></el-input>
+          </el-form-item>
           <el-form-item label="邮箱" prop="email">
             <el-input v-model="dataForm.email" placeholder="邮箱"></el-input>
           </el-form-item>
@@ -130,6 +133,14 @@
   import PageH from '../../common/pageH'
   export default {
     data () {
+      var producerNameR = (rule, value, callback) => {
+        var reg = /^[0-9a-zA-Z]{1,}$/;
+        if(reg.test(value)){
+          callback()
+        }else{
+          callback(new Error('厂商名称只能为字母数字'))
+        }
+      }
 
       var validatePassword = (rule, value, callback) => {
         var reg = /^(?![0-9\x21-\x2f\x3a-\x40\x5b-\x60\x7B-\x7F]+$)(?![0-9]+$)(?![0-90-9A-Za-z]+$)(?![\x21-\x2f\x3a-\x40\x5b-\x60\x7B-\x7F]+$)(?![A-Za-z]+$)(?![a-zA-Z\x21-\x2f\x3a-\x40\x5b-\x60\x7B-\x7F]+$)[0-9A-Za-z\x21-\x2f\x3a-\x40\x5b-\x60\x7B-\x7F]{8,}$/;
@@ -285,6 +296,10 @@
           ],
           roleIdList:[
             {type: 'array',required: true, message: '角色不能为空', trigger: 'change' }
+          ],
+          producerName:[
+            { required: true, message: '厂商名称不能为空', trigger: 'blur' },
+            { validator: producerNameR, trigger: 'blur' }
           ]
         }
       }
