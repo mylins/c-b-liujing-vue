@@ -11,9 +11,9 @@
           <el-form-item label="订单ID" prop="">
             <span class="decVal">{{dataForm.orderId}}</span>
           </el-form-item>
-          <el-form-item label="店铺" prop="">
+          <!-- <el-form-item label="店铺" prop="">
             <span class="decVal">{{dataForm.shopName}}</span>
-          </el-form-item>
+          </el-form-item> -->
           <br>
           <el-form-item label="总数量" prop="">
             <span class="decVal">{{dataForm.orderNumber}}</span>
@@ -38,12 +38,19 @@
           <div v-for="item in dataForm.orderProductList" :key="item.productId">
               <div class="proDiv">
                   <div class="img">
-                      <el-image
-                        style="width: 110px; height: 110px"
-                        :src="item.productImageUrl"></el-image>
+                        <el-tooltip placement="right-start" effect="light">
+                            <div slot="content">
+                                <el-image
+                                style="width: 300px; height: 300px"
+                                :src="item.productImageUrl"></el-image>
+                            </div>
+                                <el-image
+                                    style="width: 50px; height: 50px"
+                                    :src="item.productImageUrl"></el-image>
+                        </el-tooltip>
                   </div>
                   <div class="con">
-                      <div style="color:#666;margin-bottom:10px">{{item.productTitle}}</div>
+                      <!-- <div style="color:#666;margin-bottom:10px">{{item.productTitle}}</div> -->
                       <el-row :gutter="20">
                           <el-col :span="24">
                               <span style="color:#999">数量：</span>
@@ -1180,7 +1187,7 @@
       margin-left: 60px;
   }
   .proDiv .img{
-      width: 120px;
+      width: 60px;
       padding-right: 10px;
   }
   .proDiv .el-row{

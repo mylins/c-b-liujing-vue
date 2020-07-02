@@ -164,7 +164,7 @@
                     <template slot-scope="scope">
                         <div v-for="item in scope.row.domesticWaybillList" :key="item.domesticLogisticsId">
                             <span>{{item.waybill}}</span>
-                            <el-button v-if="item.state == '未签收'" type="text" icon="" @click="rukuClick1(item.domesticLogisticsId)">入库</el-button>
+                            <el-button v-if="item.state == '未签收'" type="text" icon="" @click="rukuClick1(item)">入库</el-button>
                         </div>
                     </template>
                 </el-table-column>
@@ -607,10 +607,8 @@
             });
             this.$http({
                 url: this.$http.adornUrl('/order/order/singleruku'),
-                method: 'get',
-                params: this.$http.adornParams({
-                    'domesticLogisticsId': id
-                })
+                method: 'post',
+                data: this.$http.adornData(id)
             }).then(({data}) => {
                 loading.close()
                 if (data && data.code === 0) {
