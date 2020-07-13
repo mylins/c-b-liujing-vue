@@ -55,18 +55,16 @@
               <div style="display:flex;">
                   <div style="margin-right:10px">
                       <span class="el-input__inner" style="height:36px;line-height:36px" @click="visibleChange">{{dataForm.amazonCategory}}</span>
-                      <!-- <el-cascader ref="aaa" :props="props" v-model="amazonCategoryId" :options="options" clearable @change="productCategorChange" @visible-change="visibleChange"></el-cascader> -->
-                        <br>
-                        <span class="decVal">{{dataForm.allCategories}}</span>
                   </div>
                   <div style="margin-right:10px">
                       <el-input v-model="dataForm.amazonCategoryNodeId" placeholder="分类节点ID"></el-input>
                   </div>
                   <div>
+                      <!-- <el-button type="primary" plain @click="amazonCategoryVisible = true;sousClickV = true;amazonCategoryFl=[]">搜索分类</el-button> -->
                       <el-button type="primary" plain @click="history">历史选择</el-button>
                   </div>
               </div>
-              
+              <span class="decVal">{{dataForm.allCategories}}</span>
           </el-form-item>
           <br>
           <el-form-item label="分类模版" prop="amazonTemplateId">
@@ -116,11 +114,11 @@
 
       <!-- 分类弹框 -->
       <el-dialog
-        title="历史选择"
+        title="选择分类"
         :visible.sync="amazonCategoryVisible"
         width="900px">
         <div style="height:400px;overflow:hiddle">
-            <div style="display:flex;margin-bottom:16px">
+            <div v-if="sousClickV" style="display:flex;margin-bottom:16px">
                 <el-input placeholder="请输入内容" v-model="amazonCategoryVisibleObj.amazonCategoryGjz" size="medium" clearable></el-input>&nbsp;&nbsp;&nbsp;&nbsp;
                 <el-button type="primary" size="small" @click="selectAmazonCategoryGjz">搜索</el-button>
             </div>
@@ -128,7 +126,7 @@
             <div style="height:350px;overflow:hiddle;display:flex">
                 <div class="amazonCategoryItem" v-for="(item,index) in amazonCategoryFl" :key="index">
                     <ul>
-                        <li v-for="(ama,i) in item" :key="i" :class="amazonCategoryVisibleObj.amazonCategoryArr.indexOf(ama.displayName) == -1 ? '' : 'active'" @click="clickAmazonCategory(ama.id,ama.displayName,ama.nodeId,index)">{{ama.displayName}}</li>
+                        <li v-for="(ama,i) in item" :key="i" :class="amazonCategoryVisibleObj.amazonCategoryArr.indexOf(ama.id) == -1 ? '' : 'active'" @click="clickAmazonCategory(ama.id,ama.displayName,ama.nodeId,ama.categoryQ,index,ama.children)">{{ama.displayName}}</li>
                     </ul>
                 </div>
             </div>
@@ -186,11 +184,13 @@
       }
       let that=this;
       return {
+        sousClickV:false,
         shopList:[],
         historyVisible:false,
         amazonCategoryVisible:false,
         amazonCategoryFl:[],
         amazonCategoryVisibleObj:{
+            id:'',
             amazonCategoryArr:[],
             nodeId:'',
             amazonCategory:'',
@@ -457,6 +457,16 @@
                         this.amazonCategoryFl = [];
                         this.amazonCategoryFl[0] = data.amazonCategoryEntityList;
                         this.amazonCategoryVisible = true;
+                        this.sousClickV = false;
+                        this.amazonCategoryVisibleObj = {
+                            id:'',
+                            amazonCategoryArr:[],
+                            nodeId:'',
+                            amazonCategory:'',
+                            amazonCategoryGjz:'',
+                            isSou:false
+                        }
+                        console.log(this.amazonCategoryFl);
                     } else {
                         this.$message.error(data.msg)
                     }
@@ -470,61 +480,104 @@
             
         },
         // 点击分类方法
-        clickAmazonCategory(id,name,nodeId,i){
+        clickAmazonCategory(id,name,nodeId,all,i,children){
             this.amazonCategoryVisibleObj.nodeId = nodeId;
+            this.amazonCategoryVisibleObj.id = id;
             this.amazonCategoryVisibleObj.amazonCategory = name;
-            this.amazonCategoryVisibleObj.amazonCategoryArr.splice(i,this.amazonCategoryVisibleObj.amazonCategoryArr.length-i,name);
+            this.amazonCategoryVisibleObj.amazonCategoryArr.splice(i,this.amazonCategoryVisibleObj.amazonCategoryArr.length-i,id);
+            this.amazonCategoryVisibleObj.amazonCategoryAll = all;
             // this.amazonCategoryGjz = this.amazonCategoryVisibleObj.amazonCategoryArr.join('/')
             // this.amazonCategoryVisibleObj.amazonCategoryArr[i] = name
             console.log(this.amazonCategoryVisibleObj)
-            this.$http({
-                url: this.$http.adornUrl('/upload/amazoncategory/childCategoryList'),
-                method: 'post',
-                data: this.$http.adornData({
-                    amazonCategoryId:id,
-                })
-            }).then(({data}) => {
-                if (data && data.code === 0) {
-                    console.log(data);
-                    if(data.amazonCategoryEntityChildList.length != 0){
-                        this.amazonCategoryFl.splice(i+1,this.amazonCategoryFl.length-i-1,data.amazonCategoryEntityChildList);
-                    }
-                } else {
-                    this.$message.error(data.msg)
+            if(this.sousClickV){
+                this.amazonCategoryVisibleObj.amazonCategoryGjz = name;
+                if(children.length != 0){
+                    this.amazonCategoryFl.splice(i+1,this.amazonCategoryFl.length-i-1,children);
+                }else{
+                    this.amazonCategoryFl.splice(i+1,this.amazonCategoryFl.length-i-1);
                 }
-            })
+            }else{
+                this.$http({
+                    url: this.$http.adornUrl('/upload/amazoncategory/childCategoryList'),
+                    method: 'post',
+                    data: this.$http.adornData({
+                        amazonCategoryId:id,
+                    })
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                        console.log(data);
+                        if(data.amazonCategoryEntityChildList.length != 0){
+                            this.amazonCategoryFl.splice(i+1,this.amazonCategoryFl.length-i-1,data.amazonCategoryEntityChildList);
+                        }else{
+                            this.amazonCategoryFl.splice(i+1,this.amazonCategoryFl.length-i-1);
+                        }
+                    } else {
+                        this.$message.error(data.msg)
+                    }
+                })
+            }
+            
+        },
+        //   树型数据处理
+        processingData(data){
+            let result = []
+            if(!Array.isArray(data)) {
+                return result
+            }
+            data.forEach(item => {
+                delete item.children;
+            });
+            let map = {};
+            data.forEach(item => {
+                map[item.id] = item;
+            });
+            data.forEach(item => {
+                let parent = map[item.parentId];
+                if(parent) {
+                    (parent.children || (parent.children = [])).push(item);
+                } else {
+                    item.children = [];
+                    result.push(item);
+                }
+            });
+            return result;
         },
         // 搜索分类按钮
         selectAmazonCategoryGjz(){
-            var obj = this.shopList.find(item => item.grantShopId == this.dataForm.grantShopId)
-            this.$http({
-                url: this.$http.adornUrl('/upload/amazoncategory/selectAmazonCategory'),
-                method: 'post',
-                data: this.$http.adornData({
-                    countryCode:obj.countryCode,
-                    categoryName:this.amazonCategoryVisibleObj.amazonCategoryGjz
+            if(this.dataForm.grantShopId){
+                var obj = this.shopList.find(item => item.grantShopId == this.dataForm.grantShopId)
+                this.$http({
+                    url: this.$http.adornUrl('/upload/amazoncategory/selectAmazonCategory'),
+                    method: 'post',
+                    data: this.$http.adornData({
+                        countryCode:obj.countryCode,
+                        categoryName:this.amazonCategoryVisibleObj.amazonCategoryGjz
+                    })
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                        console.log(data.amazonCategoryEntityList);
+                        this.amazonCategoryFl = [];
+                        this.amazonCategoryFl[0] = this.processingData(data.amazonCategoryEntityList);
+                        console.log(this.amazonCategoryFl);
+                        
+                    } else {
+                        this.$message.error(data.msg)
+                    }
                 })
-            }).then(({data}) => {
-                if (data && data.code === 0) {
-                    console.log(data);
-                    // if(data.amazonCategoryEntityChildList.length != 0){
-                    //     this.amazonCategoryFl.splice(i+1,this.amazonCategoryFl.length-i-1,data.amazonCategoryEntityChildList);
-                    // }
-                } else {
-                    this.$message.error(data.msg)
-                }
-            })
+            }else{
+                this.$message({
+                    message: '请选择授权店铺',
+                    type: 'warning'
+                });
+            }
+            
         },
         // 选择分类确定按钮
         selectAmazonCategory(){
-            if(this.amazonCategoryVisibleObj.isSou){
-                
-            }else{
-                this.dataForm.amazonCategory = this.amazonCategoryVisibleObj.amazonCategory;
-                this.dataForm.amazonCategoryNodeId = this.amazonCategoryVisibleObj.nodeId;
-                this.dataForm.allCategories = this.amazonCategoryVisibleObj.amazonCategoryArr.join('/');
-            }
-            
+            this.dataForm.amazonCategory = this.amazonCategoryVisibleObj.amazonCategory;
+            this.dataForm.amazonCategoryNodeId = this.amazonCategoryVisibleObj.nodeId;
+            this.dataForm.allCategories = this.amazonCategoryVisibleObj.amazonCategoryAll;
+            this.dataForm.amazonCategoryId = this.amazonCategoryVisibleObj.id;
             this.amazonCategoryVisible = false;
         },
         productCategorChange(val){
@@ -691,7 +744,8 @@
             this.dataForm.amazonCategoryNodeId = this.historyObj.value;
             this.dataForm.amazonCategory = this.historyList.find(item => item.amazonCategoryId == this.historyObj.value).amazonAllCategory;
             this.historyObj.value = ''
-        }
+        },
+        // 搜索分类
 
     }
   }

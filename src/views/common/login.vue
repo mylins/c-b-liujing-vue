@@ -1,7 +1,8 @@
 <template>
   <div class="site-wrapper site-page--login">
     <el-image
-          style="width: 600px;position:absolute;top:50%;left:50%;margin-top:-240px;margin-left:-560px"
+          class="site-img-logo"
+          style=""
           :src="require('@/assets/img/title.jpg')"></el-image>
     <div class="site-content__wrapperL">
       <!-- <div class="login-img"> -->
@@ -121,6 +122,14 @@
       content: "";
       background-size: cover;
     }
+    .site-img-logo{
+      width: 600px;
+      position:absolute;
+      top:50%;
+      left:50%;
+      margin-top:-240px;
+      margin-left:-560px
+    }
     .site-content__wrapperL {
       position: absolute;
       top: 50%;
@@ -165,6 +174,29 @@
       width: 100%;
       margin-top: 30px;
       background: #000;
+    }
+  }
+  @media (max-width:1200px){
+    .site-wrapper.site-page--login {
+      .site-img-logo{
+        width: 400px;
+        position:absolute;
+        top:60%;
+        left:50%;
+        margin-top:-340px;
+        margin-left:-200px
+      }
+      .site-content__wrapperL {
+        position: absolute;
+        top: 60%;
+        left: 50%;
+        padding: 0;
+        margin: -200px 0 0 -310px;
+        
+      }
+      .login-title {
+        display: none;
+      }
     }
   }
 </style>

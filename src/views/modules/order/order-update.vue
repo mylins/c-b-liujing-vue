@@ -37,7 +37,7 @@
           </h3>
           <div v-for="item in dataForm.orderProductList" :key="item.productId">
               <div class="proDiv">
-                  <div class="img">
+                  <div class="img" style="width:120px">
                       <el-image
                         style="width: 110px; height: 110px"
                         :src="item.productImageUrl"></el-image>

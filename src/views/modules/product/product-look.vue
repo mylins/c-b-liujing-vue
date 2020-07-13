@@ -619,9 +619,16 @@
                     width="160">
                 </el-table-column>
                 <el-table-column
-                    prop="variantAddPrice"
+                    prop=""
                     label="加价（¥）"
                     width="100">
+                    <template slot-scope="scope">
+                        <div style="display:flex">
+                            <span>{{scope.row.variantAddPrice}}</span>
+                            <!-- <el-input placeholder="请输入" size="small" v-model="scope.row.variantAddPrice"></el-input>&nbsp;&nbsp; -->
+                            <el-button type="text" size="mini" icon="" @click="showSaleMoney(scope.row.variantAddPrice)">最终售价</el-button>
+                        </div>
+                    </template>
                 </el-table-column>
                 <el-table-column
                     prop="variantStock"
@@ -663,7 +670,24 @@
         </div>
         
       </el-form>
-      
+      <!-- 最终售价 -->
+        <el-dialog
+            title="最终售价（¥）"
+            :visible.sync="saleMoneyVisible"
+            width="800px">
+            <div style="">
+                <el-table
+                class="freTable tableVi"
+                :data="saleMoneyList">
+                    <el-table-column
+                        v-for="(item,index) in saleMoneyListH"
+                        :key="index"
+                        :prop="'price'+index"
+                        :label="item">
+                    </el-table-column>
+                </el-table>
+            </div>
+        </el-dialog>
 
     </div>
   </div>
@@ -685,6 +709,9 @@
       }
       return {
         imgList:[],
+        saleMoneyVisible:false,
+        saleMoneyList:[],
+        saleMoneyListH:[],
         visible: false,
         imgSVList:[],
         addVisible:false,
@@ -1222,165 +1249,9 @@
           }
           this.dataForm.viFlag = 1;
       },
-    //   删除变体列表
-      delVList(index){
-        this.$confirm('确定删除该变体信息?', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-        }).then(() => {
-            this.dataForm.variantsInfoList.splice(index,1);
-            this.dataForm.viFlag = 1;
-        })
-      },
-    //   翻译
-        fanyi(text,num){
-            const loading = this.$loading({
-                lock: true,
-                text: 'Loading',
-                spinner: 'el-icon-loading',
-                background: 'rgba(0, 0, 0, 0.7)'
-                });
-            this.$http({
-                url: this.$http.adornUrl('/product/productintroduction/titleZhtoOther'),
-                method: 'post',
-                data: this.$http.adornData({
-                    text:text,
-                    introductionList:this.dataForm.introductionList,
-                    type:num
-                })
-            }).then(({data}) => {
-                loading.close();
-                if (data && data.code === 0) {
-                    this.dataForm.introductionList = data.introductionList
-                    
-                } else {
-                    this.$message.error(data.msg)
-                }
-            })
-        },
-        // 变体加价弹框
-        addVMoney(){
-            var that=this;
-            if(this.dataForm.variantsParameterList.length == 2){
-                this.addVMoneyVisible =true;
-                if(this.dataForm.variantsParameterList[0].paramsType=='尺寸（sizeNam）'){
-                    this.dataForm.variantsParameterList[0].paramsValue.split(',').forEach(function(item){
-                        that.addVMoneyList.push({
-                            size:item,
-                            money:''
-                        })
-                    })
-                    
-                }else{
-                    this.dataForm.variantsParameterList[1].paramsValue.split(',').forEach(function(item){
-                        that.addVMoneyList.push({
-                            size:item,
-                            money:''
-                        })
-                    })
-                }
-            }else if(this.dataForm.variantsParameterList.length == 1){
-                if(this.dataForm.variantsParameterList[0].paramsType=='尺寸（sizeNam）'){
-                    this.addVMoneyVisible =true;
-                    this.dataForm.variantsParameterList[0].paramsValue.split(',').forEach(function(item){
-                        that.addVMoneyList.push({
-                            size:item,
-                            money:''
-                        })
-                    })
-                }else{
-                    this.$message({
-                        message: '暂无需要加价的变体',
-                        type: 'warning'
-                    });
-                }
-            }else{
-                this.$message({
-                    message: '暂无需要加价的变体',
-                    type: 'warning'
-                });
-            }
-        },
-        // 变体加价
-        addVMoneyClick(){
-            var that = this;
-            if(this.dataForm.variantsParameterList.length == 1){
-                this.addVMoneyList.forEach(function(item){
-                    that.dataForm.variantsInfoList.forEach(function(m){
-                        if(m.variantCombination == item.size){
-                            m.variantAddPrice = item.money
-                        }
-                    })
-                })
-            }else{
-                this.addVMoneyList.forEach(function(item){
-                    that.dataForm.variantsInfoList.forEach(function(m){
-                        if(m.variantCombination.split(' - ')[1] == item.size){
-                            m.variantAddPrice = item.money
-                        }
-                    })
-                })
-            }
-            this.addVMoneyVisible = false;
-            this.dataForm.viFlag = 1;
+        // 获取最终售价
+        showSaleMoney(variantAddPrice){
             
-        },
-        // 添加单条变体
-        addItemVClick(){
-            var that = this;
-            if(this.itemV.color == '' && this.itemV.size == ''){
-                this.$message({
-                    message: '请填写至少一种变体属性',
-                    type: 'warning'
-                });
-            }else if(this.itemV.color != '' && this.itemV.size == ''){
-                that.dataForm.variantsInfoList.push({
-                    variantCombination:this.itemV.color,
-                    variantSku:'',
-                    eanCode:'',
-                    variantAddPrice:'',
-                    variantStock:(Math.round(Math.random()*10) + 60),
-                    imageUrl:'',
-                })
-            }else if(this.itemV.color != '' && this.itemV.size != ''){
-                that.dataForm.variantsInfoList.push({
-                    variantCombination:this.itemV.color + ' - ' + this.itemV.size,
-                    variantSku:'',
-                    eanCode:'',
-                    variantAddPrice:'',
-                    variantStock:(Math.round(Math.random()*10) + 60),
-                    imageUrl:'',
-                })
-            }
-            else if(this.itemV.color == '' && this.itemV.size != ''){
-                that.dataForm.variantsInfoList.push({
-                    variantCombination:this.itemV.size,
-                    variantSku:'',
-                    eanCode:'',
-                    variantAddPrice:'',
-                    variantStock:(Math.round(Math.random()*10) + 60),
-                    imageUrl:'',
-                })
-            }
-            this.dataForm.viFlag = 1;
-            this.addItemVVisible = false;
-            this.itemV = {
-                color:'',
-                size:''
-            }
-            
-        },
-        // 修改库存
-        stockClick(){
-            var that = this;
-            this.dataForm.variantsInfoList.forEach(function(item){
-                item.variantStock = that.stock;
-            })
-            this.stockVisible = false
-        },
-        // 获取相册
-        getImage(){
             const loading = this.$loading({
                 lock: true,
                 text: 'Loading',
@@ -1388,139 +1259,27 @@
                 background: 'rgba(0, 0, 0, 0.7)'
             });
             this.$http({
-                url: this.$http.adornUrl('/product/productimage/imageinfo'),
-                method: 'get',
-                params: this.$http.adornParams({
-                    'productId': this.dataForm.productId,
+                url: this.$http.adornUrl('/product/product/queryMoney'),
+                method: 'post',
+                data: this.$http.adornData({
+                    productId:this.dataForm.productId,
+                    variantAddPrice:variantAddPrice
                 })
             }).then(({data}) => {
-                loading.close();
                 if (data && data.code === 0) {
-                    console.log(data);
-                    this.dataForm.imageList = data.imageInfo;
-                    this.uploadImageVisible = false;
+                    this.saleMoneyList[0] = {};
+                    this.saleMoneyListH = [];
+                    var that = this;
+                    data.priceList.forEach(function(item,index){
+                        that.saleMoneyList[0]['price'+index] = item.price
+                        that.saleMoneyListH.push(item.country)
+                    })
+                    this.saleMoneyVisible = true;
+                    loading.close()
                 } else {
-                    
+                    this.$message.error(data.msg)
                 }
             })
-        },
-        // 保存相册
-        saveImageList(){
-            // var that=this;
-            // console.log(this.dataForm.imageList)
-            this.$confirm('确定保存当前相册顺序?', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                this.dataForm.imageList.forEach(function(item,index){
-                    item.sort = index+1
-                })
-                const loading = this.$loading({
-                    lock: true,
-                    text: 'Loading',
-                    spinner: 'el-icon-loading',
-                    background: 'rgba(0, 0, 0, 0.7)'
-                });
-                this.$http({
-                    url: this.$http.adornUrl('/product/productimage/locationsave'),
-                    method: 'post',
-                    data: this.$http.adornData(this.dataForm.imageList, false)
-                }).then(({data}) => {
-                    loading.close();
-                    if (data && data.code === 0) {
-                        console.log(data);
-                        this.getImage();
-                    } else {
-                        
-                    }
-                })
-            })
-            
-        },
-        // 删除图片
-        delImageList(){
-            // console.log(this.selectImageList);
-            this.$confirm('确定删除选中图片?', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                const loading = this.$loading({
-                    lock: true,
-                    text: 'Loading',
-                    spinner: 'el-icon-loading',
-                    background: 'rgba(0, 0, 0, 0.7)'
-                });
-                this.$http({
-                    url: this.$http.adornUrl('/product/productimage/deleteimage'),
-                    method: 'post',
-                    data: this.$http.adornData(this.selectImageList, false)
-                }).then(({data}) => {
-                    loading.close();
-                    if (data && data.code === 0) {
-                        console.log(data);
-                        this.getImage();
-                    } else {
-                        
-                    }
-                })
-            })
-            
-        },
-        // 变体选择图片
-        selectImgClick(index){
-            if(this.dataForm.imageList.length == 0){
-                this.$message({
-                    message: '暂无可选择的图片',
-                    type: 'warning'
-                });
-            }else{
-                if(this.dataForm.variantsInfoList[index].imageUrl != ''){
-                    this.imgSVList = this.dataForm.variantsInfoList[index].imageUrl.split(',');
-                }
-                
-                this.selectImageIndex =index;
-                this.selectImageVisible = true;
-            }
-        },
-        // 变体选择图片确定方法
-        selectImgOk(){
-            this.dataForm.variantsInfoList[this.selectImageIndex].imageUrl = this.imgSVList.join(',');
-            this.selectImageVisible = false;
-            console.log(this.dataForm.variantsInfoList);
-            this.imgSVList = [];
-        },
-        // 变体一键添加图片
-        addImgVClick(index){
-            this.$confirm('一键添加所有相册?', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                var that = this;
-                var arr = [];
-                this.dataForm.imageList.forEach(function(item){
-                    arr.push(item.imageUrl);
-                })
-                this.dataForm.variantsInfoList[index].imageUrl = arr.join(',');
-            })
-            
-            console.log(this.dataForm.variantsInfoList[index].imageUrl);
-        },
-        // 删除变体选中图片
-        delImageVB(num,index){
-            this.$confirm('确定删除该图片?', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                var arr = this.dataForm.variantsInfoList[num].imageUrl.split(',');
-                arr.splice(index,1)
-                this.dataForm.variantsInfoList[num].imageUrl = arr.join(',');
-            })
-            
-            
         }
     }
   }
@@ -1551,6 +1310,7 @@
   }
   .biantiDiv{
       display: flex;
+      flex-wrap: wrap;
   }
   .biantiDiv>div{
       width: 60px;

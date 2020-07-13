@@ -253,7 +253,8 @@
           enName:'',
           enBrand:'',
           orderFetch:1,
-          flag:0
+          flag:0,
+          producerName:''
         },
         dataRule: {
           username: [

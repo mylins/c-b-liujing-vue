@@ -146,12 +146,12 @@
                             
                             <open-tab :isMore="true" size="medium" type="text" icon="" :dec='item.productTitle' urlName='productAddUpdate' :opt='{"productId":item.productId,"auditStatus":item.auditStatus}'></open-tab>
                         </div>
+                        <div class="decProSN">编号：{{item.productId}}</div>
                         <div class="decProSN">SKU：{{item.productSku}}</div>
                         <div class="decProSN">时间：{{item.createTime}}</div>
                         <div class="lineDivPro">
-                            <span class="lineDivRight">¥{{item.money}}</span>
                             <div class="lineDivLeft">
-                                <span>{{item.productId}}</span>
+                                <span class="lineDivRight">¥{{item.money}}</span>
                             </div>
                         </div>
                         
@@ -498,6 +498,7 @@
                     if (data && data.code === 0) {
                         console.log(data);
                         var that = this;
+                        that.options = [];
                         data.categoryOneList.forEach(function(item){
                             that.options.push({
                                 value:item.categoryId,

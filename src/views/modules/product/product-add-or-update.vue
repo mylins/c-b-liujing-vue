@@ -2362,6 +2362,7 @@
             }).then(({data}) => {
                 if (data && data.code === 0) {
                     this.saleMoneyList[0] = {};
+                    this.saleMoneyListH = [];
                     var that = this;
                     data.priceList.forEach(function(item,index){
                         that.saleMoneyList[0]['price'+index] = item.price
@@ -2419,6 +2420,7 @@
   }
   .biantiDiv{
       display: flex;
+      flex-wrap: wrap;
   }
   .biantiDiv>div{
       width: 60px;

@@ -168,12 +168,12 @@
                             <span>{{item.deptName}}</span>
                             <span>{{item.userName}}</span>
                         </div>
+                        <div class="decProSN">编号：{{item.productId}}</div>
                         <div class="decProSN">SKU：{{item.productSku}}</div>
                         <div class="decProSN">时间：{{item.createTime}}</div>
                         <div class="lineDivPro">
-                            <span class="lineDivRight">¥{{item.money}}</span>
                             <div class="lineDivLeft">
-                                <span>{{item.productId}}</span>
+                                <span class="lineDivRight">¥{{item.money}}</span>
                             </div>
                         </div>
                     </div>
@@ -204,6 +204,7 @@
     },
       data(){
           return{
+            allSelect:false,
             showList:true,
             productD:{},
             comList:[],
