@@ -972,7 +972,7 @@
                             packageType:parseInt(this.wuliuDetails.wuliuType),
                             channelId:this.wuliuDetails.xianlu,
                             doorNumber:this.wuliuDetails.doorNumber,
-                            chineseName:this.wuliuDetails.chineseNamem,
+                            chineseName:this.wuliuDetails.chineseName,
                             englishName:this.wuliuDetails.englishName,
                             length:this.wuliuDetails.length,
                             width:this.wuliuDetails.width,

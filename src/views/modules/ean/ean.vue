@@ -2,7 +2,7 @@
   <div class="">
       <!-- 操作 -->
       <div class="divM">
-        <el-button type="primary" icon="el-icon-plus" size="small" @click="addVisible = true;addObj.type='EAN'">添加</el-button>
+        <el-button type="primary" icon="el-icon-plus" size="small" @click="addVisible = true;addObj.type='EAN';addObj.value=''">添加</el-button>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <el-input-number v-model="num" :controls="false" size="small"></el-input-number>
         <el-button type="primary" icon="el-icon-delete" size="small" @click="del">批量删除</el-button>
@@ -220,7 +220,7 @@
                     arr1=[];
                 arr.forEach(function(item){
                     if(item){
-                        arr.push(item)
+                        arr1.push(item)
                     }
                 })
                 const loading = this.$loading({
@@ -233,7 +233,7 @@
                     url: this.$http.adornUrl('/product/productean/batchadd'),
                     method: 'post',
                     data: this.$http.adornData({
-                        'codes':arr.join(','),
+                        'codes':arr1.join(','),
                         'type':this.addObj.type
                     })
                 }).then(({data}) => {

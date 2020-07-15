@@ -60,7 +60,7 @@
                       <el-input v-model="dataForm.amazonCategoryNodeId" placeholder="分类节点ID"></el-input>
                   </div>
                   <div>
-                      <!-- <el-button type="primary" plain @click="amazonCategoryVisible = true;sousClickV = true;amazonCategoryFl=[]">搜索分类</el-button> -->
+                      <el-button type="primary" plain @click="sousFl">搜索分类</el-button>
                       <el-button type="primary" plain @click="history">历史选择</el-button>
                   </div>
               </div>
@@ -123,7 +123,23 @@
                 <el-button type="primary" size="small" @click="selectAmazonCategoryGjz">搜索</el-button>
             </div>
             
-            <div style="height:350px;overflow:hiddle;display:flex">
+            <div v-if="sousClickV">
+                <div class="amazonCategoryItem" v-if="amazonCategoryFl.length!=0">
+                    <ul>
+                        <li v-for="(ama,i) in amazonCategoryFl" :key="i" :class="amazonCategoryVisibleObj.amazonCategoryArr.indexOf(ama.id) == -1 ? '' : 'active'" @click="clickAmazonCategory(ama.id,ama.displayName,ama.nodeId,ama.categoryQ)">{{ama.displayName}}</li>
+                    </ul>
+                </div>
+            </div>
+            <el-pagination
+            v-if="sousClickV"
+            @size-change="sizeChangeHandle"
+            @current-change="currentChangeHandle"
+            :current-page="pageIndex"
+            :page-size="pageSize"
+            :total="totalPage"
+            layout="total, sizes, prev, pager, next, jumper">
+            </el-pagination>
+            <div v-if="!sousClickV" style="height:350px;overflow:hiddle;display:flex">
                 <div class="amazonCategoryItem" v-for="(item,index) in amazonCategoryFl" :key="index">
                     <ul>
                         <li v-for="(ama,i) in item" :key="i" :class="amazonCategoryVisibleObj.amazonCategoryArr.indexOf(ama.id) == -1 ? '' : 'active'" @click="clickAmazonCategory(ama.id,ama.displayName,ama.nodeId,ama.categoryQ,index,ama.children)">{{ama.displayName}}</li>
@@ -189,6 +205,9 @@
         historyVisible:false,
         amazonCategoryVisible:false,
         amazonCategoryFl:[],
+        pageSize:10,
+        pageIndex:1,
+        totalPage:0,
         amazonCategoryVisibleObj:{
             id:'',
             amazonCategoryArr:[],
@@ -484,19 +503,16 @@
             this.amazonCategoryVisibleObj.nodeId = nodeId;
             this.amazonCategoryVisibleObj.id = id;
             this.amazonCategoryVisibleObj.amazonCategory = name;
-            this.amazonCategoryVisibleObj.amazonCategoryArr.splice(i,this.amazonCategoryVisibleObj.amazonCategoryArr.length-i,id);
+            
             this.amazonCategoryVisibleObj.amazonCategoryAll = all;
             // this.amazonCategoryGjz = this.amazonCategoryVisibleObj.amazonCategoryArr.join('/')
             // this.amazonCategoryVisibleObj.amazonCategoryArr[i] = name
             console.log(this.amazonCategoryVisibleObj)
             if(this.sousClickV){
+                this.amazonCategoryVisibleObj.amazonCategoryArr = [id];
                 this.amazonCategoryVisibleObj.amazonCategoryGjz = name;
-                if(children.length != 0){
-                    this.amazonCategoryFl.splice(i+1,this.amazonCategoryFl.length-i-1,children);
-                }else{
-                    this.amazonCategoryFl.splice(i+1,this.amazonCategoryFl.length-i-1);
-                }
             }else{
+                this.amazonCategoryVisibleObj.amazonCategoryArr.splice(i,this.amazonCategoryVisibleObj.amazonCategoryArr.length-i,id);
                 this.$http({
                     url: this.$http.adornUrl('/upload/amazoncategory/childCategoryList'),
                     method: 'post',
@@ -542,28 +558,13 @@
             });
             return result;
         },
-        // 搜索分类按钮
-        selectAmazonCategoryGjz(){
+        // 搜索分类打开弹框
+        sousFl(){
             if(this.dataForm.grantShopId){
-                var obj = this.shopList.find(item => item.grantShopId == this.dataForm.grantShopId)
-                this.$http({
-                    url: this.$http.adornUrl('/upload/amazoncategory/selectAmazonCategory'),
-                    method: 'post',
-                    data: this.$http.adornData({
-                        countryCode:obj.countryCode,
-                        categoryName:this.amazonCategoryVisibleObj.amazonCategoryGjz
-                    })
-                }).then(({data}) => {
-                    if (data && data.code === 0) {
-                        console.log(data.amazonCategoryEntityList);
-                        this.amazonCategoryFl = [];
-                        this.amazonCategoryFl[0] = this.processingData(data.amazonCategoryEntityList);
-                        console.log(this.amazonCategoryFl);
-                        
-                    } else {
-                        this.$message.error(data.msg)
-                    }
-                })
+                this.amazonCategoryVisible = true;
+                this.sousClickV = true;
+                this.amazonCategoryFl=[];
+                this.amazonCategoryVisibleObj.amazonCategoryGjz = ''
             }else{
                 this.$message({
                     message: '请选择授权店铺',
@@ -571,6 +572,39 @@
                 });
             }
             
+        },
+        // 搜索分类按钮
+        selectAmazonCategoryGjz(){
+            var obj = this.shopList.find(item => item.grantShopId == this.dataForm.grantShopId)
+            this.$http({
+                url: this.$http.adornUrl('/upload/amazoncategory/selectAmazonCategory'),
+                method: 'get',
+                params: this.$http.adornParams({
+                    page: this.pageIndex,
+                    limit: this.pageSize,
+                    countryCode:obj.countryCode,
+                    categoryName:this.amazonCategoryVisibleObj.amazonCategoryGjz
+                })
+            }).then(({data}) => {
+                if (data && data.code === 0) {
+                    console.log(data.amazonCategoryEntityList);
+                    this.amazonCategoryFl = data.page.list;
+                    this.totalPage = data.page.totalCount;
+                } else {
+                    this.$message.error(data.msg)
+                }
+            })
+        },
+        // 每页数
+        sizeChangeHandle (val) {
+            this.pageSize = val
+            this.pageIndex = 1
+            this.selectAmazonCategoryGjz()
+        },
+        // 当前页
+        currentChangeHandle (val) {
+            this.pageIndex = val
+            this.selectAmazonCategoryGjz()
         },
         // 选择分类确定按钮
         selectAmazonCategory(){

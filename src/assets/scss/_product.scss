@@ -52,16 +52,22 @@ span.proTitleSpan{
     color: #333;
 }
 div.aaa{
+    padding: 0 6px;
+    margin: 6px 0;
+}
+div.aaa .buttonText{
+    color: #409eff;
+    background: 0 0;
+    padding-left: 0;
+    padding-right: 0;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     overflow: hidden;
     white-space: pre-wrap;
     text-align: left;
-    min-height: 38px;
+    min-height: 36px;
     line-height: 18px;
-    padding: 0 6px;
-    margin: 6px 0;
   }
 span.el-dropdown-link.spanDown{
     color: #409eff;

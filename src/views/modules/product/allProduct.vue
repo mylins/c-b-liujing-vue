@@ -141,7 +141,7 @@
         <div class="btnGroupDiv" style="overflow:hidden">
             <el-checkbox v-model="allSelect" label="全选" border @change="allSelectClick" size="small"></el-checkbox>&nbsp;&nbsp;
             <el-button type="primary" icon="el-icon-edit" size="small" @click="copy">批量复制产品</el-button>
-            <el-button type="primary" icon="el-icon-edit" size="small" @click="clearProductSku">批量清楚SKU</el-button>
+            <el-button type="primary" icon="el-icon-edit" size="small" @click="clearProductSku">批量清除SKU</el-button>
         </div>
         <!-- 列表 -->
         <div class="divM">
@@ -597,9 +597,9 @@
                 })
             }).catch(() => {})
         },
-        // 批量清楚SKU
+        // 批量清除SKU
         clearProductSku(){
-            this.$confirm('确定清楚选中产品SKU?', {
+            this.$confirm('确定清除选中产品SKU?', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'

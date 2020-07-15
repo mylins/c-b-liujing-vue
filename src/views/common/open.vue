@@ -1,8 +1,11 @@
 <template>
     <div v-if="auditStatus != 'null'" class="aaa" style="cursor:pointer;color:#409EFF" :type="type" :size="size" :icon="icon" @click="open">
-      <el-tag effect="dark" size="mini" v-if="auditStatus == '001'">审核通过</el-tag>
-      <el-tag effect="dark" type="warning" size="mini" v-else>待审核</el-tag>
-      <span class="el-button--text">{{dec}}</span>
+      <div>
+        <el-tag effect="dark" size="mini" v-if="auditStatus == '001'">审核通过</el-tag>
+        <el-tag effect="dark" type="warning" size="mini" v-else>待审核</el-tag>
+      </div>
+      
+      <span class="buttonText">{{dec}}</span>
     </div>
     <el-button v-else-if="!product && auditStatus == 'null'" :type="type" :size="size" :icon="icon" @click="open">{{dec}}</el-button> 
     <el-button v-else-if="product && auditStatus == 'null'" :type="type" :size="size" :icon="icon" @click="toProduct">{{dec}}</el-button> 

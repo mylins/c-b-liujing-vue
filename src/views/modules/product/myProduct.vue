@@ -101,7 +101,7 @@
             <el-button type="primary" icon="el-icon-delete" size="small" @click="del">删除</el-button>
             <el-button type="primary" icon="el-icon-edit" size="small" @click="piliang">批量修改</el-button>
             <el-button type="primary" icon="el-icon-edit" size="small" @click="copy">批量复制产品</el-button>
-            <el-button type="primary" icon="el-icon-edit" size="small" @click="clearProductSku">批量清楚SKU</el-button>
+            <el-button type="primary" icon="el-icon-edit" size="small" @click="clearProductSku">批量清除SKU</el-button>
             <el-button type="primary" size="small" @click="changeStats('001','SHELVE_STATE')">上架</el-button>
             <el-button type="primary" size="small" @click="changeStats('002','SHELVE_STATE')">下架</el-button>
             <el-button type="primary" size="small" @click="changeStats('001','AUDIT_STATE')">审核通过</el-button>
@@ -472,17 +472,18 @@
                     })
                 }).then(({data}) => {
                     if (data && data.code === 0) {
-                    this.$message({
-                        message: '操作成功',
-                        type: 'success',
-                        duration: 1000,
-                        onClose: () => {
-                            this.getDataList()
-                            loading.close()
-                        }
-                    })
+                        this.$message({
+                            message: '操作成功',
+                            type: 'success',
+                            duration: 1000,
+                            onClose: () => {
+                                this.getDataList()
+                                loading.close()
+                            }
+                        })
                     } else {
-                    this.$message.error(data.msg)
+                        this.$message.error(data.msg)
+                        loading.close()
                     }
                 })
             }).catch(() => {})
@@ -573,9 +574,9 @@
                 })
             }).catch(() => {})
         },
-        // 批量清楚SKU
+        // 批量清除SKU
         clearProductSku(){
-            this.$confirm('确定清楚选中产品SKU?', {
+            this.$confirm('确定清除选中产品SKU?', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
