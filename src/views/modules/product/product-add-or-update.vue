@@ -3,7 +3,8 @@
     <page-h ref="back" :product="productId? false:true" :productId="dataForm.productId" :id="productId"></page-h>
     <div class="subDivForm">
       <span slot="footer" class="dialog-footer">
-        <!-- <el-button @click="visible = false">取消</el-button> -->
+        <el-button @click="goBack">返回</el-button>
+        <el-button v-if="productId" type="danger" @click="delPro">删除</el-button>
         <el-button type="primary" @click="dataFormSubmit()">提交</el-button>
       </span>
     </div>
@@ -124,10 +125,10 @@
         <div class="blockDivForm">
           <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;成本运费</h3>
           <el-form-item label="采购价格(¥)" prop="property.purchasePrice" :rules="dataRule.purchasePrice">
-            <el-input v-model="dataForm.property.purchasePrice" placeholder="采购价格(¥)"></el-input>
+            <el-input v-model="dataForm.property.purchasePrice" placeholder="采购价格(¥)" @change="getcostFreight('property.purchasePrice')"></el-input>
           </el-form-item>
           <el-form-item label="国内运费(¥)" prop="property.domesticFreight" :rules="dataRule.domesticFreight">
-            <el-input v-model="dataForm.property.domesticFreight" placeholder="国内运费(¥)"></el-input>
+            <el-input v-model="dataForm.property.domesticFreight" placeholder="国内运费(¥)" @change="getcostFreight('property.domesticFreight')"></el-input>
           </el-form-item>
           <el-form-item label="包装毛重(kg)" prop="property.productWeight" :rules="dataRule.productWeight">
             <el-input v-model="dataForm.property.productWeight" placeholder="包装毛重(kg)" @change="getcostFreight('property.productWeight')"></el-input>
@@ -884,7 +885,7 @@
                     label="SKU修正"
                     width="120">
                     <template slot-scope="scope">
-                        <el-input placeholder="请输入" size="small" v-model="scope.row.variantSku"></el-input>
+                        <el-input placeholder="请输入" size="small" v-model="scope.row.variantSku" @change="dataForm.viFlag = 1;"></el-input>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -893,7 +894,7 @@
                     width="120">
                     <template slot-scope="scope">
                         <div style="display:flex">
-                            <el-input placeholder="请输入" size="small" v-model="scope.row.variantAddPrice"></el-input>&nbsp;&nbsp;
+                            <el-input placeholder="请输入" size="small" v-model="scope.row.variantAddPrice" @change="dataForm.viFlag = 1;"></el-input>&nbsp;&nbsp;
                             <el-button type="text" size="mini" icon="" @click="showSaleMoney(scope.row.variantAddPrice)">最终售价</el-button>
                         </div>
                     </template>
@@ -903,7 +904,7 @@
                     label="库存"
                     width="80">
                     <template slot-scope="scope">
-                        <el-input placeholder="请输入" size="small" v-model="scope.row.variantStock"></el-input>
+                        <el-input placeholder="请输入" size="small" v-model="scope.row.variantStock" @change="dataForm.viFlag = 1;"></el-input>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -911,7 +912,7 @@
                     label="UPC／EAN"
                     width="120">
                     <template slot-scope="scope">
-                        <el-input placeholder="请输入" size="small" v-model="scope.row.eanCode"></el-input>
+                        <el-input placeholder="请输入" size="small" v-model="scope.row.eanCode" @change="dataForm.viFlag = 1;"></el-input>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -1462,6 +1463,85 @@
       }
     },
     methods: {
+        // tabs, 删除tab
+        removeTabHandle (tabName) {
+            this.mainTabs = this.mainTabs.filter(item => item.name !== tabName)
+            if (this.mainTabs.length >= 1) {
+            // 当前选中tab被删除
+            if (tabName === this.mainTabsActiveName) {
+                var tab = this.mainTabs[this.mainTabs.length - 1]
+                this.$router.push({ name: tab.name, query: tab.query, params: tab.params }, () => {
+                this.mainTabsActiveName = this.$route.name
+                })
+            }
+            } else {
+            this.menuActiveName = ''
+            this.$router.push({ name: 'home' })
+            }
+        },
+        // 返回
+        goBack(){
+            this.$confirm('确定取消当前填写信息?', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+            console.log(this.product);
+            if(!this.productId){
+                this.$http({
+                url: this.$http.adornUrl('/product/product/cancelOriginal'),
+                method: 'get',
+                params: this.$http.adornParams({
+                    productId:this.dataForm.productId
+                })
+                }).then(({data}) => {
+                if (data && data.code === 0) {
+                    this.removeTabHandle(this.mainTabsActiveName)
+                }
+                })
+                
+            }else{
+                this.removeTabHandle(this.mainTabsActiveName)
+            }
+            })
+            
+            
+        },
+        // 删除
+        delPro(){
+            this.$confirm('确定删除改产品?', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+                this.$http({
+                    url: this.$http.adornUrl('/product/product/falsedeletion'),
+                    method: 'post',
+                    data: this.$http.adornData([this.dataForm.productId], false)
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                    this.$message({
+                        message: '操作成功',
+                        type: 'success',
+                        duration: 1000,
+                        onClose: () => {
+                            this.$refs.back.removeTabHandle(this.mainTabsActiveName);
+                            loading.close()
+                        }
+                    })
+                    } else {
+                    this.$message.error(data.msg)
+                    loading.close()
+                    }
+                })
+            }).catch(() => {})
+        },
         moveImg(newIndex,oldIndex,el) {
             // this.dataForm.imageList = this.dataForm.imageList.shunxu((a, b) => a.sort - b.sort);
             console.log(this.dataForm.imageList[newIndex]);
@@ -1574,7 +1654,7 @@
                             type: 'success',
                             duration: 1000,
                             onClose: () => {
-                                this.$refs.back.removeTabHandle(this.mainTabsActiveName);
+                                // this.$refs.back.removeTabHandle(this.mainTabsActiveName);
                                 loading.close();
                             }
                         })
@@ -2118,14 +2198,15 @@
                     loading.close();
                     if (data && data.code === 0) {
                         console.log(data);
-                        this.$message({
-                            message: '操作成功',
-                            type: 'success',
-                            duration: 1000,
-                            onClose: () => {
-                                this.getImage();
-                            }
-                        })
+                        this.getImage();
+                        // this.$message({
+                        //     message: '操作成功',
+                        //     type: 'success',
+                        //     duration: 1000,
+                        //     onClose: () => {
+                        //         this.getImage();
+                        //     }
+                        // })
                         
                     } else {
                         this.$message.error(data.msg)
@@ -2294,6 +2375,7 @@
                             }
                             
                         })
+                        this.dataForm.viFlag = 1;
                     })
                 }
                 
@@ -2327,9 +2409,25 @@
             console.log(response);
             console.log(file);
             console.log(fileList);
+            var that = this;
             if(response.code == 0){
                 this.fileList = [];
-                this.getImage();
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+                
+                setTimeout(() => {
+                    that.uploadImageVisible = false;
+                    that.getImage();
+                    loading.close()
+                },3000)
+                // this.$nextTick(() => {
+                //     this.getImage();
+                // })
+                
             }else{
                 this.$message.error(response.msg)
             }

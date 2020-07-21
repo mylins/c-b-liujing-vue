@@ -153,7 +153,7 @@
           
         </div>
         <div class="blockDivForm">
-          <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;国际物流&nbsp;&nbsp; <el-button type="primary" icon="" size="small" plain @click="abroadLogisticsListVi = true;wuliuDetails.abroadLogisticsId = ''">添加</el-button></h3>
+          <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;国际物流&nbsp;&nbsp; <el-button type="primary" icon="" size="small" plain @click="addWuliuBtn">添加</el-button></h3>
           <br>
           <el-table
             class="freTable"
@@ -188,7 +188,7 @@
             <el-table-column
                 prop="shipTime"
                 label="发货时间"
-                width="">
+                width="100">
             </el-table-column>
             <el-table-column
                 prop="state"
@@ -206,30 +206,33 @@
                 <template slot-scope="scope">
                     <el-tag v-if="scope.row.isSynchronization == 0" type="info">未同步</el-tag>
                     <el-tag v-if="scope.row.isSynchronization == 1">已同步</el-tag>
-                    <el-tag v-if="scope.row.isSynchronization == 1">正在同步</el-tag>
+                    <el-tag v-if="scope.row.isSynchronization == 2">正在同步</el-tag>
                 </template>
             </el-table-column>
             <el-table-column
-                prop="type"
+                prop="createTime"
                 label="作废"
-                width="">
+                width="100">
+                <template slot-scope="scope">
+                    <el-tag v-if="scope.row.isDeleted == 1" type="info">已作废</el-tag>
+                </template>
             </el-table-column>
             <el-table-column
-                prop="type"
+                prop="createTime"
                 label="创建时间"
-                width="">
+                width="100">
             </el-table-column>
             <el-table-column
                 prop=""
                 label="操作"
-                width="">
+                width="140">
                 <template slot-scope="scope">
                     <template v-if="scope.row.isSynchronization == 0">
                         <el-button v-if="scope.row.orderState == '虚发货' || scope.row.orderState == '仓库已入库' || scope.row.orderState == '国际已发货'" type="text" icon="el-icon-bottom" size="small" @click="tongbu(scope.row.abroadLogisticsId)">同步</el-button>
                     </template>
-                    <el-button type="text" icon="el-icon-bottom" size="small" @click="dayin(scope.row.abroadLogisticsId)">打印</el-button>
-                    <el-button type="text" icon="el-icon-bottom" size="small" @click="mingxi(scope.row)">明细</el-button>
-                    <el-button v-if="scope.row.isDeleted == 0" type="text" icon="el-icon-bottom" size="small" @click="zuof(scope.row.abroadLogisticsId)">作废</el-button>
+                    <el-button type="text" icon="" size="small" @click="dayin(scope.row.abroadLogisticsId)">打印</el-button>
+                    <el-button type="text" icon="" size="small" @click="mingxi(scope.row)">明细</el-button>
+                    <el-button v-if="scope.row.isDeleted == 0 && dataForm.orderState != '已发货'" type="text" icon="" size="small" @click="zuof(scope.row.abroadLogisticsId)">作废</el-button>
                 </template>
             </el-table-column>
 
@@ -364,7 +367,7 @@
         </el-dialog>
         <!-- 添加国际物流 -->
         <el-dialog
-            title="添加国际物流"
+            :title="wuliuDetails.abroadLogisticsId ? '国际物流明细':'添加国际物流'"
             :visible.sync="abroadLogisticsListVi"
             width="1000px">
             <div>
@@ -410,14 +413,14 @@
                         <el-input v-else v-model="wuliuDetails.englishName" placeholder="请输入内容" clearable></el-input>
                     </el-form-item>
                     <el-form-item label="重量" prop="weight">
-                        <span v-if="wuliuDetails.abroadLogisticsId" class="decVal">{{wuliuDetails.weight}}</span>
+                        <span v-if="wuliuDetails.abroadLogisticsId" class="decVal">{{wuliuDetails.weight}}kg</span>
                         <el-input v-else v-model="wuliuDetails.weight" placeholder="请输入内容" clearable></el-input>
                     </el-form-item>
                     <br>
                     <el-form-item label="体积" prop="" required>
                         <el-col :span="6">
                             <el-form-item prop="length">
-                                <span v-if="wuliuDetails.abroadLogisticsId" class="decVal">{{wuliuDetails.length}}</span>
+                                <span v-if="wuliuDetails.abroadLogisticsId" class="decVal" style="display:inline-block;width:70px;text-align:center;">{{wuliuDetails.length}}</span>
                                 <el-input v-else v-model="wuliuDetails.length" placeholder="请输入内容" clearable></el-input>
                             </el-form-item>
                         </el-col>
@@ -426,7 +429,7 @@
                         </el-col>
                         <el-col :span="6">
                             <el-form-item prop="width">
-                                <span v-if="wuliuDetails.abroadLogisticsId" class="decVal">{{wuliuDetails.width}}</span>
+                                <span v-if="wuliuDetails.abroadLogisticsId" class="decVal" style="display:inline-block;width:70px;text-align:center;">{{wuliuDetails.width}}</span>
                                 <el-input v-else v-model="wuliuDetails.width" placeholder="请输入内容" clearable></el-input>
                             </el-form-item>
                         </el-col>
@@ -435,25 +438,30 @@
                         </el-col>
                         <el-col :span="6">
                             <el-form-item prop="height">
-                                <span v-if="wuliuDetails.abroadLogisticsId" class="decVal">{{wuliuDetails.height}}</span>
+                                <span v-if="wuliuDetails.abroadLogisticsId" class="decVal" style="display:inline-block;width:70px;text-align:center;">{{wuliuDetails.height}}</span>
                                 <el-input v-else v-model="wuliuDetails.height" placeholder="请输入内容" clearable></el-input>
                             </el-form-item>
                         </el-col>
                     </el-form-item>
                     <br>
                     <el-form-item label="物流" prop="wuliuType">
-                        <el-col :span="10">
+                        <span v-if="wuliuDetails.wuliuType == 0 && wuliuDetails.abroadLogisticsId" class="decVal">云途小包</span>
+                        <span v-if="wuliuDetails.wuliuType == 1 && wuliuDetails.abroadLogisticsId" class="decVal">三态大包</span>
+                        &nbsp;&nbsp;
+                        <span v-if="wuliuDetails.abroadLogisticsId" class="decVal">{{wuliuDetails.channelName}}</span>
+                        <el-col v-if="!wuliuDetails.abroadLogisticsId" :span="10">
                             <el-form-item label="" prop="wuliuType">
+                                
                                 <el-select v-model="wuliuDetails.wuliuType" filterable placeholder="请选择" :disabled="wuliuDetails.abroadLogisticsId ? true : false">
                                     <el-option
                                             key="0"
                                             label="云途小包"
-                                            value="0">
+                                            :value="0">
                                     </el-option>
                                     <el-option
                                             key="1"
                                             label="三态大包"
-                                            value="1">
+                                            :value="1">
                                     </el-option>
                                     <!-- <el-option
                                             key="2"
@@ -468,13 +476,13 @@
                                 </el-select>
                             </el-form-item>
                         </el-col>
-                        <el-col :span="1">
+                        <el-col v-if="!wuliuDetails.abroadLogisticsId" :span="1">
                             <div style="height:10px"> </div>
                         </el-col>
-                        <el-col :span="10">
+                        <el-col v-if="!wuliuDetails.abroadLogisticsId" :span="10">
                             <el-form-item label="" prop="xianlu">
-                                <span v-if="wuliuDetails.abroadLogisticsId" class="decVal">{{wuliuDetails.channelName}}</span>
-                                <el-select v-else v-model="wuliuDetails.xianlu" filterable placeholder="请选择" @focus="getWuliuXianl">
+                                
+                                <el-select v-model="wuliuDetails.xianlu" filterable placeholder="请选择" @focus="getWuliuXianl">
                                     <el-option
                                             v-for="item in guojilogistics"
                                             :key="item.channelId"
@@ -485,27 +493,32 @@
                             </el-form-item>
                         </el-col>
                     </el-form-item>
-                    <el-form-item v-if="wuliuDetails.wuliuType == 1 || wuliuDetails.wuliuType == 2" label="海关编码" prop="itemCodeId">
-                        <span v-if="wuliuDetails.abroadLogisticsId" class="decVal">{{wuliuDetails.itemCode}} {{wuliuDetails.itemCnMaterial}}</span>
-                        <el-select v-else v-model="wuliuDetails.itemCodeId" filterable placeholder="请选择" @focus="getHGBM" @change="changeHG">
-                            <el-option
-                                    v-for="item in itemCodelist"
-                                    :key="item.itemCodeId"
-                                    :label="item.itemCode+item.itemCnMaterial"
-                                    :value="item.itemCodeId">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-button type="primary" icon="" size="small" plain @click="createdNum">生产运单号</el-button>
+                    <template v-if="!wuliuDetails.abroadLogisticsId">
+                        <el-form-item v-if="wuliuDetails.wuliuType == 1 || wuliuDetails.wuliuType == 2" label="海关编码" prop="itemCodeId">
+                            <el-select v-model="wuliuDetails.itemCodeId" filterable placeholder="请选择" @focus="getHGBM" @change="changeHG">
+                                <el-option
+                                        v-for="item in itemCodelist"
+                                        :key="item.itemCodeId"
+                                        :label="item.itemCode+item.itemCnMaterial"
+                                        :value="item.itemCodeId">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </template>
+
+                    <el-button v-if="!wuliuDetails.abroadLogisticsId" type="primary" icon="" size="small" plain @click="createdNum">生产运单号</el-button>
                     <br>
                     <el-form-item v-if="wuliuDetails.wuliuType == 1" label="门牌号" prop="">
-                        <el-input v-model="wuliuDetails.doorNumber" :disabled="true"></el-input>
+                        <span v-if="wuliuDetails.abroadLogisticsId" class="decVal">{{wuliuDetails.doorNumber}}</span>
+                        <el-input v-else v-model="wuliuDetails.doorNumber"></el-input>
                     </el-form-item>
                     <el-form-item label="运单号" prop="">
-                        <el-input v-model="wuliuDetails.addyundanhao" :disabled="true"></el-input>
+                        <span v-if="wuliuDetails.abroadLogisticsId" class="decVal">{{wuliuDetails.addyundanhao}}</span>
+                        <el-input v-else v-model="wuliuDetails.addyundanhao" :disabled="true"></el-input>
                     </el-form-item>
                     <el-form-item label="追踪号" prop="">
-                        <el-input v-model="wuliuDetails.addzhuizonghao" :disabled="true"></el-input>
+                        <span v-if="wuliuDetails.abroadLogisticsId" class="decVal">{{wuliuDetails.addzhuizonghao}}</span>
+                        <el-input v-else v-model="wuliuDetails.addzhuizonghao" :disabled="true"></el-input>
                     </el-form-item>
                 </el-form>
                 <!-- <span slot="footer" class="dialog-footer">
@@ -840,9 +853,29 @@
                 })
             }).catch(() => {})
         },
+        addWuliuBtn(){
+            this.abroadLogisticsListVi = true;
+            this.wuliuDetails = {
+                abroadLogisticsId:'',
+                chineseName:'',
+                englishName:'',
+                weight:'1',
+                length:'40',
+                width:'20',
+                height:'8',
+                doorNumber:'',
+                addyundanhao:'',
+                addzhuizonghao:'',
+                itemCodeId:'',
+                xianlu:'',
+                wuliuType:'',
+                itemCodeId:''
+            };
+            this.$refs['dataForm'].resetFields();
+        },
         // 获取物流线路
         getWuliuXianl(){
-            if(this.wuliuDetails.wuliuType){
+            if(this.wuliuDetails.wuliuType == 0 || this.wuliuDetails.wuliuType == 1){
                 this.$http({
                     url: this.$http.adornUrl('/order/order/getShippingMethodCode'),
                     method: 'get',
@@ -902,11 +935,11 @@
                         data: this.$http.adornData({
                             orderId:this.dataForm.orderId,
                             orderItemRelationList:this.dataForm.orderProductList,
-                            amazonOrderId:'',
+                            amazonOrderId:this.dataForm.amazonOrderId,
                             packageType:parseInt(this.wuliuDetails.wuliuType),
                             channelId:this.wuliuDetails.xianlu,
                             doorNumber:this.wuliuDetails.doorNumber,
-                            chineseName:this.wuliuDetails.chineseNamem,
+                            chineseName:this.wuliuDetails.chineseName,
                             englishName:this.wuliuDetails.englishName,
                             length:this.wuliuDetails.length,
                             width:this.wuliuDetails.width,
@@ -921,6 +954,7 @@
                                 duration: 1000,
                                 onClose: () => {
                                     loading.close();
+                                    this.abroadLogisticsListVi = false;
                                     // this.$nextTick(() => {
                                     //     this.$refs['wuliuDetailsForm'].resetFields();
                                     // })
@@ -1079,7 +1113,19 @@
         },
         // 明细
         mingxi(row){
-            this.wuliuDetails = row;
+            this.wuliuDetails.chineseName = row.chineseName;
+            this.wuliuDetails.wuliuType = row.packageType;
+            this.wuliuDetails.englishName = row.englishName;
+            this.wuliuDetails.actualWeight = row.actualWeight;
+            this.wuliuDetails.length = row.length;
+            this.wuliuDetails.width = row.width;
+            this.wuliuDetails.height = row.height;
+            this.wuliuDetails.doorNumber = row.doorNumber;
+            this.wuliuDetails.abroadWaybill = row.abroadWaybill;
+            this.wuliuDetails.trackWaybill = row.trackWaybill;
+            this.wuliuDetails.abroadLogisticsId = row.abroadLogisticsId;
+            console.log(this.wuliuDetails);
+            this.abroadLogisticsListVi = true;
         },
         // 同步
         tongbu(id){

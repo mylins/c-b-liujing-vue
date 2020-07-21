@@ -144,7 +144,8 @@
                 style="width: 100%">
                 <el-table-column
                 type="selection"
-                width="55">
+                align="center"
+                width="46">
                 </el-table-column>
                 <el-table-column
                 prop="productId"
@@ -166,6 +167,7 @@
                 <el-table-column
                 prop=""
                 label="图片"
+                align="center"
                 width="70">
                     <template slot-scope="scope">
                         <el-tooltip placement="right-start" effect="light">
@@ -183,7 +185,7 @@
                 <el-table-column
                 prop="productId"
                 label="亚马逊单号"
-                width="200">
+                width="180">
                     <template slot-scope="scope">
                         <el-tooltip v-if="scope.row.abroadRemark" :content="scope.row.abroadRemark" placement="bottom" effect="light">
                             <i class="el-icon-s-opportunity" style="color:#F56C6C"></i>
@@ -192,10 +194,21 @@
                             <i class="el-icon-s-flag" style="color:#F56C6C"></i>
                         </el-tooltip>
                         <open-tab :isMore="true" size="medium" type="text" icon="" :dec='scope.row.amazonOrderId' urlName='orderAddUpdate' :opt='{"orderId":scope.row.orderId}'></open-tab>
+                        <span 
+                            class="el-tag el-tag--medium" 
+                            :style="{'color':color[states.indexOf(scope.row.orderState)],'background':'#fff','border':'0','padding':'0'}">
+                            {{ scope.row.orderState }}</span>
+                        &nbsp;&nbsp;
+                        <span 
+                            v-if="scope.row.abnormalStatus"
+                            class="el-tag el-tag--medium" 
+                            :style="{'color':color1[states1.indexOf(scope.row.abnormalState)],'background':'#fff','border':'0','padding':'0'}">
+                            {{ scope.row.abnormalState }}</span>
+                        <br>
                         <el-image
                             style="width: 15px; height: 15px"
                             :src="require('@/assets/img/yamaxun.jpg')"></el-image>
-                        <span>{{scope.shopName}}</span>
+                        <span style="vertical-align:text-bottom">{{scope.row.shopName}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -203,11 +216,12 @@
                 label="订单金额"
                 width="">
                     <template slot-scope="scope">
-                        <div>{{scope.row.orderMoney}}<span v-if="scope.row.rateCode">({{scope.row.rateCode}})</span></div>
-                        <div v-if="scope.row.orderMoneyCny"><span style="color:#999">{{scope.row.orderMoneyCny}}</span>}</div>
+                        <div>{{scope.row.orderMoney}}</div>
+                        <span v-if="scope.row.rateCode">({{scope.row.rateCode}})</span>
+                        <div v-if="scope.row.orderMoneyCny"><span style="color:#999">{{scope.row.orderMoneyCny}}</span></div>
                     </template>
                 </el-table-column>
-                <el-table-column
+                <!-- <el-table-column
                 prop=""
                 label="Amazon佣金"
                 width="">
@@ -215,21 +229,22 @@
                         <div>{{scope.row.amazonCommission}}<span v-if="scope.row.rateCode">({{scope.row.rateCode}})</span></div>
                         <div v-if="scope.row.amazonCommissionCny"><span style="color:#999">¥{{scope.row.amazonCommissionCny}}</span>}</div>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
                 <el-table-column
                 prop=""
                 label="到账金额"
                 width="">
                     <template slot-scope="scope">
-                        <div>{{scope.row.accountMoney}}<span v-if="scope.row.rateCode">({{scope.row.rateCode}})</span></div>
-                        <div v-if="scope.row.accountMoneyCny"><span style="color:#999">¥{{scope.row.accountMoneyCny}}</span>}</div>
+                        <div>{{scope.row.accountMoney}}</div>
+                        <span v-if="scope.row.rateCode">({{scope.row.rateCode}})</span>
+                        <div v-if="scope.row.accountMoneyCny"><span style="color:#999">¥{{scope.row.accountMoneyCny}}</span></div>
                     </template>
                 </el-table-column>
-                <el-table-column
+                <!-- <el-table-column
                 prop="momentRate"
                 label="当天汇率"
                 width="100">
-                </el-table-column>
+                </el-table-column> -->
                 <el-table-column
                 prop="purchasePrice"
                 label="采购价"
@@ -254,13 +269,37 @@
                 prop="orderProfit"
                 label="利润"
                 width="100">
+                    <template slot-scope="scope">
+                        <div>{{scope.row.orderProfit}}<span v-if="scope.row.profitRate">({{scope.row.profitRate * 100}}%)</span></div>
+                    </template>
                 </el-table-column>
                 <el-table-column
+                prop=""
+                label="国内物流单号"
+                width="">
+                    <template slot-scope="scope">
+                        <div v-for="item in scope.row.domesticWaybillList" :key="item.domesticLogisticsId">
+                            <span>{{item.waybill}}</span>
+                            <!-- <el-button v-if="item.state == '未签收'" type="text" icon="" @click="rukuClick1(item)">入库</el-button> -->
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                prop="abroadWaybill"
+                label="国际物流单号"
+                width="">
+                    <template slot-scope="scope">
+                        <div v-for="item in scope.abroadWaybill" :key="item.abroadLogisticsId">
+                            <span>{{item.abroadWaybill}}</span>
+                        </div>
+                    </template>
+                </el-table-column>
+                <!-- <el-table-column
                 prop="profitRate"
                 label="利润率"
                 width="100">
-                </el-table-column>
-                <el-table-column
+                </el-table-column> -->
+                <!-- <el-table-column
                 prop=""
                 label="订单状态"
                 width="100">
@@ -282,7 +321,7 @@
                             :style="{'color':color1[states1.indexOf(scope.row.abnormalState)],'background':'#fff','border':'1px solid '+color1[states1.indexOf(scope.row.abnormalState)]}">
                             {{ scope.row.abnormalState }}</span>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
                 
                 <el-table-column
                 fixed="right"
@@ -852,7 +891,7 @@
         padding: 0 10px;
     }
     .statics .left1{
-        width: 160px;
+        width: 120px;
     }
     .statics .right{
         flex: 1;

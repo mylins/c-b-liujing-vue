@@ -108,11 +108,13 @@
                 width="100">
                     <template slot-scope="scope">
                         <div>{{scope.row.deptName}}</div>
-                        <span>操作人：{{scope.row.userName}}</span>
+                        <!-- <span>操作人：{{scope.row.userName}}</span> -->
+                        <span style="font-size:13px" v-if="scope.row.userName">({{scope.row.userName}})</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop=""
+                align="center"
                 label="图片"
                 width="70">
                     <template slot-scope="scope">
@@ -141,10 +143,11 @@
                         </el-tooltip>
                         <open-tab :isMore="true" size="medium" type="text" icon="" :dec='scope.row.amazonOrderId' urlName='orderAddUpdateCk' :opt='{"orderId":scope.row.orderId}'></open-tab>
                         <!-- <open-tab size="medium" type="text" icon="" :dec='scope.row.amazonOrderId' urlName='productAddUpdate' :opt='{"orderId":scope.row.orderId}'></open-tab> -->
+                        <br>
                         <el-image
                             style="width: 15px; height: 15px"
                             :src="require('@/assets/img/yamaxun.jpg')"></el-image>
-                        <span>{{scope.shopName}}</span>
+                        <span style="vertical-align:text-bottom">{{scope.row.shopName}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -694,7 +697,7 @@
         padding: 0 10px;
     }
     .statics .left1{
-        width: 160px;
+        width: 120px;
     }
     .statics .right{
         flex: 1;

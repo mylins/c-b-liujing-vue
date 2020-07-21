@@ -103,6 +103,7 @@
                 prop=""
                 label="图片"
                 width="160">
+                
                 <template slot-scope="scope">
                     <el-tooltip placement="right-start" effect="light">
                         <div slot="content">

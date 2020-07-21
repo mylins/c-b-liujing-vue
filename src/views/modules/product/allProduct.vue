@@ -152,7 +152,7 @@
                             <el-image
                             style="width: 100%;"
                             fit="cover"
-                            :src="item.mainImageUrl">
+                            :src="item.mainImageUrl+'?x-image-process=style/style-1000'">
                                 <div slot="placeholder" class="image-slot errorImgDiv1">
                                     加载中<span class="dot">...</span>
                                 </div>

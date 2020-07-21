@@ -925,10 +925,10 @@
                 abroadLogisticsId:'',
                 chineseName:'',
                 englishName:'',
-                weight:'',
-                length:'',
-                width:'',
-                height:'',
+                weight:'1',
+                length:'40',
+                width:'20',
+                height:'8',
                 doorNumber:'',
                 addyundanhao:'',
                 addzhuizonghao:'',
@@ -941,7 +941,7 @@
         },
         // 获取物流线路
         getWuliuXianl(){
-            if(this.wuliuDetails.wuliuType){
+            if(this.wuliuDetails.wuliuType == 0 || this.wuliuDetails.wuliuType == 1){
                 this.$http({
                     url: this.$http.adornUrl('/order/order/getShippingMethodCode'),
                     method: 'get',
@@ -1001,7 +1001,7 @@
                         data: this.$http.adornData({
                             orderId:this.dataForm.orderId,
                             orderItemRelationList:this.dataForm.orderProductList,
-                            amazonOrderId:'',
+                            amazonOrderId:this.dataForm.amazonOrderId,
                             packageType:parseInt(this.wuliuDetails.wuliuType),
                             channelId:this.wuliuDetails.xianlu,
                             doorNumber:this.wuliuDetails.doorNumber,
@@ -1020,6 +1020,7 @@
                                 duration: 1000,
                                 onClose: () => {
                                     loading.close();
+                                    this.abroadLogisticsListVi = false;
                                     // this.$nextTick(() => {
                                     //     this.$refs['wuliuDetailsForm'].resetFields();
                                     // })

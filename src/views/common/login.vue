@@ -15,9 +15,9 @@
             <el-input prefix-icon="el-icon-user-solid" v-model="dataForm.userName" placeholder="帐号"></el-input>
           </el-form-item>
           <el-form-item prop="password">
-            <el-input prefix-icon="el-icon-s-goods" v-model="dataForm.password" type="password" placeholder="密码"></el-input>
+            <el-input prefix-icon="el-icon-s-goods" v-model="dataForm.password" type="password" placeholder="密码"  @keyup.enter.native="dataFormSubmit()"></el-input>
           </el-form-item>
-          <el-form-item prop="captcha">
+          <!-- <el-form-item prop="captcha">
             <el-row :gutter="20">
               <el-col :span="14">
                 <el-input prefix-icon="el-icon-s-opportunity" v-model="dataForm.captcha" placeholder="验证码" @keyup.enter.native="dataFormSubmit()">
@@ -27,7 +27,7 @@
                 <img :src="captchaPath" @click="getCaptcha()" alt="">
               </el-col>
             </el-row>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item>
             <el-button class="login-btn-submit" type="info" @click="dataFormSubmit()">登录</el-button>
           </el-form-item>

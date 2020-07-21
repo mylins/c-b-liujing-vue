@@ -358,6 +358,7 @@
                 this.dataForm.enName = data.user.enName;
                 this.dataForm.groupId = data.user.groupId;
                 this.dataForm.groupName = data.user.groupName;
+                this.dataForm.producerName = data.user.producerName;
                 if(data.user.information){
                   this.dataForm.information = data.user.information;
                 }else{
@@ -416,7 +417,8 @@
                     userId:this.dataForm.userId,
                     flag:this.dataForm.flag,
                     groupId:this.dataForm.groupId,
-                    groupName:this.dataForm.groupName
+                    groupName:this.dataForm.groupName,
+                    producerName:this.dataForm.producerName
                   })
                 }).then(({data}) => {
                   if (data && data.code === 0) {

@@ -187,6 +187,7 @@
                 style="width: 100%">
                 <el-table-column
                 type="selection"
+                align="center"
                 width="55">
                 </el-table-column>
                 <el-table-column
@@ -213,12 +214,14 @@
                 width="100">
                     <template slot-scope="scope">
                         <div>{{scope.row.deptName}}</div>
-                        <span>操作人：{{scope.row.userName}}</span>
+                        <!-- <span>操作人：{{scope.row.userName}}</span> -->
+                        <span style="font-size:13px" v-if="scope.row.userName">({{scope.row.userName}})</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                 prop=""
                 label="图片"
+                align="center"
                 width="70">
                     <template slot-scope="scope">
                         <el-tooltip placement="right-start" effect="light">
@@ -246,10 +249,22 @@
                         </el-tooltip>
                         <open-tab :isMore="true" size="medium" type="text" icon="" :dec='scope.row.amazonOrderId' urlName='orderAddUpdate' :opt='{"orderId":scope.row.orderId}'></open-tab>
                         <!-- <open-tab size="medium" type="text" icon="" :dec='scope.row.amazonOrderId' urlName='productAddUpdate' :opt='{"orderId":scope.row.orderId}'></open-tab> -->
+                        <br>
+                        <span 
+                            class="el-tag el-tag--medium" 
+                            :style="{'color':color[states.indexOf(scope.row.orderState)],'background':'#fff','border':'0','padding':'0'}">
+                            {{ scope.row.orderState }}</span>
+                        &nbsp;&nbsp;
+                        <span 
+                            v-if="scope.row.abnormalStatus"
+                            class="el-tag el-tag--medium" 
+                            :style="{'color':color1[states1.indexOf(scope.row.abnormalState)],'background':'#fff','border':'0','padding':'0'}">
+                            {{ scope.row.abnormalState }}</span>
+                        <br>
                         <el-image
                             style="width: 15px; height: 15px"
                             :src="require('@/assets/img/yamaxun.jpg')"></el-image>
-                        <span>{{scope.shopName}}</span>
+                        <span style="vertical-align:text-bottom">{{scope.row.shopName}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -263,16 +278,27 @@
                 width="70">
                 </el-table-column>
                 <el-table-column
-                prop="domesticWaybill"
+                prop=""
                 label="国内物流单号"
                 width="">
+                    <template slot-scope="scope">
+                        <div v-for="item in scope.row.domesticWaybillList" :key="item.domesticLogisticsId">
+                            <span>{{item.waybill}}</span>
+                            <!-- <el-button v-if="item.state == '未签收'" type="text" icon="" @click="rukuClick1(item)">入库</el-button> -->
+                        </div>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="abroadWaybill"
                 label="国际物流单号"
                 width="">
+                    <template slot-scope="scope">
+                        <div v-for="item in scope.abroadWaybill" :key="item.abroadLogisticsId">
+                            <span>{{item.abroadWaybill}}</span>
+                        </div>
+                    </template>
                 </el-table-column>
-                <el-table-column
+                <!-- <el-table-column
                 prop=""
                 label="订单状态"
                 width="100">
@@ -294,7 +320,7 @@
                             :style="{'color':color1[states1.indexOf(scope.row.abnormalState)],'background':'#fff','border':'1px solid '+color1[states1.indexOf(scope.row.abnormalState)]}">
                             {{ scope.row.abnormalState }}</span>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
                 
                 <el-table-column
                 fixed="right"
@@ -848,7 +874,7 @@
         padding: 0 10px;
     }
     .statics .left1{
-        width: 160px;
+        width: 120px;
     }
     .statics .right{
         flex: 1;
