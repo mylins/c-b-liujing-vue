@@ -2250,6 +2250,7 @@
                             type: 'success',
                             duration: 1000,
                             onClose: () => {
+                                this.selectImageList = [];
                                 this.getImage();
                             }
                         })
