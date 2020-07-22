@@ -1553,6 +1553,7 @@
             console.log('111')
         },
         init (obj) {
+            console.log(obj);
             this.productId = obj.productId || 0;
             if(this.productId){
                 const loading = this.$loading({
@@ -1654,8 +1655,14 @@
                             type: 'success',
                             duration: 1000,
                             onClose: () => {
+                                // console.log(this.$route)
                                 // this.$refs.back.removeTabHandle(this.mainTabsActiveName);
                                 loading.close();
+                                var tab = this.$route
+                                this.removeTabHandle(tab.name)
+                                this.$nextTick(() => {
+                                    this.$router.push({ name: tab.name, query: tab.query, params: {"productId":this.dataForm.productId,"auditStatus":this.dataForm.auditStatus} })
+                                })
                             }
                         })
                     } else {

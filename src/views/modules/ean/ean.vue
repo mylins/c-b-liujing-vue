@@ -10,7 +10,7 @@
       </div>
       <!-- 统计 -->
       <div class="statics divM">
-          <div class="left">
+          <div class="">
               <i class="el-icon-info" style="color:#409EFF"></i>&nbsp;&nbsp;
               总数&nbsp;<a style="font-weight: 600">{{ allCou }}</a>&nbsp;项&nbsp;&nbsp;&nbsp;
               已使用&nbsp;<a style="font-weight: 600">{{ useCou }}</a>&nbsp;项&nbsp;&nbsp;&nbsp;
@@ -151,8 +151,11 @@
             }).then(({data}) => {
                 if (data && data.code === 0) {
                     console.log(data);
-                    this.dataList = data.page.list
-                    this.totalPage = data.page.totalCount
+                    this.dataList = data.page.list;
+                    this.totalPage = data.page.totalCount;
+                    this.allCou = data.count;
+                    this.useCou = data.YesStateCount;
+                    this.unuseCou = data.noStateCount;
                 } else {
                     this.dataList = []
                     this.totalPage = 0

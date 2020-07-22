@@ -525,7 +525,7 @@
                     </div>
                 </div>
             </el-tab-pane>
-            <el-tab-pane label="日语">
+            <el-tab-pane label="荷兰语">
                 <div class="intrDiv">
                     <label>
                         <span>产品标题</span>  <br>
@@ -578,6 +578,64 @@
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="dataForm.introductionList[6].productDescription"
+                        maxlength="2000"
+                        show-word-limit></el-input>
+                    </div>
+                </div>
+            </el-tab-pane>
+            <el-tab-pane label="日语">
+                <div class="intrDiv">
+                    <label>
+                        <span>产品标题</span>  <br>
+                    </label>
+                    <div>
+                        <el-input
+                        :disabled="true"
+                        type="textarea"
+                        placeholder="请输入内容"
+                        v-model="dataForm.introductionList[7].productTitle"
+                        maxlength="200"
+                        show-word-limit></el-input>
+                    </div>
+                </div>
+                <div class="intrDiv">
+                    <label>
+                        <span>关键字</span>  <br>
+                    </label>
+                    <div>
+                        <el-input
+                        :disabled="true"
+                        type="textarea"
+                        placeholder="请输入内容"
+                        v-model="dataForm.introductionList[7].keyWord"
+                        maxlength="250"
+                        show-word-limit></el-input>
+                    </div>
+                </div>
+                <div class="intrDiv">
+                    <label>
+                        <span>重点说明</span>  <br>
+                    </label>
+                    <div>
+                        <el-input
+                        :disabled="true"
+                        type="textarea"
+                        placeholder="请输入内容"
+                        v-model="dataForm.introductionList[7].keyPoints"
+                        maxlength="500"
+                        show-word-limit></el-input>
+                    </div>
+                </div>
+                <div class="intrDiv">
+                    <label>
+                        <span>产品描述</span>  <br>
+                    </label>
+                    <div>
+                        <el-input
+                        :disabled="true"
+                        type="textarea"
+                        placeholder="请输入内容"
+                        v-model="dataForm.introductionList[7].productDescription"
                         maxlength="2000"
                         show-word-limit></el-input>
                     </div>

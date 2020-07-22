@@ -33,28 +33,27 @@
         </el-row>
       </div>
     <!-- 操作 -->
-      <div class="">
+      <div class="" style="margin-bottom:10px">
         <el-button v-if="isAuth('sys:user:save')" type="primary" icon="el-icon-plus" size="small" @click="addOrUpdateHandle()">新增</el-button>
         
       </div>
     <!-- 统计 -->
-      <div class="statics divM">
+      <!-- <div class="statics divM">
           <div class="left">
               <i class="el-icon-info" style="color:#409EFF"></i>&nbsp;&nbsp;已选择&nbsp;<a style="font-weight: 600">{{ dataListSelections.length }}</a>&nbsp;项&nbsp;&nbsp;
           </div>
-      </div>
+      </div> -->
     <el-table
       :data="dataList"
       border
       v-loading="dataListLoading"
-      @selection-change="selectionChangeHandle"
       style="width: 100%;">
-      <el-table-column
+      <!-- <el-table-column
 					type="selection"
           header-align="center"
           align="center"
 					width="55">
-			</el-table-column>
+			</el-table-column> -->
             <el-table-column
 					prop="groupId"
           header-align="center"

@@ -38,9 +38,17 @@
           <div v-for="item in dataForm.orderProductList" :key="item.productId">
               <div class="proDiv">
                   <div class="img" style="width:120px">
-                      <el-image
-                        style="width: 110px; height: 110px"
-                        :src="item.productImageUrl"></el-image>
+                      <el-tooltip placement="right-start" effect="light">
+                            <div slot="content">
+                                <el-image
+                                style="width: 300px; height: 300px"
+                                :src="item.productImageUrl"></el-image>
+                            </div>
+                                <el-image
+                                style="width: 100px; height: 100px"
+                                :src="item.productImageUrl"></el-image>
+                        </el-tooltip>
+                      
                   </div>
                   <div class="con">
                       <div style="color:#666;margin-bottom:10px"><el-link :href="item.amazonProductUrl" target="_blank">{{item.productTitle}}</el-link></div>

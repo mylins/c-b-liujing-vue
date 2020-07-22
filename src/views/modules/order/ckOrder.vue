@@ -176,7 +176,7 @@
                 label="国际物流单号"
                 width="">
                     <template slot-scope="scope">
-                        <div v-for="item in scope.abroadWaybill" :key="item.abroadLogisticsId">
+                        <div v-for="item in scope.row.abroadWaybillList" :key="item.abroadLogisticsId">
                             <span>{{item.abroadWaybill}}</span>
                         </div>
                     </template>

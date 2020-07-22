@@ -116,7 +116,7 @@
         <!-- 统计 -->
         <div class="statics divM">
             <div class="left1">
-                <i class="el-icon-info" style="color:#409EFF"></i>&nbsp;&nbsp;已选择&nbsp;<a style="font-weight: 600">{{ selectedRowKeys.length }}</a>&nbsp;项&nbsp;&nbsp;
+                <i class="el-icon-info" style="color:#409EFF"></i>&nbsp;&nbsp;已选择&nbsp;<a style="font-weight: 600">{{ dataListSelections.length }}</a>&nbsp;项&nbsp;&nbsp;
             </div>
             <div class="right">
                 订单数&nbsp;<a style="font-weight: 600">{{ statisticsProfit.addOrderCounts }}</a>&nbsp;&nbsp;&nbsp;
@@ -289,7 +289,7 @@
                 label="国际物流单号"
                 width="">
                     <template slot-scope="scope">
-                        <div v-for="item in scope.abroadWaybill" :key="item.abroadLogisticsId">
+                        <div v-for="item in scope.row.abroadWaybillList" :key="item.abroadLogisticsId">
                             <span>{{item.abroadWaybill}}</span>
                         </div>
                     </template>
