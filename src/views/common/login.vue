@@ -10,12 +10,12 @@
       <!-- </div> -->
       <div class="login-main">
         <h3 class="login-title">融艺汇</h3>
-        <el-form :model="dataForm" :rules="dataRule" ref="dataForm" status-icon>
+        <el-form :model="dataForm" :rules="dataRule" ref="dataForm" status-icon @keyup.enter.native="dataFormSubmit()">
           <el-form-item prop="userName">
             <el-input prefix-icon="el-icon-user-solid" v-model="dataForm.userName" placeholder="帐号"></el-input>
           </el-form-item>
           <el-form-item prop="password">
-            <el-input prefix-icon="el-icon-s-goods" v-model="dataForm.password" type="password" placeholder="密码"  @keyup.enter.native="dataFormSubmit()"></el-input>
+            <el-input prefix-icon="el-icon-s-goods" v-model="dataForm.password" type="password" placeholder="密码"></el-input>
           </el-form-item>
           <!-- <el-form-item prop="captcha">
             <el-row :gutter="20">

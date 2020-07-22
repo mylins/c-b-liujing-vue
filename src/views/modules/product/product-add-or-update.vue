@@ -291,6 +291,8 @@
                 </div>
             </el-tab-pane> -->
             <el-tab-pane v-for="(item,index) in dataForm.introductionList" :key="index" :label="comObj[item.countryCode]">
+                <el-button v-if="index == 1" type="primary" size="mini" plain @click="fanyi2()">一键从英文翻译</el-button>
+                <div style="height:10px"></div>
                 <div class="intrDiv">
                     <label>
                         <span>产品标题</span>  <br>
@@ -2479,7 +2481,49 @@
                     this.$message.error(data.msg)
                 }
             })
-        }
+        },
+        // 一键从英文翻译
+        fanyi2(){
+            console.log(this.dataForm.introductionList[1]);
+            if(this.dataForm.introductionList[1].productTitle == '' || this.dataForm.introductionList[1].productDescription == '' || this.dataForm.introductionList[1].keyPoints == '' || this.dataForm.introductionList[1].keyWord == '' || JSON.stringify(this.dataForm.introductionList[1].productTitle) == 'null' || JSON.stringify(this.dataForm.introductionList[1].productDescription) == 'null' || JSON.stringify(this.dataForm.introductionList[1].keyPoints) == 'null' || JSON.stringify(this.dataForm.introductionList[1].keyWord) == 'null'){
+                this.$message({
+                    message: '请讲英文产品介绍都填写完成后再翻译',
+                    type: 'warning'
+                });
+            }else{
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                    });
+                this.$http({
+                    url: this.$http.adornUrl('/product/productintroduction/allEntoOthers'),
+                    method: 'post',
+                    data: this.$http.adornData({
+                        introduction:this.dataForm.introductionList[1],
+                        introductionList:this.dataForm.introductionList,
+                    })
+                }).then(({data}) => {
+                    loading.close();
+                    if (data && data.code === 0) {
+                        this.$message({
+                            message: '操作成功',
+                            type: 'success',
+                            duration: 1000,
+                            onClose: () => {
+                                this.dataForm.introductionList = data.introductionList
+                            }
+                        })
+                        
+                        
+                    } else {
+                        this.$message.error(data.msg)
+                    }
+                })
+            }
+            
+        },
     }
   }
 </script>
