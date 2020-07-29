@@ -21,12 +21,12 @@
                 <el-table-column
                 prop="type"
                 label="上传类型"
-                width="">
+                width="100">
                 </el-table-column>
                 <el-table-column
                 prop=""
                 label="结果类型"
-                width="">
+                width="100">
                     <template slot-scope="scope">
                         <el-tag v-if="scope.row.resultType == '警告'" type="warning">警告</el-tag>
                         <el-tag v-if="scope.row.resultType == '错误'" type="danger">错误</el-tag>
@@ -35,9 +35,10 @@
                 <el-table-column
                 prop=""
                 label="上传结果"
-                width="">
+                width="230">
                     <template slot-scope="scope">
-                        <el-tooltip :content="scope.row.result" placement="bottom" effect="light">
+                        <el-tooltip placement="bottom" effect="light">
+                            <div slot="content" style="width:200px;line-height:20px">{{scope.row.result}}</div>
                             <span class="xmlSpan">{{scope.row.result}}</span>
                         </el-tooltip>
                     </template>
@@ -45,7 +46,7 @@
                 <el-table-column
                 prop=""
                 label="错误代码"
-                width="">
+                width="100">
                     <template slot-scope="scope">
                         <el-button type="text" @click="getCode(scope.row.resultCode)">{{scope.row.resultCode}}</el-button>
                     </template>
@@ -53,14 +54,14 @@
                 <el-table-column
                 prop="creationTime"
                 label="创建时间"
-                width="150">
+                width="100">
                 </el-table-column>
                 <el-table-column
                 prop=""
                 label="SKU"
                 width="">
                     <template slot-scope="scope">
-                        <open-tab :isMore="true" size="medium" type="text" icon="" :dec='scope.row.sku' urlName='productAddUpdate' :opt='{"productId":scope.row.productId}'></open-tab>
+                        <open-tab :isMore="true" size="medium" type="text" icon="" :dec='scope.row.sku+"("+scope.row.productId+")"' urlName='productAddUpdate' :opt='{"productId":scope.row.productId}'></open-tab>
                         <!-- <el-button type="text" @click="getCode(scope.row.resultCode)">{{scope.row.sku}}</el-button> -->
                     </template>
                 </el-table-column>
@@ -260,7 +261,7 @@
     }
     .xmlSpan{
         display: inline-block;
-        width: 180px;
+        width: 200px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;

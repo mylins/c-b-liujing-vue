@@ -212,6 +212,11 @@
                     </template>
                 </el-table-column>
                 <el-table-column
+                prop="orderNumber"
+                label="数量"
+                width="60">
+                </el-table-column>
+                <el-table-column
                 prop=""
                 label="订单金额"
                 width="">
@@ -268,9 +273,9 @@
                 <el-table-column
                 prop="orderProfit"
                 label="利润"
-                width="100">
+                width="80">
                     <template slot-scope="scope">
-                        <div>{{scope.row.orderProfit}}<span v-if="scope.row.profitRate">({{scope.row.profitRate * 100}}%)</span></div>
+                        <div>{{scope.row.orderProfit}}<span v-if="scope.row.profitRate">({{parseInt(scope.row.profitRate * 100)}}%)</span></div>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -326,7 +331,7 @@
                 <el-table-column
                 fixed="right"
                 label="操作"
-                width="100">
+                width="60">
                     <template slot-scope="scope">
                         <el-button type="text" icon="" @click="orderId = scope.row.orderId;returnMVisible = true">退款</el-button>
                     </template>

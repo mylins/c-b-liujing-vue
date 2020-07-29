@@ -57,10 +57,12 @@
             
           </el-form-item>
         </div>
-        <div class="blockDivForm">
+        <div class="blockDivForm upblockDivForm">
           <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;产品介绍</h3>
           <el-tabs type="border-card">
             <el-tab-pane label="英语">
+                <el-button type="primary" size="mini" plain @click="addBEl('britainIntroduction','b','加粗')">加粗</el-button>
+                <el-button type="primary" size="mini" plain @click="addBEl('britainIntroduction','i','斜体')">斜体</el-button>
                 <div class="intrDiv">
                     <label>
                         <span>产品标题</span>  <br>
@@ -73,6 +75,7 @@
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.britainIntroduction.productTitle"
+                            @focus="inpFocus('productTitle')"
                             maxlength="200"
                             show-word-limit></el-input>
                         </el-form-item>
@@ -90,6 +93,7 @@
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.britainIntroduction.keyWord"
+                            @focus="inpFocus('keyWord')"
                             maxlength="250"
                             show-word-limit></el-input>
                         </el-form-item>
@@ -102,14 +106,20 @@
                         <el-checkbox :true-label='1' :false-label='0' v-model="dataForm.britainIntroduction.isKeyPoints" @change="istitle('isKeyPoints')">是否追加</el-checkbox>
                     </label>
                     <div>
-                        <el-form-item label="" prop="britainIntroduction.keyPoints" :rules="{max: 500,message: '英语重点说明最多500个字',trigger: 'blur'}">
+                        <el-form-item label="" prop="britainIntroduction.keyPoints" :rules="{max: 2500,message: '英语重点说明最多2500个字',trigger: 'blur'}">
                             <el-input
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.britainIntroduction.keyPoints"
-                            maxlength="500"
+                            @focus="inpFocus('keyPoints')"
+                            maxlength="2500"
                             show-word-limit></el-input>
                         </el-form-item>
+                        <p style="margin:6px 0;color:#999;text-align:right" v-if="dataForm.britainIntroduction.keyPoints">
+                            <span v-for="(item,index) in dataForm.britainIntroduction.keyPoints.split('\n')" :key="index" :style="{color:item.length>500 ? '#F56C6C' : ''}">
+                                &nbsp;&nbsp; 第{{index+1}}行字符数：{{item.length}} 
+                            </span>
+                        </p>
                     </div>
                 </div>
                 <div class="intrDiv">
@@ -124,6 +134,7 @@
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.britainIntroduction.productDescription"
+                            @focus="inpFocus('productDescription')"
                             maxlength="2000"
                             show-word-limit></el-input>
                         </el-form-item>
@@ -131,6 +142,8 @@
                 </div>
             </el-tab-pane>
             <el-tab-pane label="法语">
+                <el-button type="primary" size="mini" plain @click="addBEl('franceIntroduction','b','加粗')">加粗</el-button>
+                <el-button type="primary" size="mini" plain @click="addBEl('franceIntroduction','i','斜体')">斜体</el-button>
                 <div class="intrDiv">
                     <label>
                         <span>产品标题</span>  <br>
@@ -142,6 +155,7 @@
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.franceIntroduction.productTitle"
+                            @focus="inpFocus('productTitle')"
                             maxlength="200"
                             show-word-limit></el-input>
                         </el-form-item>
@@ -158,6 +172,7 @@
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.franceIntroduction.keyWord"
+                            @focus="inpFocus('keyWord')"
                             maxlength="250"
                             show-word-limit></el-input>
                         </el-form-item>
@@ -169,14 +184,20 @@
                         <el-checkbox :true-label='1' :false-label='0' v-model="dataForm.franceIntroduction.isKeyPoints">是否追加</el-checkbox>
                     </label>
                     <div>
-                        <el-form-item label="" prop="franceIntroduction.keyPoints" :rules="{max: 500,message: '法语重点说明最多500个字',trigger: 'blur'}">
+                        <el-form-item label="" prop="franceIntroduction.keyPoints" :rules="{max: 2500,message: '法语重点说明最多2500个字',trigger: 'blur'}">
                             <el-input
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.franceIntroduction.keyPoints"
-                            maxlength="500"
+                            @focus="inpFocus('keyPoints')"
+                            maxlength="2500"
                             show-word-limit></el-input>
                         </el-form-item>
+                        <p style="margin:6px 0;color:#999;text-align:right" v-if="dataForm.franceIntroduction.keyPoints">
+                            <span v-for="(item,index) in dataForm.franceIntroduction.keyPoints.split('\n')" :key="index" :style="{color:item.length>500 ? '#F56C6C' : ''}">
+                                &nbsp;&nbsp; 第{{index+1}}行字符数：{{item.length}} 
+                            </span>
+                        </p>
                     </div>
                 </div>
                 <div class="intrDiv">
@@ -190,6 +211,7 @@
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.franceIntroduction.productDescription"
+                            @focus="inpFocus('productDescription')"
                             maxlength="2000"
                             show-word-limit></el-input>
                         </el-form-item>
@@ -197,6 +219,8 @@
                 </div>
             </el-tab-pane>
             <el-tab-pane label="意大利语">
+                <el-button type="primary" size="mini" plain @click="addBEl('italyIntroduction','b','加粗')">加粗</el-button>
+                <el-button type="primary" size="mini" plain @click="addBEl('italyIntroduction','i','斜体')">斜体</el-button>
                 <div class="intrDiv">
                     <label>
                         <span>产品标题</span>  <br>
@@ -208,6 +232,7 @@
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.italyIntroduction.productTitle"
+                            @focus="inpFocus('productTitle')"
                             maxlength="200"
                             show-word-limit></el-input>
                         </el-form-item>
@@ -224,6 +249,7 @@
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.italyIntroduction.keyWord"
+                            @focus="inpFocus('keyWord')"
                             maxlength="250"
                             show-word-limit></el-input>
                         </el-form-item>
@@ -235,14 +261,20 @@
                         <el-checkbox :true-label='1' :false-label='0' v-model="dataForm.italyIntroduction.isKeyPoints">是否追加</el-checkbox>
                     </label>
                     <div>
-                        <el-form-item label="" prop="italyIntroduction.keyPoints" :rules="{max: 500,message: '意大利语重点说明最多500个字',trigger: 'blur'}">
+                        <el-form-item label="" prop="italyIntroduction.keyPoints" :rules="{max: 500,message: '意大利语重点说明最多2500个字',trigger: 'blur'}">
                             <el-input
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.italyIntroduction.keyPoints"
-                            maxlength="500"
+                            @focus="inpFocus('keyPoints')"
+                            maxlength="2500"
                             show-word-limit></el-input>
                         </el-form-item>
+                        <p style="margin:6px 0;color:#999;text-align:right" v-if="dataForm.italyIntroduction.keyPoints">
+                            <span v-for="(item,index) in dataForm.italyIntroduction.keyPoints.split('\n')" :key="index" :style="{color:item.length>500 ? '#F56C6C' : ''}">
+                                &nbsp;&nbsp; 第{{index+1}}行字符数：{{item.length}} 
+                            </span>
+                        </p>
                     </div>
                 </div>
                 <div class="intrDiv">
@@ -256,6 +288,7 @@
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.italyIntroduction.productDescription"
+                            @focus="inpFocus('productDescription')"
                             maxlength="2000"
                             show-word-limit></el-input>
                         </el-form-item>
@@ -263,6 +296,8 @@
                 </div>
             </el-tab-pane>
             <el-tab-pane label="西班牙语">
+                <el-button type="primary" size="mini" plain @click="addBEl('spainIntroduction','b','加粗')">加粗</el-button>
+                <el-button type="primary" size="mini" plain @click="addBEl('spainIntroduction','i','斜体')">斜体</el-button>
                 <div class="intrDiv">
                     <label>
                         <span>产品标题</span>  <br>
@@ -274,6 +309,7 @@
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.spainIntroduction.productTitle"
+                            @focus="inpFocus('productTitle')"
                             maxlength="200"
                             show-word-limit></el-input>
                         </el-form-item>
@@ -290,6 +326,7 @@
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.spainIntroduction.keyWord"
+                            @focus="inpFocus('keyWord')"
                             maxlength="250"
                             show-word-limit></el-input>
                         </el-form-item>
@@ -301,14 +338,20 @@
                         <el-checkbox :true-label='1' :false-label='0' v-model="dataForm.spainIntroduction.isKeyPoints">是否追加</el-checkbox>
                     </label>
                     <div>
-                        <el-form-item label="" prop="spainIntroduction.keyPoints" :rules="{max: 500,message: '西班牙语重点说明最多500个字',trigger: 'blur'}">
+                        <el-form-item label="" prop="spainIntroduction.keyPoints" :rules="{max: 2500,message: '西班牙语重点说明最多2500个字',trigger: 'blur'}">
                             <el-input
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.spainIntroduction.keyPoints"
-                            maxlength="500"
+                            @focus="inpFocus('keyPoints')"
+                            maxlength="2500"
                             show-word-limit></el-input>
                         </el-form-item>
+                        <p style="margin:6px 0;color:#999;text-align:right" v-if="dataForm.spainIntroduction.keyPoints">
+                            <span v-for="(item,index) in dataForm.spainIntroduction.keyPoints.split('\n')" :key="index" :style="{color:item.length>500 ? '#F56C6C' : ''}">
+                                &nbsp;&nbsp; 第{{index+1}}行字符数：{{item.length}} 
+                            </span>
+                        </p>
                     </div>
                 </div>
                 <div class="intrDiv">
@@ -322,6 +365,7 @@
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.spainIntroduction.productDescription"
+                            @focus="inpFocus('productDescription')"
                             maxlength="2000"
                             show-word-limit></el-input>
                         </el-form-item>
@@ -329,6 +373,8 @@
                 </div>
             </el-tab-pane>
             <el-tab-pane label="德语">
+                <el-button type="primary" size="mini" plain @click="addBEl('germanyIntroduction','b','加粗')">加粗</el-button>
+                <el-button type="primary" size="mini" plain @click="addBEl('germanyIntroduction','i','斜体')">斜体</el-button>
                 <div class="intrDiv">
                     <label>
                         <span>产品标题</span>  <br>
@@ -340,6 +386,7 @@
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.germanyIntroduction.productTitle"
+                            @focus="inpFocus('productTitle')"
                             maxlength="200"
                             show-word-limit></el-input>
                         </el-form-item>
@@ -356,6 +403,7 @@
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.germanyIntroduction.keyWord"
+                            @focus="inpFocus('keyWord')"
                             maxlength="250"
                             show-word-limit></el-input>
                         </el-form-item>
@@ -367,14 +415,20 @@
                         <el-checkbox :true-label='1' :false-label='0' v-model="dataForm.germanyIntroduction.isKeyPoints">是否追加</el-checkbox>
                     </label>
                     <div>
-                        <el-form-item label="" prop="germanyIntroduction.keyPoints" :rules="{max: 500,message: '德语重点说明最多500个字',trigger: 'blur'}">
+                        <el-form-item label="" prop="germanyIntroduction.keyPoints" :rules="{max: 2500,message: '德语重点说明最多2500个字',trigger: 'blur'}">
                             <el-input
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.germanyIntroduction.keyPoints"
-                            maxlength="500"
+                            @focus="inpFocus('keyPoints')"
+                            maxlength="2500"
                             show-word-limit></el-input>
                         </el-form-item>
+                        <p style="margin:6px 0;color:#999;text-align:right" v-if="dataForm.germanyIntroduction.keyPoints">
+                            <span v-for="(item,index) in dataForm.germanyIntroduction.keyPoints.split('\n')" :key="index" :style="{color:item.length>500 ? '#F56C6C' : ''}">
+                                &nbsp;&nbsp; 第{{index+1}}行字符数：{{item.length}} 
+                            </span>
+                        </p>
                     </div>
                 </div>
                 <div class="intrDiv">
@@ -388,6 +442,7 @@
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.germanyIntroduction.productDescription"
+                            @focus="inpFocus('productDescription')"
                             maxlength="2000"
                             show-word-limit></el-input>
                         </el-form-item>
@@ -395,6 +450,8 @@
                 </div>
             </el-tab-pane>
             <el-tab-pane label="日语">
+                <el-button type="primary" size="mini" plain @click="addBEl('japanIntroduction','b','加粗')">加粗</el-button>
+                <el-button type="primary" size="mini" plain @click="addBEl('japanIntroduction','i','斜体')">斜体</el-button>
                 <div class="intrDiv">
                     <label>
                         <span>产品标题</span>  <br>
@@ -406,6 +463,7 @@
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.japanIntroduction.productTitle"
+                            @focus="inpFocus('productTitle')"
                             maxlength="200"
                             show-word-limit></el-input>
                         </el-form-item>
@@ -422,6 +480,7 @@
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.japanIntroduction.keyWord"
+                            @focus="inpFocus('keyWord')"
                             maxlength="250"
                             show-word-limit></el-input>
                         </el-form-item>
@@ -433,14 +492,20 @@
                         <el-checkbox :true-label='1' :false-label='0' v-model="dataForm.japanIntroduction.isKeyPoints">是否追加</el-checkbox>
                     </label>
                     <div>
-                        <el-form-item label="" prop="japanIntroduction.keyPoints" :rules="{max: 500,message: '日语重点说明最多500个字',trigger: 'blur'}">
+                        <el-form-item label="" prop="japanIntroduction.keyPoints" :rules="{max: 2500,message: '日语重点说明最多2500个字',trigger: 'blur'}">
                             <el-input
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.japanIntroduction.keyPoints"
-                            maxlength="500"
+                            @focus="inpFocus('keyPoints')"
+                            maxlength="2500"
                             show-word-limit></el-input>
                         </el-form-item>
+                        <p style="margin:6px 0;color:#999;text-align:right" v-if="dataForm.japanIntroduction.keyPoints">
+                            <span v-for="(item,index) in dataForm.japanIntroduction.keyPoints.split('\n')" :key="index" :style="{color:item.length>500 ? '#F56C6C' : ''}">
+                                &nbsp;&nbsp; 第{{index+1}}行字符数：{{item.length}} 
+                            </span>
+                        </p>
                     </div>
                 </div>
                 <div class="intrDiv">
@@ -454,6 +519,7 @@
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.japanIntroduction.productDescription"
+                            @focus="inpFocus('productDescription')"
                             maxlength="2000"
                             show-word-limit></el-input>
                         </el-form-item>
@@ -461,6 +527,8 @@
                 </div>
             </el-tab-pane>
             <el-tab-pane label="荷兰语">
+                <el-button type="primary" size="mini" plain @click="addBEl('nlIntroduction','b','加粗')">加粗</el-button>
+                <el-button type="primary" size="mini" plain @click="addBEl('nlIntroduction','i','斜体')">斜体</el-button>
                 <div class="intrDiv">
                     <label>
                         <span>产品标题</span>  <br>
@@ -472,6 +540,7 @@
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.nlIntroduction.productTitle"
+                            @focus="inpFocus('productTitle')"
                             maxlength="200"
                             show-word-limit></el-input>
                         </el-form-item>
@@ -488,6 +557,7 @@
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.nlIntroduction.keyWord"
+                            @focus="inpFocus('keyWord')"
                             maxlength="250"
                             show-word-limit></el-input>
                         </el-form-item>
@@ -499,14 +569,20 @@
                         <el-checkbox :true-label='1' :false-label='0' v-model="dataForm.nlIntroduction.isKeyPoints">是否追加</el-checkbox>
                     </label>
                     <div>
-                        <el-form-item label="" prop="nlIntroduction.keyPoints" :rules="{max: 500,message: '荷兰语重点说明最多500个字',trigger: 'blur'}">
+                        <el-form-item label="" prop="nlIntroduction.keyPoints" :rules="{max: 2500,message: '荷兰语重点说明最多2500个字',trigger: 'blur'}">
                             <el-input
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.nlIntroduction.keyPoints"
-                            maxlength="500"
+                            @focus="inpFocus('keyPoints')"
+                            maxlength="2500"
                             show-word-limit></el-input>
                         </el-form-item>
+                        <p style="margin:6px 0;color:#999;text-align:right" v-if="dataForm.nlIntroduction.keyPoints">
+                            <span v-for="(item,index) in dataForm.nlIntroduction.keyPoints.split('\n')" :key="index" :style="{color:item.length>500 ? '#F56C6C' : ''}">
+                                &nbsp;&nbsp; 第{{index+1}}行字符数：{{item.length}} 
+                            </span>
+                        </p>
                     </div>
                 </div>
                 <div class="intrDiv">
@@ -520,6 +596,7 @@
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="dataForm.nlIntroduction.productDescription"
+                            @focus="inpFocus('productDescription')"
                             maxlength="2000"
                             show-word-limit></el-input>
                         </el-form-item>
@@ -562,6 +639,7 @@
         roleList: [],
         productId:null,
         freightLoading:false,
+        inpFocusVal:'',
         dataForm: {
           productIds: [],
           productType:'',
@@ -644,6 +722,38 @@
     computed: {
     },
     methods: {
+        // 加粗
+        addBEl(index,elH,dec){
+            var str = window.getSelection().toString(); //选中内容
+            console.log(str);
+            if(str != ''){
+                if(this.inpFocusVal == 'productDescription' || this.inpFocusVal == 'keyPoints'){
+                    
+                    var el = $(window.getSelection().anchorNode).children()[0];
+                    el.focus();
+                    var start = el.selectionStart;
+                    var end = el.selectionEnd;
+                    this.dataForm[index][this.inpFocusVal] = this.dataForm[index][this.inpFocusVal].slice(0,start)+'<'+elH+'>'+str+'</'+elH+'>'+this.dataForm[index][this.inpFocusVal].slice(end);
+                }else{
+                    this.$message({
+                        message: '非重点说明和产品描述的文本不可'+dec,
+                        type: 'warning'
+                    });
+                }
+            }else{
+                this.$message({
+                        message: '请选择要'+dec+'的文字',
+                        type: 'warning'
+                    });
+            }
+            
+            
+        },
+        // 获取输入框选中文字
+        inpFocus(key){
+            console.log(key);
+            this.inpFocusVal = key;
+        },
         init(ids){
             console.log('111');
             this.visible = true;
@@ -961,6 +1071,9 @@
       top: -10px;
       right: 0;
       z-index: 1;
+  }
+  .upblockDivForm .intrDiv{
+      margin: 10px 0;
   }
   .intrDiv .el-form-item , .intrDiv .el-form-item .el-form-item__content{
       width: 100%;

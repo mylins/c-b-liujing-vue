@@ -89,6 +89,18 @@
           label="联系方式">
         </el-table-column>
         <el-table-column
+          prop="companyPoints"
+          header-align="center"
+          align="center"
+          label="平台佣金点数">
+        </el-table-column>
+        <el-table-column
+          prop="balance"
+          header-align="center"
+          align="center"
+          label="账户余额">
+        </el-table-column>
+        <el-table-column
           prop="createTime"
           header-align="center"
           align="center"

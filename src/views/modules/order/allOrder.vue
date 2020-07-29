@@ -266,6 +266,11 @@
                     </template>
                 </el-table-column>
                 <el-table-column
+                prop="orderNumber"
+                label="数量"
+                width="60">
+                </el-table-column>
+                <el-table-column
                 prop=""
                 label="订单金额"
                 width="80">
@@ -325,7 +330,7 @@
                 width="80">
                     <template slot-scope="scope">
                         <div>{{scope.row.orderProfit}}</div>
-                        <div v-if="scope.row.profitRate">({{scope.row.profitRate * 100}}%)</div>
+                        <div v-if="scope.row.profitRate">({{parseInt(scope.row.profitRate * 100)}}%)</div>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -490,7 +495,8 @@
                 'BR':'巴西',
                 'CA':'加拿大',
                 'MX':'墨西哥',
-                'AU':'澳大利亚'
+                'AU':'澳大利亚',
+                'NL':'荷兰'
             }
           }
       },

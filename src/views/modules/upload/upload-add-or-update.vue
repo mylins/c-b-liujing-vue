@@ -12,16 +12,16 @@
         <div class="blockDivForm">
           <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;上传产品</h3>
           <el-form-item label="开始编号" prop="startId">
-            <el-input v-model="dataForm.startId" placeholder="请输入"></el-input>
+            <el-input v-model="dataForm.startId" placeholder="请输入" :disabled="dataForm.uploadIds ? true : false"></el-input>
             <div style="color:#E6A23C;font-size:12px">产品编号都是递增的，本次要导出产品起始编号</div>
           </el-form-item>
           <el-form-item label="结束编号" prop="endId">
-            <el-input v-model="dataForm.endId" placeholder="请输入"></el-input>
+            <el-input v-model="dataForm.endId" placeholder="请输入" :disabled="dataForm.uploadIds ? true : false"></el-input>
             <div style="color:#E6A23C;font-size:12px">要导出产品的结束编号，结束编号起始编号</div>
           </el-form-item>
           <br>
           <el-form-item label="上传编号" prop="">
-            <el-input class="textIN" type="textarea" :rows="2" v-model="dataForm.uploadIds" placeholder="请输入"></el-input>
+            <el-input :disabled="(dataForm.startId || dataForm.endId) ? true : false" class="textIN" type="textarea" :rows="2" v-model="dataForm.uploadIds" placeholder="请输入"></el-input>
             <div style="color:#E6A23C;font-size:12px">填写产品ID后（逗号隔开，逗号为英文逗号，不能有空格），将只上传填写的ID列表，不填写则上传其他条件筛选出的产品，标准格式：12,123,456,789</div>
           </el-form-item>
           <br>
@@ -51,10 +51,11 @@
           </el-form-item>
           <br>
           
-          <el-form-item label="选择分类" prop="amazonCategoryId">
+          <el-form-item label="选择分类" prop="amazonCategoryNodeId">
               <div style="display:flex;">
                   <div style="margin-right:10px">
-                      <span class="el-input__inner" style="height:36px;line-height:36px" @click="visibleChange">{{dataForm.amazonCategory}}</span>
+                      <span class="el-input__inner" style="height:36px;line-height:36px;overflow:hiddle" @click="visibleChange">{{dataForm.amazonCategory}}</span>
+                      <!-- <el-input v-model="dataForm.amazonCategory" placeholder="分类" @click="visibleChange"></el-input> -->
                   </div>
                   <div style="margin-right:10px">
                       <el-input v-model="dataForm.amazonCategoryNodeId" placeholder="分类节点ID"></el-input>
@@ -232,6 +233,7 @@
             amazonCategory:'请选择',
             amazonCategoryNodeId:'',
             amazonTemplateId:null,
+            amazonCategoryNodeId:'',
             amazonTemplate:'',
             operateItem:[],
             fieldsEntityList:[],
@@ -297,8 +299,8 @@
             operateItem: [
                 { required: true, message: '更新选项不能为空', trigger: 'change' },
             ],
-            amazonCategoryId: [
-                { required: true, message: '分类不能为空', trigger: 'blur' }
+            amazonCategoryNodeId: [
+                { required: true, message: '分类不能为空', trigger: 'change' }
             ],
             amazonTemplateId: [
                 { required: true, message: '分类模版不能为空', trigger: 'change' },
@@ -380,7 +382,7 @@
             this.$refs['dataForm'].validate((valid) => {
             if (valid) {
                 // this.dataForm.amazonCategoryId = this.dataForm.amazonCategoryId[this.dataForm.amazonCategoryId.length-1]
-                if(this.dataForm.uploadIds != ''){
+                if(this.dataForm.uploadIds != '' && JSON.stringify(this.dataForm.uploadIds) != 'null'){
                     this.dataForm.uploadIds = this.dataForm.uploadIds.split(',');
                 }else{
                     this.dataForm.uploadIds = null
@@ -444,7 +446,9 @@
             this.options = [];
             this.templateList = [];
             this.dataForm.middleEntitys = [];
-            this.dataForm.amazonCategoryId = '';
+            this.dataForm.amazonCategory = '请选择';
+            this.dataForm.amazonCategoryNodeId = '';
+            this.dataForm.allCategories = '';
             this.dataForm.amazonTemplateId = '';
 
         },
@@ -696,7 +700,7 @@
         },
         // 选择模版
         getTemplate(){
-            if(this.dataForm.amazonCategoryId){
+            if(this.dataForm.amazonCategoryNodeId){
                 this.$http({
                     url: this.$http.adornUrl('/upload/template/list'),
                     method: 'get',

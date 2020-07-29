@@ -83,11 +83,31 @@
                     </draggable>
                 </el-checkbox-group>
                 <div style="height:10px"></div>
+                <div class="upDivDia1" style="display:inline-block;width:90px">
+                    <el-upload
+                        class="upload-demo"
+                        ref="upload"
+                        :action="$http.adornUrl('/product/productimage/upload')"
+                        :data="{'productId':dataForm.productId}"
+                        :headers="{'token':$cookie.get('token')}"
+                        list-type="picture"
+                        :file-list="fileList"
+                        :on-success="upOk"
+                        multiple>
+                        <el-button size="small" plain type="primary">上传图片</el-button>
+                        <div class="el-upload__tip" slot="tip" style="display:flex">
+                            <!-- <span style="flex:1;">只能上传jpg/png文件，且不超过500kb</span> -->
+                            <!-- <el-button size="mini" type="primary" @click="submitUpload">开始上传</el-button> -->
+                        </div>
+                    </el-upload>
+                </div>
+                
                 <el-button type="primary" size="small" plain @click="allSelectxcImg">图片全选</el-button>
-                <el-button type="primary" size="small" plain @click="uploadImageVisible = true">上传图片</el-button>
+
+                <!-- <el-button type="primary" size="small" plain @click="uploadImageVisible = true">上传图片</el-button> -->
                 <el-button type="primary" size="small" plain @click="downImg">图片下载</el-button>
                 <el-button type="primary" size="small" plain @click="delImageList">图片删除</el-button>
-                <div style="color:#F56C6C;margin-top:6px;font-size:13px">图片位置修改后，请点击 '保存相册' 按钮使其生效</div>
+                <!-- <div style="color:#F56C6C;margin-top:6px;font-size:13px">图片位置修改后，请点击 '保存相册' 按钮使其生效</div> -->
             </div>
             
         </div>
@@ -292,6 +312,9 @@
             </el-tab-pane> -->
             <el-tab-pane v-for="(item,index) in dataForm.introductionList" :key="index" :label="comObj[item.countryCode]">
                 <el-button v-if="index == 1" type="primary" size="mini" plain @click="fanyi2()">一键从英文翻译</el-button>
+                <el-button v-if="index == 1" type="primary" size="mini" plain @click="quchong()">关键字去重</el-button>
+                <el-button type="primary" size="mini" plain @click="addBEl(index,'b','加粗')">加粗</el-button>
+                <el-button type="primary" size="mini" plain @click="addBEl(index,'i','斜体')">斜体</el-button>
                 <div style="height:10px"></div>
                 <div class="intrDiv">
                     <label>
@@ -305,12 +328,14 @@
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="item.productTitle"
+                        @focus="inpFocus('productTitle')"
                         show-word-limit></el-input>
                         <el-form-item v-else label="">
                             <el-input
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="item.productTitle"
+                            @focus="inpFocus('productTitle')"
                             maxlength="200"
                             show-word-limit></el-input>
                         </el-form-item>
@@ -328,12 +353,14 @@
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="item.keyWord"
+                        @focus="inpFocus('keyWord')"
                         show-word-limit></el-input>
                         <el-form-item v-else label="">
                             <el-input
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="item.keyWord"
+                            @focus="inpFocus('keyWord')"
                             maxlength="250"
                             show-word-limit></el-input>
                         </el-form-item>
@@ -350,6 +377,7 @@
                         v-if="index == 0"
                         type="textarea"
                         placeholder="请输入内容"
+                        @focus="inpFocus('keyPoints')"
                         v-model="item.keyPoints"
                         show-word-limit></el-input>
                         <el-form-item v-else label="">
@@ -358,9 +386,15 @@
                             placeholder="请输入内容"
                             :rows="4"
                             v-model="item.keyPoints"
+                            @focus="inpFocus('keyPoints')"
                             maxlength="2500"
                             show-word-limit></el-input>
                         </el-form-item>
+                        <p style="margin:6px 0;color:#999;text-align:right" v-if="item.keyPoints">
+                            <span v-for="(keyP,i) in item.keyPoints.split('\n')" :key="i" :style="{color:keyP.length>500 ? '#F56C6C' : ''}">
+                                &nbsp;&nbsp; 第{{i+1}}行字符数：{{keyP.length}} 
+                            </span>
+                        </p>
                     </div>
                 </div>
                 <div class="intrDiv">
@@ -373,8 +407,10 @@
                         <el-input
                         v-if="index == 0"
                         type="textarea"
+                        ref="inp"
                         placeholder="请输入内容"
                         v-model="item.productDescription"
+                        @focus="inpFocus('productDescription')"
                         show-word-limit></el-input>
                         <el-form-item v-else label="">
                             <el-input
@@ -382,464 +418,15 @@
                             placeholder="请输入内容"
                             :rows="4"
                             v-model="item.productDescription"
+                            @focus="inpFocus('productDescription')"
                             maxlength="2000"
                             show-word-limit></el-input>
                         </el-form-item>
+                        
+                        
                     </div>
                 </div>
             </el-tab-pane>
-            <!-- <el-tab-pane label="英语">
-                <div class="intrDiv">
-                    <label>
-                        <span>产品标题</span>  <br>
-                        <el-button type="primary" size="mini" plain @click="fanyi1(dataForm.introductionList[1].productTitle,0)">一键翻译</el-button>
-                    </label>
-                    <div>
-                        <el-form-item label="" prop="introductionList[1].productTitle" :rules="{max: 200,message: '英语标题最多200个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            v-model="dataForm.introductionList[1].productTitle"
-                            maxlength="200"
-                            show-word-limit></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-                <div class="intrDiv">
-                    <label>
-                        <span>关键字</span>  <br>
-                        <el-button type="primary" size="mini" plain @click="fanyi1(dataForm.introductionList[1].keyWord,1)">一键翻译</el-button>
-                    </label>
-                    <div>
-                        <el-form-item label="" prop="introductionList[1].keyWord" :rules="{max: 250,message: '英语关键字最多250个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            v-model="dataForm.introductionList[1].keyWord"
-                            maxlength="250"
-                            show-word-limit></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-                <div class="intrDiv">
-                    <label>
-                        <span>重点说明</span>  <br>
-                        <el-button type="primary" size="mini" plain @click="fanyi1(dataForm.introductionList[1].keyPoints,2)">一键翻译</el-button>
-                    </label>
-                    <div>
-                        <el-form-item label="" prop="introductionList[1].keyPoints" :rules="{max: 500,message: '英语重点说明最多500个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            :rows="4"
-                            v-model="dataForm.introductionList[1].keyPoints"
-                            maxlength="500"
-                            show-word-limit></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-                <div class="intrDiv">
-                    <label>
-                        <span>产品描述</span>  <br>
-                        <el-button type="primary" size="mini" plain @click="fanyi1(dataForm.introductionList[1].productDescription,3)">一键翻译</el-button>
-                    </label>
-                    <div>
-                        <el-form-item label="" prop="introductionList[1].productDescription" :rules="{max: 2000,message: '英语产品描述最多2000个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            :rows="4"
-                            v-model="dataForm.introductionList[1].productDescription"
-                            maxlength="2000"
-                            show-word-limit></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-            </el-tab-pane>
-            <el-tab-pane label="法语">
-                <div class="intrDiv">
-                    <label>
-                        <span>产品标题</span>  <br>
-                    </label>
-                    <div>
-                        <el-form-item label="" prop="introductionList[2].productTitle" :rules="{max: 200,message: '法语标题最多200个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            v-model="dataForm.introductionList[2].productTitle"
-                            maxlength="200"
-                            show-word-limit></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-                <div class="intrDiv">
-                    <label>
-                        <span>关键字</span>  <br>
-                    </label>
-                    <div>
-                        <el-form-item label="" prop="introductionList[2].keyWord" :rules="{max: 250,message: '法语关键字最多250个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            v-model="dataForm.introductionList[2].keyWord"
-                            maxlength="250"
-                            show-word-limit></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-                <div class="intrDiv">
-                    <label>
-                        <span>重点说明</span>  <br>
-                    </label>
-                    <div>
-                        <el-form-item label="" prop="introductionList[2].keyPoints" :rules="{max: 500,message: '法语重点说明最多500个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            v-model="dataForm.introductionList[2].keyPoints"
-                            maxlength="500"
-                            :rows="4"
-                            show-word-limit></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-                <div class="intrDiv">
-                    <label>
-                        <span>产品描述</span>  <br>
-                    </label>
-                    <div>
-                        <el-form-item label="" prop="introductionList[2].productDescription" :rules="{max: 2000,message: '法语产品描述最多2000个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            v-model="dataForm.introductionList[2].productDescription"
-                            maxlength="2000"
-                            :rows="4"
-                            show-word-limit></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-            </el-tab-pane>
-            <el-tab-pane label="意大利语">
-                <div class="intrDiv">
-                    <label>
-                        <span>产品标题</span>  <br>
-                    </label>
-                    <div>
-                        <el-form-item label="" prop="introductionList[3].productTitle" :rules="{max: 200,message: '意大利语标题最多200个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            v-model="dataForm.introductionList[3].productTitle"
-                            maxlength="200"
-                            show-word-limit></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-                <div class="intrDiv">
-                    <label>
-                        <span>关键字</span>  <br>
-                    </label>
-                    <div>
-                        <el-form-item label="" prop="introductionList[3].keyWord" :rules="{max: 250,message: '意大利语关键字最多250个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            v-model="dataForm.introductionList[3].keyWord"
-                            maxlength="250"
-                            show-word-limit></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-                <div class="intrDiv">
-                    <label>
-                        <span>重点说明</span>  <br>
-                    </label>
-                    <div>
-                        <el-form-item label="" prop="introductionList[3].keyPoints" :rules="{max: 500,message: '意大利语重点说明最多500个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            :rows="4"
-                            v-model="dataForm.introductionList[3].keyPoints"
-                            maxlength="500"
-                            show-word-limit></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-                <div class="intrDiv">
-                    <label>
-                        <span>产品描述</span>  <br>
-                    </label>
-                    <div>
-                        <el-form-item label="" prop="introductionList[3].productDescription" :rules="{max: 2000,message: '意大利语产品描述最多2000个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            :rows="4"
-                            v-model="dataForm.introductionList[3].productDescription"
-                            maxlength="2000"
-                            show-word-limit></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-            </el-tab-pane>
-            <el-tab-pane label="西班牙语">
-                <div class="intrDiv">
-                    <label>
-                        <span>产品标题</span>  <br>
-                    </label>
-                    <div>
-                        <el-form-item label="" prop="introductionList[4].productTitle" :rules="{max: 200,message: '西班牙语标题最多200个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            v-model="dataForm.introductionList[4].productTitle"
-                            maxlength="200"
-                            show-word-limit></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-                <div class="intrDiv">
-                    <label>
-                        <span>关键字</span>  <br>
-                    </label>
-                    <div>
-                        <el-form-item label="" prop="introductionList[4].keyWord" :rules="{max: 250,message: '西班牙语关键字最多250个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            v-model="dataForm.introductionList[4].keyWord"
-                            maxlength="250"
-                            show-word-limit></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-                <div class="intrDiv">
-                    <label>
-                        <span>重点说明</span>  <br>
-                    </label>
-                    <div>
-                        <el-form-item label="" prop="introductionList[4].keyPoints" :rules="{max: 500,message: '西班牙语重点说明最多500个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            v-model="dataForm.introductionList[4].keyPoints"
-                            maxlength="500"
-                            :rows="4"
-                            show-word-limit></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-                <div class="intrDiv">
-                    <label>
-                        <span>产品描述</span>  <br>
-                    </label>
-                    <div>
-                        <el-form-item label="" prop="introductionList[4].productDescription" :rules="{max: 2000,message: '西班牙语产品描述最多2000个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            v-model="dataForm.introductionList[4].productDescription"
-                            maxlength="2000"
-                            :rows="4"
-                            show-word-limit></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-            </el-tab-pane>
-            <el-tab-pane label="德语">
-                <div class="intrDiv">
-                    <label>
-                        <span>产品标题</span>  <br>
-                    </label>
-                    <div>
-                        <el-form-item label="" prop="introductionList[5].productTitle" :rules="{max: 200,message: '德语标题最多200个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            v-model="dataForm.introductionList[5].productTitle"
-                            maxlength="200"
-                            show-word-limit></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-                <div class="intrDiv">
-                    <label>
-                        <span>关键字</span>  <br>
-                    </label>
-                    <div>
-                        <el-form-item label="" prop="introductionList[5].keyWord" :rules="{max: 250,message: '德语关键字最多250个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            v-model="dataForm.introductionList[5].keyWord"
-                            maxlength="250"
-                            show-word-limit></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-                <div class="intrDiv">
-                    <label>
-                        <span>重点说明</span>  <br>
-                    </label>
-                    <div>
-                        <el-form-item label="" prop="introductionList[5].keyPoints" :rules="{max: 500,message: '德语重点说明最多500个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            v-model="dataForm.introductionList[5].keyPoints"
-                            maxlength="500"
-                            :rows="4"
-                            show-word-limit></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-                <div class="intrDiv">
-                    <label>
-                        <span>产品描述</span>  <br>
-                    </label>
-                    <div>
-                        <el-form-item label="" prop="introductionList[5].productDescription" :rules="{max: 200,message: '德语产品描述最多2000个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            v-model="dataForm.introductionList[5].productDescription"
-                            maxlength="2000"
-                            :rows="4"
-                            show-word-limit></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-            </el-tab-pane>
-            <el-tab-pane label="荷兰语">
-                <div class="intrDiv">
-                    <label>
-                        <span>产品标题</span>  <br>
-                    </label>
-                    <div>
-                        <el-form-item label="" prop="introductionList[6].productTitle" :rules="{max: 200,message: '荷兰语标题最多200个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            v-model="dataForm.introductionList[6].productTitle"
-                            maxlength="200"
-                            show-word-limit></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-                <div class="intrDiv">
-                    <label>
-                        <span>关键字</span>  <br>
-                    </label>
-                    <div>
-                         <el-form-item label="" prop="introductionList[6].keyWord" :rules="{max: 250,message: '荷兰语关键字最多250个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            v-model="dataForm.introductionList[6].keyWord"
-                            maxlength="250"
-                            show-word-limit></el-input>
-                         </el-form-item>
-                    </div>
-                </div>
-                <div class="intrDiv">
-                    <label>
-                        <span>重点说明</span>  <br>
-                    </label>
-                    <div>
-                         <el-form-item label="" prop="introductionList[6].keyPoints" :rules="{max: 500,message: '荷兰语重点说明最多500个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            v-model="dataForm.introductionList[6].keyPoints"
-                            maxlength="500"
-                            :rows="4"
-                            show-word-limit></el-input>
-                         </el-form-item>
-                    </div>
-                </div>
-                <div class="intrDiv">
-                    <label>
-                        <span>产品描述</span>  <br>
-                    </label>
-                    <div>
-                        <el-form-item label="" prop="introductionList[6].productDescription" :rules="{max: 2000,message: '荷兰语产品描述最多2000个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            v-model="dataForm.introductionList[6].productDescription"
-                            maxlength="2000"
-                            :rows="4"
-                            show-word-limit></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-            </el-tab-pane>
-            <el-tab-pane label="日语">
-                <div class="intrDiv">
-                    <label>
-                        <span>产品标题</span>  <br>
-                    </label>
-                    <div>
-                        <el-form-item label="" prop="introductionList[7].productTitle" :rules="{max: 200,message: '日语标题最多200个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            v-model="dataForm.introductionList[7].productTitle"
-                            maxlength="200"
-                            show-word-limit></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-                <div class="intrDiv">
-                    <label>
-                        <span>关键字</span>  <br>
-                    </label>
-                    <div>
-                         <el-form-item label="" prop="introductionList[7].keyWord" :rules="{max: 250,message: '日语关键字最多250个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            v-model="dataForm.introductionList[7].keyWord"
-                            maxlength="250"
-                            show-word-limit></el-input>
-                         </el-form-item>
-                    </div>
-                </div>
-                <div class="intrDiv">
-                    <label>
-                        <span>重点说明</span>  <br>
-                    </label>
-                    <div>
-                         <el-form-item label="" prop="introductionList[7].keyPoints" :rules="{max: 500,message: '日语重点说明最多500个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            v-model="dataForm.introductionList[7].keyPoints"
-                            maxlength="500"
-                            :rows="4"
-                            show-word-limit></el-input>
-                         </el-form-item>
-                    </div>
-                </div>
-                <div class="intrDiv">
-                    <label>
-                        <span>产品描述</span>  <br>
-                    </label>
-                    <div>
-                        <el-form-item label="" prop="introductionList[7].productDescription" :rules="{max: 2000,message: '日语产品描述最多2000个字',trigger: 'blur'}">
-                            <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            v-model="dataForm.introductionList[7].productDescription"
-                            maxlength="2000"
-                            :rows="4"
-                            show-word-limit></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-            </el-tab-pane> -->
             
           </el-tabs>
         </div>
@@ -1222,6 +809,7 @@
         categoryIds:null,
         imgSVList:[],
         auditStatusList:[],
+        inpFocusVal:'',
         productTypeList:[],
         addVisible:false,
         addVMoneyVisible:false,
@@ -1465,6 +1053,38 @@
       }
     },
     methods: {
+        // 加粗
+        addBEl(index,elH,dec){
+            var str = window.getSelection().toString(); //选中内容
+            console.log(str);
+            if(str != ''){
+                if(this.inpFocusVal == 'productDescription' || this.inpFocusVal == 'keyPoints'){
+                    
+                    var el = $(window.getSelection().anchorNode).children()[0];
+                    el.focus();
+                    var start = el.selectionStart;
+                    var end = el.selectionEnd;
+                    this.dataForm.introductionList[index][this.inpFocusVal] = this.dataForm.introductionList[index][this.inpFocusVal].slice(0,start)+'<'+elH+'>'+str+'</'+elH+'>'+this.dataForm.introductionList[index][this.inpFocusVal].slice(end);
+                }else{
+                    this.$message({
+                        message: '非重点说明和产品描述的文本不可'+dec,
+                        type: 'warning'
+                    });
+                }
+            }else{
+                this.$message({
+                        message: '请选择要'+dec+'的文字',
+                        type: 'warning'
+                    });
+            }
+            
+            
+        },
+        // 获取输入框选中文字
+        inpFocus(key){
+            console.log(key);
+            this.inpFocusVal = key;
+        },
         // tabs, 删除tab
         removeTabHandle (tabName) {
             this.mainTabs = this.mainTabs.filter(item => item.name !== tabName)
@@ -2416,9 +2036,9 @@
             this.$refs.upload.submit();
         },
         upOk(response, file, fileList){
-            console.log(response);
-            console.log(file);
-            console.log(fileList);
+            // console.log(response);
+            // console.log(file);
+            // console.log(fileList);
             var that = this;
             if(response.code == 0){
                 this.fileList = [];
@@ -2430,13 +2050,10 @@
                 });
                 
                 setTimeout(() => {
-                    that.uploadImageVisible = false;
+                    // that.uploadImageVisible = false;
                     that.getImage();
                     loading.close()
                 },3000)
-                // this.$nextTick(() => {
-                //     this.getImage();
-                // })
                 
             }else{
                 this.$message.error(response.msg)
@@ -2525,6 +2142,15 @@
             }
             
         },
+        // 去重
+        quchong(){
+            var arr1 = this.dataForm.introductionList[1].productTitle.split(' ');
+            var arr2 = this.dataForm.introductionList[1].keyWord.split(' ');
+            var arr3 = arr2.filter(el => !arr1.includes(el));
+            this.dataForm.introductionList[1].keyWord = arr3.join(' ');
+            // console.log();
+
+        }
     }
   }
 </script>
@@ -2608,5 +2234,8 @@
   }
   .upDivDia .el-upload-list--picture .el-upload-list__item-status-label{
       z-index: 1;
+  }
+  .upDivDia1 .el-upload-list.el-upload-list--picture{
+      display: none;
   }
 </style>
