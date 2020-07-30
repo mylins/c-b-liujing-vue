@@ -6,12 +6,28 @@
         <div class="sous">
             <el-row :gutter="20">
                 
-                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
+                <!-- <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
                     <el-date-picker
                     v-model="q.date"
                     type="month"
                     value-format="yyyy-MM"
                     placeholder="选择月份">
+                    </el-date-picker>
+                </el-col> -->
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
+                    <el-date-picker
+                        v-model="q.startDate"
+                        type="date"
+                        value-format="yyyy-MM-dd 00:00:00"
+                        placeholder="开始日期">
+                    </el-date-picker>
+                </el-col>
+                <el-col :xs="12" :sm="6" :md="4" :lg="3" :xl="3">
+                    <el-date-picker
+                        v-model="q.endDate"
+                        type="date"
+                        value-format="yyyy-MM-dd 23:59:59"
+                        placeholder="结束日期">
                     </el-date-picker>
                 </el-col>
                 
@@ -59,18 +75,51 @@
                 </el-table-column>
                 <el-table-column
                 prop="money"
-                label="当月销售额(¥)"
+                label="销售额"
                 width="">
                 </el-table-column>
                 <el-table-column
                 prop="count"
-                label="当月出单数"
+                label="出单数"
                 width="">
                 </el-table-column>
                 <el-table-column
                 prop="allMoney"
-                label="销售总额(¥)"
+                label="销售总额"
                 width="">
+                </el-table-column>
+                <el-table-column
+                prop="accountSales"
+                label="到账金额"
+                width="">
+                </el-table-column>
+                <el-table-column
+                prop="cost"
+                label="采购价"
+                width="">
+                </el-table-column>
+                <el-table-column
+                prop="orderFreight"
+                label="运费"
+                width="">
+                </el-table-column>
+                <el-table-column
+                prop="servicePrice"
+                label="服务费"
+                width="">
+                </el-table-column>
+                <el-table-column
+                prop="profit"
+                label="利润"
+                width="">
+                </el-table-column>
+                <el-table-column
+                prop="profitRate"
+                label="利润率"
+                width="">
+                    <template slot-scope="scope">
+                        <span>{{parseInt(scope.row.profitRate * 100)}}%</span>
+                    </template>
                 </el-table-column>
                 <el-table-column
                 prop="allCount"
@@ -90,7 +139,8 @@
             dataList:[],
             dataListLoading:false,
             q:{
-                date:''
+                startDate:'',
+                endDate:''
             }
           }
       },
@@ -104,9 +154,10 @@
             this.dataListLoading = true
             this.$http({
                 url: this.$http.adornUrl('/order/statistics/orderSales'),
-                method: 'get',
-                params: this.$http.adornParams({
-                    'date': this.q.date
+                method: 'post',
+                data: this.$http.adornData({
+                    'startDate': this.q.startDate,
+                    'endDate': this.q.endDate
                 })
             }).then(({data}) => {
                 if (data && data.code === 0) {
