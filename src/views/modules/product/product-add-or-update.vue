@@ -154,7 +154,7 @@
             <el-input v-model="dataForm.property.productWeight" placeholder="包装毛重(kg)" @change="getcostFreight('property.productWeight')"></el-input>
           </el-form-item>
           <el-form-item label="产品打折" prop="property.discount">
-              <el-input v-model="dataForm.property.discount" placeholder="包装毛重(kg)" @change="getcostFreight('property.discount')"></el-input>
+              <el-input v-model="dataForm.property.discount" placeholder="产品打折" @change="getcostFreight('property.discount')"></el-input>
             <!-- <el-select v-model="dataForm.property.discount" placeholder="请选择" @change="getcostFreight('property.discount')">
                 <el-option
                 v-for="item in discountList"
@@ -1058,7 +1058,7 @@
             var str = window.getSelection().toString(); //选中内容
             console.log(str);
             if(str != ''){
-                if(this.inpFocusVal == 'productDescription' || this.inpFocusVal == 'keyPoints'){
+                if(this.inpFocusVal == 'productDescription'){
                     
                     var el = $(window.getSelection().anchorNode).children()[0];
                     el.focus();
@@ -1067,7 +1067,7 @@
                     this.dataForm.introductionList[index][this.inpFocusVal] = this.dataForm.introductionList[index][this.inpFocusVal].slice(0,start)+'<'+elH+'>'+str+'</'+elH+'>'+this.dataForm.introductionList[index][this.inpFocusVal].slice(end);
                 }else{
                     this.$message({
-                        message: '非重点说明和产品描述的文本不可'+dec,
+                        message: '非产品描述的文本不可'+dec,
                         type: 'warning'
                     });
                 }
@@ -2086,6 +2086,7 @@
                 })
             }).then(({data}) => {
                 if (data && data.code === 0) {
+                    this.saleMoneyList = [];
                     this.saleMoneyList[0] = {};
                     this.saleMoneyListH = [];
                     var that = this;

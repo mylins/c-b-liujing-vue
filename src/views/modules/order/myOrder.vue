@@ -333,7 +333,7 @@
                 label="操作"
                 width="60">
                     <template slot-scope="scope">
-                        <el-button type="text" icon="" @click="orderId = scope.row.orderId;returnMVisible = true">退款</el-button>
+                        <el-button type="text" icon="" @click="amazonOrderId = scope.row.amazonOrderId;returnMVisible = true">退款</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -485,6 +485,7 @@
             pageIndex:1,
             totalPage:0,
             dataListSelections:[],
+            amazonOrderId:'',
             comObj:{
                 'US':'美国',
                 'JP':'日本',
@@ -709,7 +710,7 @@
                     url: this.$http.adornUrl('/order/order/getReturnCost'),
                     method: 'get',
                     params: this.$http.adornParams({
-                        'amazonOrderId': this.orderId,
+                        'amazonOrderId': this.amazonOrderId,
                         'returnCost': this.returnMoney,
                     })
                 }).then(({data}) => {

@@ -156,8 +156,11 @@
                                 <div slot="placeholder" class="image-slot errorImgDiv1">
                                     加载中<span class="dot">...</span>
                                 </div>
-                                <div slot="error" class="image-slot errorImgDiv">
-                                    <i class="el-icon-picture-outline"></i>
+                                <div slot="error" class="image-slot">
+                                    <el-image
+                                        style="width: 100%;"
+                                        fit="cover"
+                                        :src="require('@/assets/img/img.jpg')"></el-image>
                                 </div>
                             </el-image>
                         </div>

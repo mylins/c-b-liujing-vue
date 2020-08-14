@@ -36,20 +36,16 @@
 .sous .el-select , .sous .el-date-editor{
     width: 100%;
 }
-
-.titlePro .el-button--text>span{
+.titlePro .el-button--text>span , div.proTitleSpan{
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
     overflow: hidden;
+    -webkit-line-clamp: 2;
     white-space: pre-wrap;
     text-align: left;
     min-height: 36px;
     line-height: 18px;
     padding: 0 6px;
-}
-span.proTitleSpan{
-    color: #333;
 }
 div.aaa{
     padding: 0 6px;

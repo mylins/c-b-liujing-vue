@@ -119,8 +119,11 @@
                                 <div slot="placeholder" class="image-slot errorImgDiv1">
                                     加载中<span class="dot">...</span>
                                 </div>
-                                <div slot="error" class="image-slot errorImgDiv">
-                                    <i class="el-icon-picture-outline"></i>
+                                <div slot="error" class="image-slot">
+                                    <el-image
+                                        style="width: 100%;"
+                                        fit="cover"
+                                        :src="require('@/assets/img/img.jpg')"></el-image>
                                 </div>
                             </el-image>
                         </div>
@@ -131,7 +134,7 @@
                         <div class="aaa">
                             <el-tag effect="dark" size="mini" v-if="item.auditStatus == '001'">审核通过</el-tag>
                             <el-tag effect="dark" type="warning" size="mini" v-else>待审核</el-tag>
-                            <span class="proTitleSpan">{{item.productTitle}}</span>
+                            <div class="proTitleSpan">{{item.productTitle}}</div>
                         </div>
                         <!-- <span class="proTitleSpan">{{item.productTitle}}</span> -->
                         <div class="decProSN">编号：{{item.productId}}</div>

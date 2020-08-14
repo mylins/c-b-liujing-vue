@@ -32,6 +32,12 @@
           <el-form-item label="包装毛重(kg)" prop="productWeight">
             <el-input v-model="dataForm.productWeight" placeholder="包装毛重(kg)"></el-input>
           </el-form-item>
+          <el-form-item label="国内运费(¥)" prop="domesticFreight">
+            <el-input v-model="dataForm.domesticFreight" placeholder="国内运费(¥)"></el-input>
+          </el-form-item>
+          <el-form-item label="产品打折" prop="">
+            <el-input v-model="dataForm.discount" placeholder="产品打折"></el-input>
+          </el-form-item>
           <el-form-item label="包装尺寸" prop="">
               <el-col :span="6">
                   <el-form-item prop="productLength">
@@ -652,6 +658,8 @@
           productLength:'',
           productWide:'',
           productHeight:'',
+          discount:'',
+          domesticFreight:'',
           britainIntroduction:{
                     countryCode: "GB"
                 },
@@ -716,6 +724,9 @@
             productHeight: [
                 { validator: number, trigger: 'blur' }
             ],
+            domesticFreight:[
+                { validator: number, trigger: 'blur' }
+            ]
         }
       }
     },
@@ -727,7 +738,7 @@
             var str = window.getSelection().toString(); //选中内容
             console.log(str);
             if(str != ''){
-                if(this.inpFocusVal == 'productDescription' || this.inpFocusVal == 'keyPoints'){
+                if(this.inpFocusVal == 'productDescription'){
                     
                     var el = $(window.getSelection().anchorNode).children()[0];
                     el.focus();
@@ -736,7 +747,7 @@
                     this.dataForm[index][this.inpFocusVal] = this.dataForm[index][this.inpFocusVal].slice(0,start)+'<'+elH+'>'+str+'</'+elH+'>'+this.dataForm[index][this.inpFocusVal].slice(end);
                 }else{
                     this.$message({
-                        message: '非重点说明和产品描述的文本不可'+dec,
+                        message: '非产品描述的文本不可'+dec,
                         type: 'warning'
                     });
                 }
@@ -769,6 +780,8 @@
                 productLength:'',
                 productWide:'',
                 productHeight:'',
+                discount:'',
+                domesticFreight:'',
                 britainIntroduction:{
                     countryCode: "GB",
                     productTitle:null,
