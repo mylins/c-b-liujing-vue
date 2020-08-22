@@ -118,7 +118,7 @@
                     </span>
                 </el-col> -->
                 <el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
-                    <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList">查询</el-button>
+                    <el-button type="primary" icon="el-icon-search" size="medium" @click="sous">查询</el-button>
                     <el-button type="" icon="el-icon-refresh" size="medium" @click="clean">重置</el-button>
                 </el-col>
             </el-row>
@@ -572,6 +572,10 @@
                 }
                 this.dataListLoading = false
             })
+        },
+        sous(){
+            this.getDataList();
+            this.getStatis();
         },
         // 获取统计
         getStatis(){
