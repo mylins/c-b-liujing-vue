@@ -606,7 +606,10 @@
             this.$http({
                 url: this.$http.adornUrl('/order/order/allOrderCount'),
                 method: 'get',
-                params: this.$http.adornParams()
+                params: this.$http.adornParams({
+                    'startDate':this.q.startDate,
+                    'endDate':this.q.endDate,
+                })
             }).then(({data}) => {
                 if (data && data.code === 0) {
                     console.log(data);

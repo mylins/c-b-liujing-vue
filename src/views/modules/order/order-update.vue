@@ -640,7 +640,12 @@
 
 <script>
   import { isEmail, isMobile } from '@/utils/validate'
+  import OpenTab from '../../common/open'
   export default {
+    components: {
+        OpenTab,
+        // ProductPiliang
+    },
     data () {
       var number = (rule, value, callback) => {
         if (/[^\d.]/g.test(value)) {

@@ -114,7 +114,7 @@
         <div class="blockDivForm" v-if="dataForm.info.sellerLink">
             <h3> <i class="el-icon-menu"></i> &nbsp;&nbsp;商家信息</h3>
             <el-form-item label="商家信息">
-                <a :href="dataForm.info.sellerLink" target="_blank">产品页</a>
+                <a :href="dataForm.info.sellerLink" target="_blank" style="font-size:18px;font-weight:bold;">产品页</a>
             </el-form-item>
         </div>
         <div class="blockDivForm">
@@ -1963,16 +1963,20 @@
         },
         // 删除变体选中图片
         delImageVB(num,index){
-            this.$confirm('确定删除该图片?', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                this.dataForm.viFlag = 1;
-                var arr = this.dataForm.variantsInfoList[num].imageUrl.split(',');
-                arr.splice(index,1)
-                this.dataForm.variantsInfoList[num].imageUrl = arr.join(',');
-            })
+            this.dataForm.viFlag = 1;
+            var arr = this.dataForm.variantsInfoList[num].imageUrl.split(',');
+            arr.splice(index,1)
+            this.dataForm.variantsInfoList[num].imageUrl = arr.join(',');
+            // this.$confirm('确定删除该图片?', {
+            //     confirmButtonText: '确定',
+            //     cancelButtonText: '取消',
+            //     type: 'warning'
+            // }).then(() => {
+            //     this.dataForm.viFlag = 1;
+            //     var arr = this.dataForm.variantsInfoList[num].imageUrl.split(',');
+            //     arr.splice(index,1)
+            //     this.dataForm.variantsInfoList[num].imageUrl = arr.join(',');
+            // })
             
             
         },

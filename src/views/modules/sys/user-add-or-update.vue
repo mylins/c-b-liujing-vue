@@ -15,7 +15,7 @@
             <el-input v-model="dataForm.displayName" placeholder="姓名"></el-input>
           </el-form-item>
           <el-form-item label="账号名称" prop="username">
-            <el-input v-model="dataForm.username" placeholder="账号长度必须在6到20个字符之间"></el-input>
+            <el-input :disabled="dataForm.userId" v-model="dataForm.username" placeholder="账号长度必须在6到20个字符之间"></el-input>
           </el-form-item>
           <el-form-item v-if="!dataForm.userId" label="密码" prop="password">
             <el-input v-model="dataForm.password" type="password" placeholder="密码" autocomplete="off"></el-input>

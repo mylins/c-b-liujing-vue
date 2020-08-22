@@ -267,7 +267,7 @@
                         <el-checkbox :true-label='1' :false-label='0' v-model="dataForm.italyIntroduction.isKeyPoints">是否追加</el-checkbox>
                     </label>
                     <div>
-                        <el-form-item label="" prop="italyIntroduction.keyPoints" :rules="{max: 500,message: '意大利语重点说明最多2500个字',trigger: 'blur'}">
+                        <el-form-item label="" prop="italyIntroduction.keyPoints" :rules="{max: 2500,message: '意大利语重点说明最多2500个字',trigger: 'blur'}">
                             <el-input
                             type="textarea"
                             placeholder="请输入内容"
