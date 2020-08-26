@@ -169,7 +169,7 @@
                         v-for="item in historyList"
                         :key="item.amazonCategoryId"
                         :label="item.amazonCategory"
-                        :value="item.amazonCategoryId">
+                        :value="item.nodeId">
                         </el-option>
                     </el-select>
                 </el-col>
