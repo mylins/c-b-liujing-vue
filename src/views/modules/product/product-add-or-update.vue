@@ -35,10 +35,12 @@
                     <el-input v-model="dataForm.correction" placeholder="SKU修正"></el-input>
                 </div>
           </el-form-item>
-
+          <el-button type="text" size="small" plain @click="clearProductSku">清楚产品SKU</el-button>
+          <br>
           <el-form-item label="UPC/EAN" prop="productSku">
               <el-input v-model="dataForm.eanCode" placeholder="UPC/EAN"></el-input>
           </el-form-item>
+          
           <el-form-item label="产品分类" prop="categoryId">
             <el-cascader ref="aaa" v-model="categoryIds" :options="options" :props="props" clearable @change="productCategorChange" @visible-change="visibleChange"></el-cascader>
             <!-- <br>
@@ -317,11 +319,11 @@
                 <el-button type="primary" size="mini" plain @click="addBEl(index,'i','斜体')">斜体</el-button>
                 <div style="height:10px"></div>
                 <div class="intrDiv">
-                    <label>
+                    <span class="labelSpan">
                         <span>产品标题</span>  <br>
                         <el-button v-if="index == 1" type="primary" size="mini" plain @click="fanyi1(item.productTitle,0)">一键翻译</el-button>
                         <el-button v-if="index == 0" type="primary" size="mini" plain @click="fanyi(item.productTitle,0)">一键翻译</el-button>
-                    </label>
+                    </span>
                     <div>
                         <el-input
                         v-if="index == 0"
@@ -342,17 +344,18 @@
                     </div>
                 </div>
                 <div class="intrDiv">
-                    <label>
+                    <span class="labelSpan">
                         <span>关键字</span>  <br>
                         <el-button v-if="index == 1" type="primary" size="mini" plain @click="fanyi1(item.keyWord,1)">一键翻译</el-button>
                         <el-button v-if="index == 0" type="primary" size="mini" plain @click="fanyi(item.keyWord,1)">一键翻译</el-button>
-                    </label>
+                    </span>
                     <div>
                         <el-input
                         v-if="index == 0"
                         type="textarea"
                         placeholder="请输入内容"
                         v-model="item.keyWord"
+                        :rows="4"
                         @focus="inpFocus('keyWord')"
                         show-word-limit></el-input>
                         <el-form-item v-else label="">
@@ -360,6 +363,7 @@
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="item.keyWord"
+                            :rows="4"
                             @focus="inpFocus('keyWord')"
                             maxlength="250"
                             show-word-limit></el-input>
@@ -367,16 +371,17 @@
                     </div>
                 </div>
                 <div class="intrDiv">
-                    <label>
+                    <span class="labelSpan">
                         <span>重点说明</span>  <br>
                         <el-button v-if="index == 0" type="primary" size="mini" plain @click="fanyi(item.keyPoints,2)">一键翻译</el-button>
                         <el-button v-if="index == 1" type="primary" size="mini" plain @click="fanyi1(item.keyPoints,2)">一键翻译</el-button>
-                    </label>
+                    </span>
                     <div>
                         <el-input
                         v-if="index == 0"
                         type="textarea"
                         placeholder="请输入内容"
+                        :rows="8"
                         @focus="inpFocus('keyPoints')"
                         v-model="item.keyPoints"
                         show-word-limit></el-input>
@@ -384,7 +389,7 @@
                             <el-input
                             type="textarea"
                             placeholder="请输入内容"
-                            :rows="4"
+                            :rows="8"
                             v-model="item.keyPoints"
                             @focus="inpFocus('keyPoints')"
                             maxlength="2500"
@@ -398,16 +403,17 @@
                     </div>
                 </div>
                 <div class="intrDiv">
-                    <label>
+                    <span class="labelSpan">
                         <span>产品描述</span>  <br>
                         <el-button v-if="index == 0" type="primary" size="mini" plain @click="fanyi(item.productDescription,3)">一键翻译</el-button>
                         <el-button v-if="index == 1" type="primary" size="mini" plain @click="fanyi1(item.productDescription,3)">一键翻译</el-button>
-                    </label>
+                    </span>
                     <div>
                         <el-input
                         v-if="index == 0"
                         type="textarea"
                         ref="inp"
+                        :rows="10"
                         placeholder="请输入内容"
                         v-model="item.productDescription"
                         @focus="inpFocus('productDescription')"
@@ -416,7 +422,7 @@
                             <el-input
                             type="textarea"
                             placeholder="请输入内容"
-                            :rows="4"
+                            :rows="10"
                             v-model="item.productDescription"
                             @focus="inpFocus('productDescription')"
                             maxlength="2000"
@@ -2155,7 +2161,42 @@
             this.dataForm.introductionList[1].keyWord = arr3.join(' ');
             // console.log();
 
-        }
+        },
+        // 批量清除SKU
+        clearProductSku(){
+            this.$confirm('确定清除产品SKU?', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                    });
+                this.$http({
+                    url: this.$http.adornUrl('/product/product/clearProductSku'),
+                    method: 'post',
+                    data: this.$http.adornData([this.dataForm.productId],false)
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                        this.$message({
+                            message: '操作成功',
+                            type: 'success',
+                            duration: 1000,
+                            onClose: () => {
+                                this.getDataList()
+                                loading.close()
+                            }
+                        })
+                    } else {
+                        this.$message.error(data.msg)
+                        loading.close()
+                    }
+                })
+            }).catch(() => {})
+        },
     }
   }
 </script>

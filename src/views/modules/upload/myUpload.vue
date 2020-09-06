@@ -73,7 +73,7 @@
                         <el-tag v-if="scope.row.uploadState == 1">正在上传</el-tag>
                         <el-tag  v-if="scope.row.uploadState == 2" type="success">上传成功</el-tag>
                         <el-tag type="danger" v-if="scope.row.uploadState == 3">上传失败</el-tag>
-                        <el-tag type="warning" v-if="scope.row.uploadState == 4">有警告</el-tag>
+                        <el-tag type="warning" v-if="scope.row.uploadState == 4">上传警告</el-tag>
                     </template>
                 </el-table-column>
                 <el-table-column

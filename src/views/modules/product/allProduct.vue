@@ -84,11 +84,13 @@
                     <span style="float:right">
                         <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList">查询</el-button>
                         <el-button type="" icon="el-icon-refresh" size="medium" @click="clean">重置</el-button>
+                        <el-button type="" icon="el-icon-refresh-right" size="medium" @click="refresh">刷新</el-button>
                     </span>
                 </el-col>
                 <el-col v-else :xs="24" :sm="12" :md="12" :xl="6">
                     <el-button type="primary" icon="el-icon-search" size="medium" @click="getDataList">查询</el-button>
                     <el-button type="" icon="el-icon-refresh" size="medium" @click="clean">重置</el-button>
+                    <el-button type="" icon="el-icon-refresh-right" size="medium" @click="refresh">刷新</el-button>
                 </el-col>
             </el-row>
         </div>
@@ -397,6 +399,11 @@
                 this.q.groupId = this.$store.state.dept.updateUser.groupId
             }
             this.nowProTypeId = [];
+            this.getDataList();
+        },
+        // 刷新
+        refresh(){
+            this.getMyStatusList();
             this.getDataList();
         },
         // 每页数

@@ -492,6 +492,7 @@
               onClose: () => {
                 this.rechargeVisible = false
                 loading.close();
+                this.getDataList();
                 
               }
             })

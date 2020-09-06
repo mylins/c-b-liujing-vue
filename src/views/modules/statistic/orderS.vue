@@ -47,7 +47,7 @@
                     var time = [];
                     data.dataList.forEach(function(item){
                       count.push(item.count);
-                      money.push(item.money/100);
+                      money.push(item.money);
                       time.push(item.time);
                     })
                     this.initChartBar(count,money,time);
@@ -71,7 +71,7 @@
             },
             formatter:function(opt){
               console.log(opt)
-              return opt[0].name+'<br /><span style="display:inline-block;width:8px;height:8px;border-radius:6px;background:#409eff;margin-right:4px"></span>销售额：'+opt[0].value+'(百元)<br /><span style="display:inline-block;width:8px;height:8px;border-radius:6px;background:#0bb2d4;margin-right:4px"></span>订单量：'+opt[1].value
+              return opt[0].name+'<br /><span style="display:inline-block;width:8px;height:8px;border-radius:6px;background:#409eff;margin-right:4px"></span>销售额：'+opt[0].value+'(元)<br /><span style="display:inline-block;width:8px;height:8px;border-radius:6px;background:#0bb2d4;margin-right:4px"></span>订单量：'+opt[1].value
             }
           },
           legend: {

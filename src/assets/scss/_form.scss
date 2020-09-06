@@ -41,10 +41,10 @@
     display: flex;
     margin-bottom: 16px;
 }
-.intrDiv label{
+.intrDiv label , .intrDiv .labelSpan{
     width: 100px;
 }
-.intrDiv>label>span{
+.intrDiv>label>span , .intrDiv>.labelSpan>span{
     display: inline-block;
     margin-bottom: 8px;
 }

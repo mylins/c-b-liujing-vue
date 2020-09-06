@@ -143,6 +143,7 @@
       // tabs, 刷新当前
       tabsRefreshCurrentHandle () {
         var tab = this.$route
+        console.log(tab);
         this.removeTabHandle(tab.name)
         this.$nextTick(() => {
           this.$router.push({ name: tab.name, query: tab.query, params: tab.params })
