@@ -35,7 +35,7 @@
                     <el-input v-model="dataForm.correction" placeholder="SKU修正"></el-input>
                 </div>
           </el-form-item>
-          <el-button type="text" size="small" plain @click="clearProductSku">清楚产品SKU</el-button>
+          <el-button type="text" size="small" plain @click="clearProductSku">清除产品SKU</el-button>
           <br>
           <el-form-item label="UPC/EAN" prop="productSku">
               <el-input v-model="dataForm.eanCode" placeholder="UPC/EAN"></el-input>
@@ -2181,13 +2181,14 @@
                     data: this.$http.adornData([this.dataForm.productId],false)
                 }).then(({data}) => {
                     if (data && data.code === 0) {
+                        loading.close()
                         this.$message({
                             message: '操作成功',
                             type: 'success',
                             duration: 1000,
                             onClose: () => {
-                                this.getDataList()
-                                loading.close()
+                                let obj = {'productId':this.productId}
+                                this.init(obj)
                             }
                         })
                     } else {
